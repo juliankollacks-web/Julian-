@@ -83,7 +83,13 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
 .row .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
 .step { display: flex; align-items: center; gap: 6px; }
 .step button { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 22px; line-height: 1; }
-.step output { min-width: 64px; text-align: center; font-family: var(--display); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
+.tval { display: flex; align-items: baseline; justify-content: center; min-width: 78px; font-family: var(--display); font-weight: 800; font-size: 26px; }
+.step input {
+  width: 2.6ch; padding: 0; text-align: center; font-family: var(--display); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums;
+  color: var(--fg); background: transparent; border: 0; border-bottom: 2px dashed var(--line); border-radius: 0;
+}
+.step input:focus { outline: none; border-bottom: 2px solid var(--work); background: var(--bg); }
+.step input:disabled { opacity: .4; }
 .total { color: var(--muted); font-size: 14px; text-align: right; }
 .total b { color: var(--fg); font-variant-numeric: tabular-nums; }
 .hint { color: var(--muted); font-size: 13px; margin: 0; }
@@ -120,23 +126,24 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
     </div>
     <div class="rows">
       <div class="row">
-        <label for="v-work"><span class="dot" style="background:var(--work)"></span>Trainingszeit<small>pro Runde</small></label>
-        <div class="step" data-key="work"><button type="button" data-d="-1" aria-label="Trainingszeit verringern">−</button><output id="v-work"></output><button type="button" data-d="1" aria-label="Trainingszeit erhöhen">+</button></div>
+        <label for="v-work-m"><span class="dot" style="background:var(--work)"></span>Trainingszeit<small>pro Runde · Min : Sek</small></label>
+        <div class="step" data-key="work"><button type="button" data-d="-1" aria-label="Trainingszeit verringern">−</button><span class="tval"><input id="v-work-m" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Trainingszeit Minuten">:<input id="v-work-s" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Trainingszeit Sekunden"></span><button type="button" data-d="1" aria-label="Trainingszeit erhöhen">+</button></div>
       </div>
       <div class="row">
-        <label for="v-rest"><span class="dot" style="background:var(--rest)"></span>Pause<small>zwischen den Runden</small></label>
-        <div class="step" data-key="rest"><button type="button" data-d="-1" aria-label="Pause verringern">−</button><output id="v-rest"></output><button type="button" data-d="1" aria-label="Pause erhöhen">+</button></div>
+        <label for="v-rest-m"><span class="dot" style="background:var(--rest)"></span>Pause<small>zwischen den Runden · Min : Sek</small></label>
+        <div class="step" data-key="rest"><button type="button" data-d="-1" aria-label="Pause verringern">−</button><span class="tval"><input id="v-rest-m" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Pause Minuten">:<input id="v-rest-s" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Pause Sekunden"></span><button type="button" data-d="1" aria-label="Pause erhöhen">+</button></div>
       </div>
       <div class="row">
         <label for="v-rounds"><span class="dot" style="background:var(--fg)"></span>Runden<small>Wiederholungen</small></label>
-        <div class="step" data-key="rounds"><button type="button" data-d="-1" aria-label="Runden verringern">−</button><output id="v-rounds"></output><button type="button" data-d="1" aria-label="Runden erhöhen">+</button></div>
+        <div class="step" data-key="rounds"><button type="button" data-d="-1" aria-label="Runden verringern">−</button><span class="tval"><input id="v-rounds" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"></span><button type="button" data-d="1" aria-label="Runden erhöhen">+</button></div>
       </div>
       <div class="row">
-        <label for="v-prep"><span class="dot" style="background:var(--prep)"></span>Vorbereitung<small>Countdown vor Runde 1</small></label>
-        <div class="step" data-key="prep"><button type="button" data-d="-1" aria-label="Vorbereitung verringern">−</button><output id="v-prep"></output><button type="button" data-d="1" aria-label="Vorbereitung erhöhen">+</button></div>
+        <label for="v-prep-m"><span class="dot" style="background:var(--prep)"></span>Vorbereitung<small>Countdown vor Runde 1 · Min : Sek</small></label>
+        <div class="step" data-key="prep"><button type="button" data-d="-1" aria-label="Vorbereitung verringern">−</button><span class="tval"><input id="v-prep-m" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Vorbereitung Minuten">:<input id="v-prep-s" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Vorbereitung Sekunden"></span><button type="button" data-d="1" aria-label="Vorbereitung erhöhen">+</button></div>
       </div>
     </div>
     <div class="total">Gesamtdauer <b id="total">0:00</b></div>
+    <p class="hint">Tippe auf eine Zahl, um sie direkt einzugeben. Sekunden über 59 werden umgerechnet, 90 Sek. werden also zu 1:30.</p>
     <p class="hint">Töne: kurze Pieptöne bei 3 – 2 – 1, ein hoher Ton wenn das Training startet, ein tiefer Ton bei der Pause, drei Töne am Ende. Leertaste = Start/Pause.</p>
   </section>
 </main>
@@ -144,10 +151,10 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
 <script>
 (() => {
   const LIMITS = {
-    work:   { min: 5, max: 3600, step: 5, time: true },
-    rest:   { min: 0, max: 3600, step: 5, time: true },
+    work:   { min: 1, max: 5999, step: 5, time: true },
+    rest:   { min: 0, max: 5999, step: 5, time: true },
     rounds: { min: 1, max: 99,   step: 1, time: false },
-    prep:   { min: 0, max: 60,   step: 5, time: true },
+    prep:   { min: 0, max: 600,  step: 5, time: true },
   };
   const LABEL = { prep: "Vorbereitung", work: "Training", rest: "Pause", done: "Fertig!", idle: "Bereit" };
   const $ = (id) => document.getElementById(id);
@@ -276,10 +283,15 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
     $("start").textContent = state === "running" ? "Pause" : state === "paused" ? "Weiter" : state === "done" ? "Nochmal" : "Start";
     $("skip").disabled = !active;
     $("skip").textContent = "Überspringen";
-    document.querySelectorAll(".settings button").forEach((b) => (b.disabled = active));
+    document.querySelectorAll(".settings button, .settings input").forEach((b) => (b.disabled = active));
   }
   function renderSettings() {
-    for (const k in LIMITS) $("v-" + k).textContent = LIMITS[k].time ? fmt(cfg[k]) : cfg[k];
+    for (const k in LIMITS) {
+      if (LIMITS[k].time) {
+        $("v-" + k + "-m").value = Math.floor(cfg[k] / 60);
+        $("v-" + k + "-s").value = String(cfg[k] % 60).padStart(2, "0");
+      } else $("v-" + k).value = cfg[k];
+    }
     const total = cfg.prep + cfg.rounds * cfg.work + (cfg.rounds - 1) * cfg.rest;
     $("total").textContent = fmt(total);
     try { localStorage.setItem("intervall-cfg", JSON.stringify(cfg)); } catch (e) {}
@@ -290,8 +302,16 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
     // Feinere Schritte unter 30 s, gröbere über 2 Min.
     let s = L.step;
     if (L.time) s = v + (dir > 0 ? 0 : -1) < 30 ? 5 : v + (dir > 0 ? 0 : -1) < 120 ? 10 : 30;
-    if (L.time && k !== "work" && k !== "prep" && v + dir * s < 0) s = v;
-    cfg[k] = Math.min(L.max, Math.max(L.min, v + dir * s));
+    // Von eingetippten Werten wie 37 auf das nächste Raster springen (40 bzw. 35).
+    const next = dir > 0 ? Math.floor(v / s) * s + s : Math.ceil(v / s) * s - s;
+    cfg[k] = Math.min(L.max, Math.max(L.min, next));
+    renderSettings();
+  }
+  function commitInput(k) {
+    const L = LIMITS[k];
+    const num = (id) => { const n = parseInt($(id).value.replace(/\D/g, ""), 10); return isNaN(n) ? 0 : n; };
+    const v = L.time ? num("v-" + k + "-m") * 60 + num("v-" + k + "-s") : num("v-" + k);
+    cfg[k] = Math.min(L.max, Math.max(L.min, v));
     renderSettings();
   }
 
@@ -315,6 +335,12 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
       ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => b.addEventListener(ev, () => clearTimeout(hold)));
     })
   );
+  document.querySelectorAll(".step input").forEach((inp) => {
+    const k = inp.closest(".step").dataset.key;
+    inp.addEventListener("focus", () => inp.select());
+    inp.addEventListener("change", () => commitInput(k));
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") inp.blur(); });
+  });
   document.querySelectorAll("[data-preset]").forEach((b) =>
     b.addEventListener("click", () => {
       const [work, rest, rounds, prep] = b.dataset.preset.split(",").map(Number);
@@ -322,7 +348,7 @@ button:focus-visible { outline: 3px solid var(--phase, var(--work)); outline-off
     })
   );
   document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && !(e.target instanceof HTMLButtonElement)) { e.preventDefault(); state === "running" ? pause() : start(); }
+    if (e.code === "Space" && !(e.target instanceof Element && e.target.closest("button, input"))) { e.preventDefault(); state === "running" ? pause() : start(); }
   });
 
   $("sound").setAttribute("aria-pressed", soundOn);
