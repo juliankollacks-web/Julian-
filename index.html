@@ -4,38 +4,46 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800;900&family=Overpass+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;700;900&family=Overpass+Mono:wght@600&display=swap">
 <style>
-  /* Layout: Autobahn-Schild als Kopf, darunter die Bingo-Karte als Raster aus Verkehrsschild-Kacheln */
+  /* Layout: eine ruhige Spalte. Oben Schild + zwei Reiter, darunter jeweils nur das, was man gerade braucht. */
   :root {
-    --bg: #eef1f5;
+    --bg: #f2f4f7;
     --surface: #ffffff;
-    --ink: #17202c;
-    --muted: #5b6676;
-    --line: #cfd6e0;
-    --sign: #1d4f91;      /* Autobahn-Blau */
-    --sign-ink: #ffffff;
-    --mark: #f5b400;      /* Umleitungs-Gelb */
-    --mark-ink: #17202c;
-    --win: #2e8540;       /* Grün wie Wegweiser */
+    --ink: #1a2230;
+    --muted: #667085;
+    --line: #dde2ea;
+    --accent: #1f56a3;      /* Autobahn-Blau */
+    --accent-ink: #ffffff;
+    --accent-soft: #e4ecf8;
+    --mark: #ffc21a;        /* Markierung, gelb wie Baustellen-Linien */
+    --mark-ink: #1a2230;
+    --win: #23894a;         /* Bingo-Grün wie Wegweiser */
+    --win-ink: #ffffff;
+    --shadow: 0 1px 2px rgba(26, 34, 48, .06), 0 2px 8px rgba(26, 34, 48, .05);
     --font-display: "Overpass", "Arial Narrow", Arial, sans-serif;
     --font-body: "Overpass", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-mono: "Overpass Mono", ui-monospace, Menlo, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0f141b; --surface: #19212c; --ink: #e8edf3; --muted: #9aa6b6; --line: #2c3746;
-      --sign: #2a64b0; --sign-ink: #ffffff; --mark: #f5b400; --mark-ink: #17202c; --win: #3fa155;
+      --bg: #10151c; --surface: #1a212b; --ink: #e9edf2; --muted: #98a2b3; --line: #2b3441;
+      --accent: #3b78d0; --accent-ink: #ffffff; --accent-soft: #1d2b40;
+      --mark: #ffc21a; --mark-ink: #1a2230; --win: #2f9e5a; --win-ink: #ffffff;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3);
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0f141b; --surface: #19212c; --ink: #e8edf3; --muted: #9aa6b6; --line: #2c3746;
-    --sign: #2a64b0; --sign-ink: #ffffff; --mark: #f5b400; --mark-ink: #17202c; --win: #3fa155;
+    --bg: #10151c; --surface: #1a212b; --ink: #e9edf2; --muted: #98a2b3; --line: #2b3441;
+    --accent: #3b78d0; --accent-ink: #ffffff; --accent-soft: #1d2b40;
+    --mark: #ffc21a; --mark-ink: #1a2230; --win: #2f9e5a; --win-ink: #ffffff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
     color-scheme: dark;
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -44,282 +52,366 @@
     line-height: 1.45;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
-    padding-block: 16px 32px;
+    padding-block: 16px 40px;
   }
-  .wrap { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  .wrap { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  button { font-family: inherit; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--mark); outline-offset: 2px; }
 
-  /* Kopf als Autobahn-Wegweiser */
+  /* Kopf: Autobahnschild */
   .sign {
-    background: var(--sign);
-    color: var(--sign-ink);
-    border-radius: 10px;
-    padding: 6px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: var(--shadow);
   }
-  .sign-inner {
-    border: 3px solid var(--sign-ink);
-    border-radius: 6px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  h1 {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(28px, 7vw, 40px);
-    line-height: 1;
-    margin: 0;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-  }
-  .sign-sub { font-size: 13px; opacity: .85; margin-top: 4px; }
-  .km {
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 13px;
-    background: var(--sign-ink);
-    color: var(--sign);
-    border-radius: 4px;
-    padding: 4px 8px;
-    white-space: nowrap;
-  }
-
-  /* Steuerung */
-  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .seg { display: flex; flex-wrap: wrap; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 3px; }
-  .seg button {
-    font: 600 13px var(--font-body);
-    border: 0; background: transparent; color: var(--muted);
-    padding: 6px 10px; border-radius: 6px; cursor: pointer;
-  }
-  .seg button[aria-pressed="true"] { background: var(--sign); color: var(--sign-ink); }
-  .btn {
-    font: 800 14px var(--font-body);
-    border: 2px solid var(--sign);
-    background: var(--surface);
-    color: var(--sign);
-    padding: 8px 14px;
+  .sign-in {
+    border: 2px solid var(--accent-ink);
     border-radius: 8px;
-    cursor: pointer;
+    padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
   }
-  .btn.primary { background: var(--sign); color: var(--sign-ink); }
-  .btn.warn { border-color: var(--mark); background: var(--mark); color: var(--mark-ink); }
-  button:focus-visible { outline: 3px solid var(--mark); outline-offset: 2px; }
-  .spacer { flex: 1; }
+  h1 { margin: 0; font: 900 clamp(26px, 7vw, 34px)/1 var(--font-display); letter-spacing: -0.01em; }
+  .sign-sub { font-size: 13px; opacity: .85; margin-top: 4px; }
+  .card-no {
+    font: 600 12px var(--font-mono);
+    background: var(--accent-ink); color: var(--accent);
+    border-radius: 4px; padding: 4px 8px; white-space: nowrap;
+  }
 
-  /* Status */
-  .status { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
-  .status b { font-family: var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+  /* Reiter */
+  .tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px;
+  }
+  .tab {
+    border: 0; background: transparent; color: var(--muted);
+    font-weight: 700; font-size: 15px; padding: 10px 8px; border-radius: 9px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+  .badge {
+    font: 600 11px var(--font-mono); min-width: 20px; padding: 2px 6px; border-radius: 99px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .tab[aria-selected="true"] .badge { background: var(--accent-ink); color: var(--accent); }
+
+  /* Allgemeine Bausteine */
+  .panel { display: flex; flex-direction: column; gap: 14px; }
+  .box {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+    font-weight: 600; font-size: 14px; padding: 7px 12px; border-radius: 99px; cursor: pointer;
+  }
+  .pill[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn {
+    border: 0; border-radius: 10px; padding: 11px 16px; cursor: pointer;
+    font-weight: 700; font-size: 15px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); }
+  .btn.small { padding: 7px 12px; font-size: 13px; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .grow { flex: 1; }
+
+  /* Fortschritt */
+  .progress { display: flex; flex-direction: column; gap: 6px; }
+  .progress-text { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; color: var(--muted); }
+  .progress-text b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--mark); border-radius: inherit; transition: width .25s ease; }
+
+  /* Hinweis- und Bestätigungsleisten */
+  .notice {
+    border-radius: 12px; padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  }
+  .notice.win { background: var(--win); color: var(--win-ink); }
+  .notice.win strong { font: 900 22px/1 var(--font-display); }
+  .notice.ask { background: var(--surface); border: 2px solid var(--mark); }
+  .notice .row { gap: 6px; }
 
   /* Bingo-Karte */
   .board {
-    display: grid;
-    grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr));
-    gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 8px;
+    display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 6px;
   }
   .cell {
-    position: relative;
-    aspect-ratio: 1;
-    max-width: 100%;
-    border: 2px solid var(--line);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--ink);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    padding: 4px;
-    font: 600 clamp(10px, 2.6vw, 13px)/1.15 var(--font-body);
-    text-align: center;
-    overflow: hidden;
-    transition: transform .12s ease, background-color .15s ease;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
+    position: relative; aspect-ratio: 1; max-width: 100%;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); color: var(--ink); box-shadow: var(--shadow);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    padding: 4px; text-align: center; overflow: hidden; cursor: pointer;
+    font-weight: 600; font-size: clamp(9.5px, 2.5vw, 12.5px); line-height: 1.12;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+    transition: transform .1s ease, background-color .15s ease;
   }
-  .board[data-n="3"] .cell { font-size: clamp(12px, 3.6vw, 16px); }
   .board[data-n="4"] .cell { font-size: clamp(11px, 3vw, 14px); }
-  .cell .ico { font-size: 1.9em; line-height: 1; }
+  .board[data-n="3"] .cell { font-size: clamp(12px, 3.8vw, 16px); }
+  .cell .ico { font-size: 1.95em; line-height: 1; }
   .cell .lbl { overflow-wrap: anywhere; hyphens: auto; }
-  .cell:active { transform: scale(.96); }
+  .cell:active { transform: scale(.95); }
   .cell.on { background: var(--mark); border-color: var(--mark); color: var(--mark-ink); }
-  .cell.on::after {
-    content: "";
-    position: absolute; inset: 14%;
-    border: 3px solid var(--mark-ink);
-    border-radius: 50%;
-    opacity: .28;
-    transform: rotate(-12deg);
+  .cell.win { background: var(--win); border-color: var(--win); color: var(--win-ink); }
+  .cell.on::before {
+    content: "✓"; position: absolute; top: 3px; right: 5px;
+    font-size: 11px; font-weight: 900; opacity: .7;
   }
-  .cell.win { background: var(--win); border-color: var(--win); color: #fff; }
-  .cell.win::after { border-color: #fff; opacity: .35; }
-  .cell.free { cursor: default; }
-  @keyframes pop { 0% { transform: scale(.85) } 60% { transform: scale(1.06) } 100% { transform: scale(1) } }
-  .cell.pop { animation: pop .25s ease; }
+  .cell.free { cursor: default; background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent); }
+  .cell.free::before { content: none; }
+  @keyframes pop { 0% { transform: scale(.88) } 60% { transform: scale(1.05) } 100% { transform: scale(1) } }
+  .cell.pop { animation: pop .22s ease; }
 
-  /* Bingo-Meldung */
-  .banner {
-    background: var(--win);
-    color: #fff;
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 22px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  }
-  .banner small { font: 600 13px var(--font-body); opacity: .9; }
-
-  .help { font-size: 13px; color: var(--muted); max-width: 65ch; }
+  .help { font-size: 13px; color: var(--muted); margin: 0; }
   .help b { color: var(--ink); }
 
+  /* Auswahl-Bereich */
+  .add { display: flex; gap: 8px; }
+  .add input {
+    flex: 1; min-width: 0; font: inherit; font-size: 15px;
+    padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--ink);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+    border-radius: 99px; padding: 6px 12px 6px 8px; cursor: pointer;
+    font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip .ico { font-size: 17px; line-height: 1; }
+  .chip[aria-pressed="true"] { background: var(--mark); border-color: var(--mark); color: var(--mark-ink); }
+  .chip-wrap { display: inline-flex; }
+  .chip-wrap .chip { border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 10px; }
+  .chip-del {
+    border: 1px solid var(--line); border-left: 0; background: var(--bg); color: var(--muted);
+    border-radius: 0 99px 99px 0; padding: 0 10px; cursor: pointer; font-size: 16px; line-height: 1;
+  }
+  .group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .link { border: 0; background: none; color: var(--accent); font-weight: 700; font-size: 13px; cursor: pointer; padding: 2px 0; }
+  .empty { font-size: 13px; color: var(--muted); margin: 0; }
+
+  .dock {
+    position: sticky; bottom: 0; z-index: 5;
+    margin-inline: -4px; padding: 10px 4px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--bg);
+  }
+  .dock-in {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+    padding: 10px 10px 10px 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .dock-text { flex: 1; min-width: 0; font-size: 13px; color: var(--muted); }
+  .dock-text b { display: block; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 20; width: 100%; height: 100%; }
+
   @media (prefers-reduced-motion: reduce) {
-    .cell, .cell.pop { transition: none; animation: none; }
+    .cell, .cell.pop, .bar > span { transition: none; animation: none; }
   }
 </style>
 
-<div class="wrap">
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<div class="wrap" lang="de">
   <header class="sign">
-    <div class="sign-inner">
+    <div class="sign-in">
       <div>
         <h1>Auto Bingo</h1>
-        <div class="sign-sub">Aus dem Fenster schauen, entdecken, abhaken.</div>
+        <div class="sign-sub">Rausschauen, entdecken, antippen.</div>
       </div>
-      <span class="km" id="cardNo">Karte 1</span>
+      <span class="card-no" id="cardNo">Karte 1</span>
     </div>
   </header>
 
-  <div class="controls">
-    <div class="seg" role="group" aria-label="Strecke" id="routeSeg">
-      <button type="button" id="r-mix" data-route="mix">Gemischt</button>
-      <button type="button" id="r-autobahn" data-route="autobahn">Autobahn</button>
-      <button type="button" id="r-land" data-route="land">Land</button>
-      <button type="button" id="r-stadt" data-route="stadt">Stadt</button>
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-play" aria-controls="view-play">Spielen</button>
+    <button class="tab" role="tab" id="tab-pick" aria-controls="view-pick">Aussuchen <span class="badge" id="selBadge">0</span></button>
+  </nav>
+
+  <!-- SPIELEN -->
+  <section class="panel" id="view-play" role="tabpanel" aria-labelledby="tab-play">
+    <div class="box">
+      <div class="label">Karte aus</div>
+      <div class="pills" id="sourcePills">
+        <button class="pill" id="src-mix" data-src="mix">Alles gemischt</button>
+        <button class="pill" id="src-autobahn" data-src="autobahn">Autobahn</button>
+        <button class="pill" id="src-land" data-src="land">Landstraße</button>
+        <button class="pill" id="src-stadt" data-src="stadt">Stadt</button>
+        <button class="pill" id="src-mine" data-src="mine">★ Meine Auswahl</button>
+      </div>
+      <div class="label">Größe</div>
+      <div class="pills" id="sizePills">
+        <button class="pill" id="size-3" data-size="3">3 × 3 · kurz</button>
+        <button class="pill" id="size-4" data-size="4">4 × 4 · mittel</button>
+        <button class="pill" id="size-5" data-size="5">5 × 5 · lang</button>
+      </div>
     </div>
-    <div class="seg" role="group" aria-label="Kartengröße" id="sizeSeg">
-      <button type="button" id="s-3" data-size="3">3×3</button>
-      <button type="button" id="s-4" data-size="4">4×4</button>
-      <button type="button" id="s-5" data-size="5">5×5</button>
+
+    <div class="notice ask" id="ask" hidden>
+      <span id="askText">Neue Karte? Deine Häkchen gehen verloren.</span>
+      <div class="row">
+        <button class="btn small" id="askNo">Abbrechen</button>
+        <button class="btn small primary" id="askYes">Ja</button>
+      </div>
     </div>
-  </div>
 
-  <div class="banner" id="banner" hidden>
-    <span id="bannerText">BINGO!</span>
-    <small id="bannerSub">Weiter spielen für Volle Karte</small>
-  </div>
-
-  <div class="board" id="board" aria-label="Bingo-Karte"></div>
-
-  <div class="controls">
-    <div class="status">
-      <span>Gefunden <b id="found">0/25</b></span>
-      <span>Bingos <b id="bingos">0</b></span>
-      <span>Rekord <b id="best">0</b></span>
+    <div class="progress">
+      <div class="progress-text">
+        <span><b id="found">0</b> von <b id="total">25</b> gefunden</span>
+        <span><b id="bingos">0</b> Bingo · Rekord <b id="best">0</b></span>
+      </div>
+      <div class="bar"><span id="barFill"></span></div>
     </div>
-    <span class="spacer"></span>
-    <button type="button" class="btn" id="resetBtn">Leeren</button>
-    <button type="button" class="btn primary" id="newBtn">Neue Karte</button>
-  </div>
 
-  <p class="help">
-    <b>So geht's:</b> Wenn du etwas von der Karte siehst, tippe darauf. Eine volle Reihe, Spalte oder Diagonale ist ein <b>Bingo</b>.
-    Das Feld in der Mitte ist die <b>Raststätte</b> und zählt schon als gefunden. Spielt ihr zu zweit, nimmt jeder sein Handy:
-    wer zuerst Bingo ruft, gewinnt.
-  </p>
+    <div class="notice win" id="winBanner" hidden>
+      <strong id="winText">BINGO!</strong>
+      <span id="winSub">Spiel weiter bis zur vollen Karte.</span>
+    </div>
+
+    <div class="board" id="board" aria-label="Bingo-Karte"></div>
+
+    <div class="row">
+      <button class="btn grow" id="clearBtn">Häkchen löschen</button>
+      <button class="btn primary grow" id="newBtn">Neue Karte</button>
+    </div>
+
+    <p class="help">
+      Siehst du etwas von der Karte, tippe es an. Eine volle <b>Reihe, Spalte oder Diagonale</b> ist ein Bingo.
+      Das blaue Feld in der Mitte ist geschenkt.
+    </p>
+  </section>
+
+  <!-- SELBST AUSSUCHEN -->
+  <section class="panel" id="view-pick" role="tabpanel" aria-labelledby="tab-pick" hidden>
+    <p class="help">
+      Tippe alles an, was auf deine Karte soll. Hast du mehr gewählt als Platz ist, wird gemischt.
+      Hast du weniger, füllen wir den Rest zufällig auf.
+    </p>
+
+    <div class="box">
+      <div class="label">Eigenen Begriff hinzufügen</div>
+      <form class="add" id="addForm" autocomplete="off">
+        <input id="addInput" maxlength="32" placeholder="z. B. Gelbes Wohnmobil, Opa winkt …" aria-label="Eigener Begriff">
+        <button class="btn primary" type="submit">Hinzufügen</button>
+      </form>
+      <div class="group-head">
+        <div class="label">Deine eigenen</div>
+      </div>
+      <div class="chips" id="customChips"></div>
+    </div>
+
+    <div id="groups" class="panel"></div>
+
+    <div class="dock">
+      <div class="dock-in">
+        <div class="dock-text"><b id="dockCount">0 gewählt</b><span id="dockHint">Für 5 × 5 brauchst du 24.</span></div>
+        <button class="link" id="clearSel">Leeren</button>
+        <button class="btn primary" id="playMine">Karte erstellen</button>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>
 (() => {
-  // Dinge, die man aus dem Auto sehen kann. Tags: a = Autobahn, l = Landstraße, s = Stadt
+  // [Symbol, Begriff, wo man es sieht (a = Autobahn, l = Landstraße, s = Stadt), Gruppe]
   const ITEMS = [
-    ["🚛", "LKW aus Polen", "a"],
-    ["🚚", "Umzugswagen", "als"],
-    ["🚐", "Wohnmobil", "al"],
-    ["🏕️", "Wohnwagen", "al"],
-    ["🏍️", "Motorrad", "als"],
-    ["🚓", "Polizeiauto", "als"],
-    ["🚑", "Krankenwagen", "as"],
-    ["🚒", "Feuerwehr", "ls"],
-    ["🚜", "Traktor", "l"],
-    ["🚌", "Reisebus", "a"],
-    ["🚎", "Linienbus", "s"],
-    ["🚲", "Fahrrad", "ls"],
-    ["🛴", "E-Scooter", "s"],
-    ["🚕", "Taxi", "s"],
-    ["🏎️", "Sportwagen", "as"],
-    ["🚗", "Rotes Auto", "als"],
-    ["🟡", "Gelbes Auto", "als"],
-    ["🟢", "Grünes Auto", "als"],
-    ["🟣", "Lila Auto", "als"],
-    ["🚙", "Cabrio offen", "als"],
-    ["🔌", "E-Auto lädt", "as"],
-    ["🇳🇱", "Kennzeichen NL", "a"],
-    ["🇦🇹", "Kennzeichen A", "a"],
-    ["🇫🇷", "Kennzeichen F", "a"],
-    ["🇨🇭", "Kennzeichen CH", "a"],
-    ["🔢", "Kennzeichen mit 777", "als"],
-    ["🔤", "Kennzeichen mit deinen Initialen", "als"],
-    ["🐾", "Hund im Auto", "als"],
-    ["🚧", "Baustelle", "als"],
-    ["⛔", "Stau", "as"],
-    ["🔵", "Blaues Autobahnschild", "a"],
-    ["⛽", "Tankstelle", "als"],
-    ["🍴", "Autohof-Schild", "a"],
-    ["🌉", "Brücke", "al"],
-    ["🕳️", "Tunnel", "a"],
-    ["📸", "Blitzer", "als"],
-    ["🌀", "Windrad", "al"],
-    ["🌻", "Sonnenblumenfeld", "l"],
-    ["🐄", "Kühe", "l"],
-    ["🐑", "Schafe", "l"],
-    ["🐎", "Pferd", "l"],
-    ["🦅", "Greifvogel", "al"],
-    ["⛪", "Kirchturm", "ls"],
-    ["🏰", "Burg oder Schloss", "l"],
-    ["🌲", "Wald", "al"],
-    ["🌊", "Fluss oder See", "al"],
-    ["⛰️", "Berg", "al"],
-    ["🚂", "Zug", "al"],
-    ["🚦", "Rote Ampel", "s"],
-    ["🔄", "Kreisverkehr", "ls"],
-    ["🚸", "Zebrastreifen", "s"],
-    ["🍔", "Fast-Food-Laden", "as"],
-    ["🛒", "Supermarkt", "ls"],
-    ["🏗️", "Baukran", "s"],
-    ["✈️", "Flugzeug am Himmel", "als"],
-    ["🎈", "Ballon", "ls"],
-    ["🪧", "Ortsschild", "l"],
-    ["🐌", "Schild „Tempo 30“", "s"],
-    ["⚠️", "Warndreieck", "al"],
-    ["🦌", "Wildwechsel-Schild", "l"],
-    ["🔀", "Umleitung", "als"],
-    ["🧍", "Anhalter", "al"],
-    ["🙋", "Jemand winkt", "als"],
-    ["🎵", "Lieblingslied im Radio", "als"],
-    ["🌈", "Regenbogen", "als"],
-    ["🛞", "Reifenwechsel am Rand", "a"],
-    ["🚤", "Boot auf Anhänger", "al"],
-    ["🐴", "Pferdeanhänger", "al"],
-    ["🧊", "Kühllaster", "a"],
-    ["🏁", "Autotransporter", "a"],
-  ];
-  const FREE = ["🅿️", "Raststätte (frei)"];
-  const KEY = "auto-bingo-v1";
+    ["🚛", "LKW aus Polen", "a", "Fahrzeuge"],
+    ["🚚", "Umzugswagen", "als", "Fahrzeuge"],
+    ["🚐", "Wohnmobil", "al", "Fahrzeuge"],
+    ["🏕️", "Wohnwagen", "al", "Fahrzeuge"],
+    ["🏍️", "Motorrad", "als", "Fahrzeuge"],
+    ["🚓", "Polizeiauto", "als", "Fahrzeuge"],
+    ["🚑", "Krankenwagen", "as", "Fahrzeuge"],
+    ["🚒", "Feuerwehr", "ls", "Fahrzeuge"],
+    ["🚜", "Traktor", "l", "Fahrzeuge"],
+    ["🚌", "Reisebus", "a", "Fahrzeuge"],
+    ["🚎", "Linienbus", "s", "Fahrzeuge"],
+    ["🚲", "Fahrrad", "ls", "Fahrzeuge"],
+    ["🛴", "E-Scooter", "s", "Fahrzeuge"],
+    ["🚕", "Taxi", "s", "Fahrzeuge"],
+    ["🏎️", "Sportwagen", "as", "Fahrzeuge"],
+    ["🚙", "Offenes Cabrio", "als", "Fahrzeuge"],
+    ["🏁", "Autotransporter", "a", "Fahrzeuge"],
+    ["🧊", "Kühllaster", "a", "Fahrzeuge"],
+    ["🚤", "Boot auf Anhänger", "al", "Fahrzeuge"],
+    ["🐴", "Pferdeanhänger", "al", "Fahrzeuge"],
+    ["🚂", "Zug", "al", "Fahrzeuge"],
+    ["✈️", "Flugzeug", "als", "Fahrzeuge"],
+
+    ["🔴", "Rotes Auto", "als", "Farben"],
+    ["🟡", "Gelbes Auto", "als", "Farben"],
+    ["🟢", "Grünes Auto", "als", "Farben"],
+    ["🟣", "Lila Auto", "als", "Farben"],
+    ["🟠", "Oranges Auto", "als", "Farben"],
+    ["🩷", "Pinkes Auto", "als", "Farben"],
+
+    ["🇳🇱", "Kennzeichen NL", "a", "Kennzeichen"],
+    ["🇦🇹", "Kennzeichen A", "a", "Kennzeichen"],
+    ["🇫🇷", "Kennzeichen F", "a", "Kennzeichen"],
+    ["🇨🇭", "Kennzeichen CH", "a", "Kennzeichen"],
+    ["🇵🇱", "Kennzeichen PL", "a", "Kennzeichen"],
+    ["🔢", "Kennzeichen mit 777", "als", "Kennzeichen"],
+    ["🔤", "Deine Initialen", "als", "Kennzeichen"],
+    ["⚡", "E-Kennzeichen", "als", "Kennzeichen"],
+
+    ["🚧", "Baustelle", "als", "Straße & Schilder"],
+    ["⛔", "Stau", "as", "Straße & Schilder"],
+    ["🔵", "Autobahnschild", "a", "Straße & Schilder"],
+    ["⛽", "Tankstelle", "als", "Straße & Schilder"],
+    ["🍴", "Autohof-Schild", "a", "Straße & Schilder"],
+    ["🌉", "Brücke", "al", "Straße & Schilder"],
+    ["🕳️", "Tunnel", "a", "Straße & Schilder"],
+    ["📸", "Blitzer", "als", "Straße & Schilder"],
+    ["🪧", "Ortsschild", "l", "Straße & Schilder"],
+    ["🐌", "Tempo-30-Schild", "s", "Straße & Schilder"],
+    ["🦌", "Wildwechsel-Schild", "l", "Straße & Schilder"],
+    ["🔀", "Umleitung", "als", "Straße & Schilder"],
+    ["🚦", "Rote Ampel", "s", "Straße & Schilder"],
+    ["🔄", "Kreisverkehr", "ls", "Straße & Schilder"],
+    ["🚸", "Zebrastreifen", "s", "Straße & Schilder"],
+    ["⚠️", "Warndreieck", "al", "Straße & Schilder"],
+
+    ["🌀", "Windrad", "al", "Natur & Tiere"],
+    ["🌻", "Sonnenblumenfeld", "l", "Natur & Tiere"],
+    ["🐄", "Kühe", "l", "Natur & Tiere"],
+    ["🐑", "Schafe", "l", "Natur & Tiere"],
+    ["🐎", "Pferd", "l", "Natur & Tiere"],
+    ["🦅", "Greifvogel", "al", "Natur & Tiere"],
+    ["🐾", "Hund im Auto", "als", "Natur & Tiere"],
+    ["🌲", "Wald", "al", "Natur & Tiere"],
+    ["🌊", "Fluss oder See", "al", "Natur & Tiere"],
+    ["⛰️", "Berg", "al", "Natur & Tiere"],
+    ["🌈", "Regenbogen", "als", "Natur & Tiere"],
+
+    ["⛪", "Kirchturm", "ls", "Unterwegs"],
+    ["🏰", "Burg oder Schloss", "l", "Unterwegs"],
+    ["🍔", "Fast-Food-Laden", "as", "Unterwegs"],
+    ["🛒", "Supermarkt", "ls", "Unterwegs"],
+    ["🏗️", "Baukran", "s", "Unterwegs"],
+    ["🎈", "Ballon", "ls", "Unterwegs"],
+    ["🧍", "Anhalter", "al", "Unterwegs"],
+    ["🙋", "Jemand winkt", "als", "Unterwegs"],
+    ["🎵", "Lieblingslied im Radio", "als", "Unterwegs"],
+    ["🛞", "Panne am Rand", "a", "Unterwegs"],
+  ].map(([i, t, w, g]) => ({ i, t, w, g }));
+  const CUSTOM_ICON = "⭐";
+  const FREE = { i: "🅿️", t: "Raststätte (frei)" };
+  const KEY = "auto-bingo-v2";
 
   const $ = (id) => document.getElementById(id);
-  const board = $("board");
+  const byText = new Map(ITEMS.map((it) => [it.t, it]));
 
-  let state = load() || { route: "mix", size: 5, cards: 0, best: 0 };
-  if (!state.cells) newCard();
-
+  // ---------- Zustand ----------
+  let state = Object.assign(
+    { view: "play", src: "mix", size: 5, cards: 0, best: 0, sel: [], custom: [], cells: null, prevBingos: 0 },
+    load() || {}
+  );
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; }
   }
@@ -327,129 +419,255 @@
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   }
 
-  function shuffle(a) {
+  const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  }
+  };
+  const need = (n = state.size) => n * n - (n % 2 ? 1 : 0);
+  const itemFor = (t) => byText.get(t) || { i: CUSTOM_ICON, t };
+  const selected = () => state.sel.filter((t) => byText.has(t) || state.custom.includes(t));
 
+  // ---------- Karte ----------
   function newCard() {
-    const n = state.size;
-    const tag = { autobahn: "a", land: "l", stadt: "s" }[state.route];
-    let pool = ITEMS.filter((it) => !tag || it[2].includes(tag));
-    const hasFree = n % 2 === 1;
-    const need = n * n - (hasFree ? 1 : 0);
-    // Falls ein Filter zu wenig hergibt, mit dem Rest auffüllen
-    if (pool.length < need) pool = pool.concat(shuffle(ITEMS.filter((it) => !pool.includes(it))));
-    const picked = shuffle(pool.slice()).slice(0, need).map((it) => ({ i: it[0], t: it[1], on: false }));
-    if (hasFree) picked.splice(Math.floor((n * n) / 2), 0, { i: FREE[0], t: FREE[1], on: true, free: true });
-    state.cells = picked;
-    state.cards = (state.cards || 0) + 1;
+    const n = state.size, k = need(n);
+    let first;
+    if (state.src === "mine") {
+      first = shuffle(selected().map(itemFor)).slice(0, k);
+    } else {
+      const tag = { autobahn: "a", land: "l", stadt: "s" }[state.src];
+      first = shuffle(ITEMS.filter((it) => !tag || it.w.includes(tag))).slice(0, k);
+    }
+    // Zu wenig? Mit anderen Begriffen auffüllen.
+    const used = new Set(first.map((it) => it.t));
+    const rest = shuffle(ITEMS.filter((it) => !used.has(it.t))).slice(0, k - first.length);
+    const cells = shuffle(first.concat(rest)).map((it) => ({ i: it.i, t: it.t, on: false }));
+    if (n % 2) cells.splice((n * n - 1) / 2, 0, { ...FREE, on: true, free: true });
+    state.cells = cells;
+    state.cards += 1;
     state.prevBingos = 0;
     save();
   }
 
   function lines(n) {
-    const L = [];
-    for (let r = 0; r < n; r++) L.push([...Array(n)].map((_, c) => r * n + c));
-    for (let c = 0; c < n; c++) L.push([...Array(n)].map((_, r) => r * n + c));
-    L.push([...Array(n)].map((_, k) => k * n + k));
-    L.push([...Array(n)].map((_, k) => k * n + (n - 1 - k)));
+    const L = [], r = [...Array(n).keys()];
+    r.forEach((a) => { L.push(r.map((b) => a * n + b)); L.push(r.map((b) => b * n + a)); });
+    L.push(r.map((a) => a * n + a), r.map((a) => a * n + (n - 1 - a)));
     return L;
   }
 
-  function render(popIndex) {
-    const n = state.size;
+  function renderPlay(popIndex) {
+    const n = state.size, board = $("board");
     board.style.setProperty("--n", n);
     board.dataset.n = n;
     const won = lines(n).filter((l) => l.every((k) => state.cells[k].on));
     const winSet = new Set(won.flat());
 
-    board.innerHTML = "";
-    state.cells.forEach((c, k) => {
+    board.replaceChildren(...state.cells.map((c, k) => {
       const b = document.createElement("button");
-      b.type = "button";
       b.id = "cell-" + k;
       b.className = "cell" + (c.on ? " on" : "") + (winSet.has(k) ? " win" : "") + (c.free ? " free" : "") + (k === popIndex ? " pop" : "");
       b.setAttribute("aria-pressed", c.on);
-      b.innerHTML = `<span class="ico" aria-hidden="true">${c.i}</span><span class="lbl">${c.t}</span>`;
-      if (!c.free) b.addEventListener("click", () => toggle(k));
-      board.appendChild(b);
-    });
+      const ico = document.createElement("span"); ico.className = "ico"; ico.textContent = c.i; ico.setAttribute("aria-hidden", "true");
+      const lbl = document.createElement("span"); lbl.className = "lbl"; lbl.textContent = c.t;
+      b.append(ico, lbl);
+      if (!c.free) b.onclick = () => { c.on = !c.on; renderPlay(k); };
+      return b;
+    }));
 
-    const found = state.cells.filter((c) => c.on).length;
-    $("found").textContent = `${found}/${n * n}`;
+    const found = state.cells.filter((c) => c.on).length, total = n * n;
+    $("found").textContent = found;
+    $("total").textContent = total;
     $("bingos").textContent = won.length;
-    state.best = Math.max(state.best || 0, won.length);
+    state.best = Math.max(state.best, won.length);
     $("best").textContent = state.best;
+    $("barFill").style.width = (found / total) * 100 + "%";
     $("cardNo").textContent = "Karte " + state.cards;
 
-    const full = found === n * n;
-    $("banner").hidden = won.length === 0;
-    $("bannerText").textContent = full ? "VOLLE KARTE!" : won.length > 1 ? `${won.length}× BINGO!` : "BINGO!";
-    $("bannerSub").textContent = full ? "Alles gefunden. Zeit für eine neue Karte." : "Weiter spielen für Volle Karte";
+    const full = found === total;
+    $("winBanner").hidden = won.length === 0;
+    $("winText").textContent = full ? "VOLLE KARTE!" : won.length > 1 ? won.length + "× BINGO!" : "BINGO!";
+    $("winSub").textContent = full ? "Alles gefunden. Zeit für eine neue Karte." : "Spiel weiter bis zur vollen Karte.";
 
-    if (won.length > (state.prevBingos || 0) && navigator.vibrate) {
-      try { navigator.vibrate([60, 40, 120]); } catch {}
+    if (won.length > state.prevBingos) {
+      confetti();
+      try { navigator.vibrate && navigator.vibrate([60, 40, 120]); } catch {}
     }
     state.prevBingos = won.length;
 
-    document.querySelectorAll("#routeSeg button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.route === state.route));
-    document.querySelectorAll("#sizeSeg button").forEach((b) => b.setAttribute("aria-pressed", +b.dataset.size === state.size));
+    document.querySelectorAll("#sourcePills .pill").forEach((b) => b.setAttribute("aria-pressed", b.dataset.src === state.src));
+    document.querySelectorAll("#sizePills .pill").forEach((b) => b.setAttribute("aria-pressed", +b.dataset.size === state.size));
     save();
   }
 
-  function toggle(k) {
-    state.cells[k].on = !state.cells[k].on;
-    render(k);
+  // ---------- Rückfrage, bevor Häkchen verloren gehen ----------
+  let pending = null;
+  function ask(text, action) {
+    const marked = state.cells.some((c) => c.on && !c.free);
+    if (!marked) { action(); return; }
+    pending = action;
+    $("askText").textContent = text;
+    $("ask").hidden = false;
   }
+  $("askNo").onclick = () => { pending = null; $("ask").hidden = true; renderPlay(); };
+  $("askYes").onclick = () => { const a = pending; pending = null; $("ask").hidden = true; a && a(); };
 
-  // Bestätigung direkt am Knopf statt confirm()
-  function armed(btn, label, action) {
-    let timer;
-    btn.addEventListener("click", () => {
-      const anyMarked = state.cells.some((c) => c.on && !c.free);
-      if (!anyMarked || btn.dataset.armed) {
-        clearTimeout(timer);
-        delete btn.dataset.armed;
-        btn.textContent = label;
-        btn.classList.remove("warn");
-        action();
-        return;
-      }
-      btn.dataset.armed = "1";
-      btn.textContent = "Sicher?";
-      btn.classList.add("warn");
-      timer = setTimeout(() => {
-        delete btn.dataset.armed;
-        btn.textContent = label;
-        btn.classList.remove("warn");
-      }, 3000);
-    });
-  }
+  const fresh = (change) => () => { change && change(); newCard(); renderPlay(); };
 
-  armed($("newBtn"), "Neue Karte", () => { newCard(); render(); });
-  armed($("resetBtn"), "Leeren", () => {
+  $("newBtn").onclick = () => ask("Neue Karte? Deine Häkchen gehen verloren.", fresh());
+  $("clearBtn").onclick = () => ask("Alle Häkchen löschen?", () => {
     state.cells.forEach((c) => { if (!c.free) c.on = false; });
     state.prevBingos = 0;
-    render();
+    renderPlay();
   });
+  document.querySelectorAll("#sourcePills .pill").forEach((b) => (b.onclick = () => {
+    if (b.dataset.src === state.src) return;
+    if (b.dataset.src === "mine" && selected().length === 0) { setView("pick"); return; }
+    ask("Neue Karte mit dieser Auswahl? Deine Häkchen gehen verloren.", fresh(() => (state.src = b.dataset.src)));
+  }));
+  document.querySelectorAll("#sizePills .pill").forEach((b) => (b.onclick = () => {
+    if (+b.dataset.size === state.size) return;
+    ask("Neue Karte in dieser Größe? Deine Häkchen gehen verloren.", fresh(() => (state.size = +b.dataset.size)));
+  }));
 
-  document.querySelectorAll("#routeSeg button").forEach((b) =>
-    b.addEventListener("click", () => {
-      if (state.route === b.dataset.route) return;
-      state.route = b.dataset.route; newCard(); render();
-    })
-  );
-  document.querySelectorAll("#sizeSeg button").forEach((b) =>
-    b.addEventListener("click", () => {
-      if (state.size === +b.dataset.size) return;
-      state.size = +b.dataset.size; newCard(); render();
-    })
-  );
+  // ---------- Selbst aussuchen ----------
+  function chip(it) {
+    const on = state.sel.includes(it.t);
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.setAttribute("aria-pressed", on);
+    const ico = document.createElement("span"); ico.className = "ico"; ico.textContent = it.i; ico.setAttribute("aria-hidden", "true");
+    b.append(ico, document.createTextNode(it.t));
+    b.onclick = () => {
+      state.sel = on ? state.sel.filter((t) => t !== it.t) : state.sel.concat(it.t);
+      renderPick();
+    };
+    return b;
+  }
 
-  render();
+  function renderPick() {
+    // Eigene Begriffe
+    const cc = $("customChips");
+    if (state.custom.length === 0) {
+      const p = document.createElement("p"); p.className = "empty";
+      p.textContent = "Noch keine. Schreib oben etwas rein, das du unterwegs suchen willst.";
+      cc.replaceChildren(p);
+    } else {
+      cc.replaceChildren(...state.custom.map((t) => {
+        const w = document.createElement("span"); w.className = "chip-wrap";
+        const del = document.createElement("button");
+        del.type = "button"; del.className = "chip-del"; del.textContent = "×";
+        del.setAttribute("aria-label", t + " löschen");
+        del.onclick = () => {
+          state.custom = state.custom.filter((x) => x !== t);
+          state.sel = state.sel.filter((x) => x !== t);
+          renderPick();
+        };
+        w.append(chip({ i: CUSTOM_ICON, t }), del);
+        return w;
+      }));
+    }
+
+    // Gruppen
+    const groups = [...new Set(ITEMS.map((it) => it.g))];
+    $("groups").replaceChildren(...groups.map((g) => {
+      const items = ITEMS.filter((it) => it.g === g);
+      const allOn = items.every((it) => state.sel.includes(it.t));
+      const box = document.createElement("div"); box.className = "box";
+      const head = document.createElement("div"); head.className = "group-head";
+      const lab = document.createElement("div"); lab.className = "label"; lab.textContent = g;
+      const all = document.createElement("button"); all.type = "button"; all.className = "link";
+      all.textContent = allOn ? "Keine" : "Alle";
+      all.onclick = () => {
+        const ts = items.map((it) => it.t);
+        state.sel = allOn ? state.sel.filter((t) => !ts.includes(t)) : [...new Set(state.sel.concat(ts))];
+        renderPick();
+      };
+      head.append(lab, all);
+      const chips = document.createElement("div"); chips.className = "chips";
+      chips.append(...items.map(chip));
+      box.append(head, chips);
+      return box;
+    }));
+
+    // Leiste unten
+    const count = selected().length, k = need();
+    $("selBadge").textContent = count;
+    $("dockCount").textContent = count + " gewählt";
+    $("dockHint").textContent =
+      count === 0 ? `Für ${state.size} × ${state.size} brauchst du ${k}.` :
+      count < k ? k - count === 1 ? "1 wird zufällig ergänzt." : `${k - count} werden zufällig ergänzt.` :
+      count === k ? "Passt genau auf die Karte." :
+      `Davon kommen ${k} zufällig auf die Karte.`;
+    $("playMine").disabled = count === 0;
+    $("clearSel").hidden = count === 0;
+    save();
+  }
+
+  $("addForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const t = $("addInput").value.trim().replace(/\s+/g, " ");
+    if (!t) return;
+    if (!byText.has(t) && !state.custom.includes(t)) state.custom.push(t);
+    if (!state.sel.includes(t)) state.sel.push(t);
+    $("addInput").value = "";
+    renderPick();
+  });
+  $("clearSel").onclick = () => { state.sel = []; renderPick(); };
+  $("playMine").onclick = () => {
+    setView("play");
+    ask("Neue Karte aus deiner Auswahl? Deine Häkchen gehen verloren.", fresh(() => (state.src = "mine")));
+  };
+
+  // ---------- Reiter ----------
+  function setView(v) {
+    state.view = v;
+    $("view-play").hidden = v !== "play";
+    $("view-pick").hidden = v !== "pick";
+    $("tab-play").setAttribute("aria-selected", v === "play");
+    $("tab-pick").setAttribute("aria-selected", v === "pick");
+    if (v === "pick") renderPick(); else renderPlay();
+    window.scrollTo({ top: 0 });
+  }
+  $("tab-play").onclick = () => setView("play");
+  $("tab-pick").onclick = () => setView("pick");
+
+  // ---------- Konfetti ----------
+  const cv = $("confetti"), cx = cv.getContext("2d");
+  let parts = [], raf = 0;
+  function confetti() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const css = getComputedStyle(document.documentElement);
+    const colors = ["--mark", "--win", "--accent"].map((v) => css.getPropertyValue(v).trim());
+    cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+    for (let i = 0; i < 120; i++) parts.push({
+      x: innerWidth / 2, y: innerHeight * 0.4,
+      vx: (Math.random() - 0.5) * 14, vy: -Math.random() * 12 - 4,
+      s: 5 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4,
+      c: colors[i % colors.length], life: 0,
+    });
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function tick() {
+    const d = devicePixelRatio;
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter((p) => p.life < 140 && p.y < innerHeight + 20);
+    parts.forEach((p) => {
+      p.life++; p.vy += 0.35; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      cx.save(); cx.translate(p.x * d, p.y * d); cx.rotate(p.r);
+      cx.fillStyle = p.c; cx.fillRect(-p.s * d / 2, -p.s * d / 4, p.s * d, p.s * d / 2);
+      cx.restore();
+    });
+    raf = parts.length ? requestAnimationFrame(tick) : 0;
+    if (!raf) cx.clearRect(0, 0, cv.width, cv.height);
+  }
+
+  // Start
+  if (!state.cells) newCard();
+  state.prevBingos = lines(state.size).filter((l) => l.every((k) => state.cells[k].on)).length;
+  setView(state.view === "pick" ? "pick" : "play");
 })();
 </script>
