@@ -1,0 +1,1276 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regal &amp; Co.</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+  /* Layout: eine ruhige Spalte wie ein Ladenbuch. Oben die Ladenfassade, die mit jedem Ausbau wächst, darunter vier Kapitel als Kachelraster. Im Level: Leiste, Auftrag, Spielfeld. */
+  :root {
+    --bg: #edf2ef;
+    --surface: #ffffff;
+    --surface-2: #f4f7f5;
+    --paper: #fffdf6;
+    --ink: #1f2b28;
+    --muted: #5f706a;
+    --line: #d5dfdb;
+    --accent: #2c7a69;
+    --accent-ink: #ffffff;
+    --accent-soft: #d9eee8;
+    --coin: #e2ad3b;
+    --coin-ink: #4a3500;
+    --good: #3c9459;
+    --bad: #c4553f;
+    /* gedämpfte Pastelltöne: bunt, aber nicht grell */
+    --p1: #f0a49b; --p2: #f4cd7a; --p3: #9dd0b1; --p4: #9dc2e4;
+    --p5: #c6b2e2; --p6: #f2b88a; --p7: #a6d4d6; --p8: #dcc6a6;
+    --on-p: #22302c;
+    /* Szene */
+    --sky: #d6ebf0; --cloud: #ffffff; --sidewalk: #d9d6cf; --street: #a6adaa;
+    --wood: #9a6b4a; --glass: #eef7f8; --roof: #5d6f69; --awning: #fbf7f0;
+    /* Werkzeugkasten */
+    --board: #c9a97f; --board-line: #4e3b2a; --cell-empty: #efe5d6;
+    --shadow: 0 1px 2px rgba(31, 43, 40, .06), 0 4px 14px rgba(31, 43, 40, .07);
+    --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+    --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121a19; --surface: #1b2523; --surface-2: #222e2b; --paper: #26302c;
+      --ink: #e5eeeb; --muted: #9bada7; --line: #2f3d3a;
+      --accent: #5db5a1; --accent-ink: #0e1a17; --accent-soft: #1d3832;
+      --coin: #e8b84e; --coin-ink: #3a2a00; --good: #5cb979; --bad: #e07760;
+      --p1: #d98e86; --p2: #d8b565; --p3: #83b897; --p4: #83a9cc;
+      --p5: #ab98c9; --p6: #d69f74; --p7: #8bbabb; --p8: #bea98a;
+      --on-p: #1a2220;
+      --sky: #1f3340; --cloud: #2c4250; --sidewalk: #3a3d3b; --street: #2a2d2c;
+      --wood: #7d5a40; --glass: #efd89c; --roof: #2b3633; --awning: #ece6da;
+      --board: #6e5a42; --board-line: #1a120b; --cell-empty: #3a3128;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121a19; --surface: #1b2523; --surface-2: #222e2b; --paper: #26302c;
+    --ink: #e5eeeb; --muted: #9bada7; --line: #2f3d3a;
+    --accent: #5db5a1; --accent-ink: #0e1a17; --accent-soft: #1d3832;
+    --coin: #e8b84e; --coin-ink: #3a2a00; --good: #5cb979; --bad: #e07760;
+    --p1: #d98e86; --p2: #d8b565; --p3: #83b897; --p4: #83a9cc;
+    --p5: #ab98c9; --p6: #d69f74; --p7: #8bbabb; --p8: #bea98a;
+    --on-p: #1a2220;
+    --sky: #1f3340; --cloud: #2c4250; --sidewalk: #3a3d3b; --street: #2a2d2c;
+    --wood: #7d5a40; --glass: #efd89c; --roof: #2b3633; --awning: #ece6da;
+    --board: #6e5a42; --board-line: #1a120b; --cell-empty: #3a3128;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.45;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 14px 48px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  section { display: flex; flex-direction: column; gap: 14px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  button { font-family: inherit; color: inherit; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+  /* Kopf */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; width: 34px; height: 34px; }
+  .logo i { border-radius: 4px; }
+  .logo i:nth-child(1) { background: var(--p1); } .logo i:nth-child(2) { background: var(--p2); }
+  .logo i:nth-child(3) { background: var(--p4); } .logo i:nth-child(4) { background: var(--p3); }
+  h1 { font: 800 28px/1 var(--font-display); letter-spacing: -.01em; padding-top: 4px; }
+  .chips { display: flex; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 12px; font-weight: 800; font-variant-numeric: tabular-nums;
+  }
+  .coin {
+    display: inline-block; width: 14px; height: 14px; border-radius: 50%; flex: none;
+    background: var(--coin); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--coin-ink) 22%, transparent);
+  }
+  .star-ic { color: var(--coin); }
+
+  /* Buttons */
+  .btn {
+    font: 700 15px/1.2 var(--font-body);
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    border-radius: 12px; padding: 10px 14px; min-height: 44px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    transition: transform .1s, background .15s;
+  }
+  .btn:active:not(:disabled) { transform: scale(.97); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn-ghost { background: transparent; border-color: transparent; padding-inline: 4px; }
+  .btn-wide { width: 100%; font-size: 17px; min-height: 52px; }
+  .btn-tool { padding: 8px 12px; min-height: 40px; font-size: 14px; }
+
+  /* Laden-Karte */
+  .shopcard {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 10px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px;
+  }
+  .scene svg { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .shopcard-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 2px 6px 4px; flex-wrap: wrap; }
+  .shopname { font: 800 22px/1.1 var(--font-display); }
+
+  /* Kapitel und Level-Kacheln */
+  .chapter { gap: 10px; }
+  .chapter-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .chapter-head h2 { font: 800 20px/1.1 var(--font-display); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lg { font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--tc) 35%, var(--surface)); }
+  .levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  @media (min-width: 540px) { .levels { grid-template-columns: repeat(6, 1fr); } }
+  .tile {
+    aspect-ratio: 1 / 1.05; max-width: 100%;
+    border-radius: 12px; border: 1px solid color-mix(in srgb, var(--tc) 70%, var(--line));
+    background: color-mix(in srgb, var(--tc) 32%, var(--surface));
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    cursor: pointer; padding: 4px; transition: transform .12s;
+  }
+  .tile:hover:not(:disabled) { transform: translateY(-2px); }
+  .tile:disabled { background: var(--surface-2); border-color: var(--line); cursor: default; opacity: .7; }
+  .tile.current { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .tile-num { font: 800 21px/1 var(--font-display); padding-top: 3px; }
+  .tile-icon { font-size: 15px; line-height: 1.2; }
+  .stars { letter-spacing: 1px; font-size: 12px; line-height: 1; }
+  .s-on { color: var(--coin); }
+  .s-off { color: color-mix(in srgb, var(--ink) 20%, transparent); }
+
+  /* Spielansicht */
+  .playbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .tools { display: flex; gap: 8px; }
+  .playhead { display: flex; flex-direction: column; gap: 4px; }
+  .playhead h2 { font: 800 24px/1.1 var(--font-display); }
+  .playhead p { font-size: 15px; max-width: 60ch; }
+  .stats { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 4px 10px; font-size: 13px; color: var(--muted); font-weight: 700;
+    display: inline-flex; gap: 6px; align-items: baseline;
+  }
+  .stat b { color: var(--ink); font-size: 16px; font-variant-numeric: tabular-nums; }
+  .stat.warn b { color: var(--bad); }
+  #stage { display: flex; flex-direction: column; gap: 14px; }
+
+  /* Spiel 1: Regal einräumen */
+  .crate {
+    display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+    background: color-mix(in srgb, var(--p8) 55%, var(--surface)); border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--wood) 35%, transparent);
+  }
+  .crate-current {
+    width: 84px; height: 84px; flex: none; display: grid; place-items: center;
+    background: var(--paper); border-radius: 14px; font-size: 50px; line-height: 1; box-shadow: var(--shadow);
+  }
+  .crate-side { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .crate-queue { display: flex; gap: 6px; font-size: 22px; opacity: .6; flex-wrap: wrap; }
+  .shelves { display: grid; gap: 10px; }
+  .shelf {
+    min-height: 104px; text-align: left; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    border-bottom: 7px solid var(--tag); padding: 8px;
+    display: flex; flex-direction: column; gap: 6px; transition: transform .1s;
+  }
+  .shelf:active { transform: scale(.98); }
+  .shelf-tag {
+    align-self: flex-start; background: var(--tag); color: var(--on-p);
+    font-weight: 800; font-size: 13px; border-radius: 6px; padding: 2px 8px;
+  }
+  .shelf-items { display: flex; flex-wrap: wrap; gap: 2px; font-size: 19px; line-height: 1.1; }
+
+  /* Spiel 2: Werkzeugkasten */
+  .toolbox {
+    align-self: center; padding: 12px; border-radius: 16px; background: var(--board);
+    box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .15), var(--shadow); max-width: 100%;
+  }
+  .board { display: grid; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .bc {
+    border: 2px solid var(--board); background: var(--cell-empty); border-radius: 5px;
+    display: grid; place-items: center; line-height: 1; cursor: default;
+  }
+  .bc.on { background: var(--pc); border-radius: 0; cursor: grab; }
+  .bc.g-ok { box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--good) 45%, transparent); }
+  .bc.g-bad { box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--bad) 45%, transparent); }
+  .tray {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px;
+    padding: 14px; min-height: 90px; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 14px;
+  }
+  .tpiece { touch-action: none; cursor: grab; padding: 4px; border-radius: 8px; user-select: none; -webkit-user-select: none; }
+  .tpiece:hover { background: var(--accent-soft); }
+  .pgrid { display: grid; }
+  .pc.on { background: var(--pc); border: 2px solid; display: grid; place-items: center; line-height: 1; }
+  .float { position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; opacity: .92; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .25)); }
+
+  /* Spiel 3: Lager */
+  .racks {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 10px;
+    padding: 16px 10px; background: var(--surface-2); border-radius: 16px; border: 1px solid var(--line);
+  }
+  .rack {
+    width: 60px; padding: 10px 5px 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+    background: var(--surface); border: 1px solid var(--line); border-bottom: 7px solid var(--wood);
+    border-radius: 10px 10px 4px 4px; transition: box-shadow .15s;
+  }
+  .rack.sel { border-color: var(--accent); border-bottom-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .rack.done { background: color-mix(in srgb, var(--good) 16%, var(--surface)); }
+  .slot { height: 40px; display: grid; }
+  .box {
+    background: var(--bc); border-radius: 6px; display: grid; place-items: center;
+    font-size: 21px; line-height: 1; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .12); transition: transform .15s;
+  }
+  .box.lift { transform: translateY(-7px); }
+
+  /* Spiel 4: Kasse */
+  .ktop { display: grid; gap: 12px; }
+  @media (min-width: 540px) { .ktop { grid-template-columns: 1fr 1fr; } }
+  .note {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 4px 4px 14px 14px;
+    padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
+    box-shadow: var(--shadow); min-width: 0;
+  }
+  .note-head { display: flex; align-items: center; gap: 10px; }
+  .avatar { font-size: 32px; line-height: 1; }
+  .note-name { font: 800 18px/1.1 var(--font-display); }
+  .note-list { list-style: none; margin: 0; padding: 8px 0 0; border-top: 2px dashed var(--line); display: flex; flex-direction: column; gap: 4px; }
+  .nl { display: flex; align-items: center; gap: 8px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .nl-q { width: 34px; text-align: right; }
+  .nl-e { font-size: 24px; line-height: 1.1; }
+  .nl-check { font-size: 13px; margin-left: auto; }
+  .nl.ok { color: var(--good); }
+  .nl.over { color: var(--bad); }
+  .basket {
+    background: color-mix(in srgb, var(--p8) 45%, var(--surface)); border-radius: 14px;
+    padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  }
+  .basket-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .sum { font-weight: 800; font-variant-numeric: tabular-nums; }
+  .basket-items { display: flex; flex-wrap: wrap; gap: 6px; min-height: 40px; align-items: center; }
+  .bitem {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 3px 10px 3px 8px; font-size: 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 2px;
+  }
+  .bn { font-size: 13px; font-weight: 800; }
+  .pshelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
+  .prod {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; cursor: pointer;
+    padding: 8px 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .prod:active { transform: scale(.96); }
+  .prod-e { font-size: 30px; line-height: 1.1; }
+  .tag {
+    font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums;
+    background: color-mix(in srgb, var(--p2) 70%, var(--surface)); color: var(--on-p);
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .pay { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+  .pay-q { font: 800 19px/1.2 var(--font-display); }
+  .pay-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pay-opt { font-size: 18px; min-height: 56px; font-variant-numeric: tabular-nums; }
+
+  /* Rückmeldungen */
+  .wrong { animation: shake .35s; border-color: var(--bad) !important; }
+  .hinted, .hint-from, .hint-to { animation: pulse 1s ease-in-out 3; outline: 3px solid var(--accent); outline-offset: 2px; }
+  .hint-to { outline-style: dashed; }
+  .pop { animation: pop .25s; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @keyframes pulse { 50% { outline-offset: 6px; } }
+  @keyframes pop { from { transform: scale(.6); } to { transform: scale(1); } }
+
+  /* Laden ausbauen */
+  .namefield { display: flex; flex-direction: column; gap: 4px; padding: 0 6px 6px; }
+  .namefield input {
+    font: 700 17px var(--font-body); color: var(--ink); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%;
+  }
+  .swatches { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 6px 6px; }
+  .sw { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--line); background: var(--sw); cursor: pointer; }
+  .sw[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  }
+  .item-icon { font-size: 26px; width: 34px; text-align: center; flex: none; }
+  .item-text { flex: 1; min-width: 0; }
+  .item-name { font-weight: 800; }
+  .pips { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
+  .pip { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .pip.on { background: var(--accent); }
+  .owned { font-weight: 800; color: var(--good); font-size: 14px; white-space: nowrap; }
+  .btn-buy { min-width: 76px; font-variant-numeric: tabular-nums; }
+  .sec-title { font: 800 20px/1.1 var(--font-display); }
+
+  /* Ergebnis */
+  .overlay {
+    position: fixed; inset: 0; z-index: 80; background: rgba(15, 25, 22, .45);
+    display: grid; place-items: center;
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  }
+  .modal {
+    width: min(380px, 100%); background: var(--surface); border-radius: 20px; padding: 22px 20px 18px;
+    display: flex; flex-direction: column; gap: 12px; text-align: center; box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+  }
+  .modal h2 { font: 800 30px/1.05 var(--font-display); }
+  .big-stars { font-size: 44px; letter-spacing: 6px; line-height: 1; }
+  .big-stars span { display: inline-block; animation: pop .35s backwards; }
+  .big-stars span:nth-child(2) { animation-delay: .12s; }
+  .big-stars span:nth-child(3) { animation-delay: .24s; }
+  .reward { display: inline-flex; align-items: center; gap: 8px; align-self: center; font-weight: 800; font-size: 18px; background: color-mix(in srgb, var(--coin) 22%, var(--surface)); padding: 6px 14px; border-radius: 999px; }
+  .modal-btns { display: flex; flex-direction: column; gap: 8px; }
+  .modal-btns .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 90;
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--ink); color: var(--bg); font-weight: 700; padding: 10px 16px; border-radius: 12px;
+    max-width: calc(100% - 32px); text-align: center; transition: opacity .2s, transform .2s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <h1>Regal &amp; Co.</h1>
+    </div>
+    <div class="chips">
+      <span class="chip" title="Münzen"><span class="coin"></span><span id="coins">0</span></span>
+      <span class="chip" title="Sterne"><span class="star-ic">★</span><span id="starsTotal">0</span></span>
+    </div>
+  </header>
+
+  <section id="home"></section>
+
+  <section id="play" hidden>
+    <div class="playbar">
+      <button class="btn btn-ghost" id="backBtn" type="button">← Übersicht</button>
+      <div class="tools">
+        <button class="btn btn-tool" id="undoBtn" type="button" hidden>↶ Zurück</button>
+        <button class="btn btn-tool" id="hintBtn" type="button" hidden>🔍 Tipp <span id="hintCount"></span></button>
+      </div>
+    </div>
+    <div class="playhead">
+      <div class="eyebrow" id="playEyebrow"></div>
+      <h2 id="playTitle"></h2>
+      <p class="muted" id="playHelp"></p>
+    </div>
+    <div class="stats" id="playStats"></div>
+    <div id="stage"></div>
+  </section>
+
+  <section id="shop" hidden></section>
+</div>
+
+<div class="overlay" id="overlay" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  /* ---------- Daten ---------- */
+  const STORE_KEY = 'regal-co-v1';
+  const NLEVELS = 48;
+  const DEFAULT = () => ({
+    coins: 0, stars: {}, decor: {}, facade: 'p8', name: 'Mein Laden',
+    up: { uhr: 0, lupe: 0, karre: 0, rechner: 0, schwein: 0 }
+  });
+  let S = DEFAULT();
+
+  const TYPES = [
+    { id: 'regal', name: 'Regal einräumen', icon: '🍎', col: '--p1',
+      help: 'Tippe auf das Regal, in das die Ware aus der Kiste gehört. Ein falsches Regal kostet 2 Sekunden.' },
+    { id: 'werkzeug', name: 'Werkzeugkasten packen', icon: '🔧', col: '--p4',
+      help: 'Zieh alle Werkzeuge in den Kasten, bis kein Feld frei bleibt. Kurz antippen dreht ein Teil.' },
+    { id: 'lager', name: 'Lager sortieren', icon: '📦', col: '--p2',
+      help: 'Tippe ein Fach und dann ein Ziel. Kisten dürfen nur auf gleiche Kisten oder in ein leeres Fach.' },
+    { id: 'kasse', name: 'Kundschaft bedienen', icon: '🧾', col: '--p3',
+      help: 'Pack genau das, was auf dem Zettel steht, und nimm danach den richtigen Betrag.' }
+  ];
+  const CHAPTERS = ['Der erste Tag', 'Großer Andrang', 'Lieferchaos', 'Meisterbetrieb'];
+
+  const CATS = [
+    { name: 'Obst', color: '--p1', items: ['🍎', '🍌', '🍐', '🍇', '🍓', '🍊', '🍋', '🍒', '🍑', '🥝', '🍍', '🍉'] },
+    { name: 'Gemüse', color: '--p3', items: ['🥕', '🥦', '🥒', '🌽', '🍆', '🥔', '🧅', '🫑', '🥬', '🍅', '🧄'] },
+    { name: 'Backwaren', color: '--p2', items: ['🍞', '🥐', '🥖', '🥨', '🧁', '🍩', '🍪', '🥯', '🥧'] },
+    { name: 'Kühlregal', color: '--p4', items: ['🧀', '🧈', '🥚', '🍦', '🥛', '🍗', '🐟', '🥩'] },
+    { name: 'Getränke', color: '--p7', items: ['🧃', '☕', '🍵', '🧋', '🥤', '🧉', '🍼'] },
+    { name: 'Haushalt', color: '--p5', items: ['🧻', '🧽', '🧴', '🧼', '🪥', '🧹', '🕯️', '🪣'] },
+    { name: 'Spielwaren', color: '--p6', items: ['🧸', '🪀', '🎲', '🪁', '🧩', '⚽', '🎈', '🪅'] }
+  ];
+
+  const DECOR = [
+    { id: 'schild', name: 'Ladenschild', icon: '🪧', cost: 30, desc: 'Dein Ladenname über der Tür' },
+    { id: 'pflanzen', name: 'Blumentöpfe', icon: '🪴', cost: 40, desc: 'Zwei Töpfe neben dem Eingang' },
+    { id: 'markise', name: 'Markise', icon: '⛱️', cost: 45, desc: 'Gestreifter Schatten für die Schaufenster' },
+    { id: 'farbe', name: 'Neuer Anstrich', icon: '🖌️', cost: 50, desc: 'Fassadenfarbe frei wählen' },
+    { id: 'kisten', name: 'Obstkisten', icon: '🍏', cost: 60, desc: 'Frische Ware vor dem Fenster' },
+    { id: 'lichter', name: 'Lichterkette', icon: '💡', cost: 70, desc: 'Leuchtet abends besonders schön' },
+    { id: 'bank', name: 'Sitzbank', icon: '🪑', cost: 80, desc: 'Ein Platz zum Ausruhen' },
+    { id: 'baum', name: 'Baum', icon: '🌳', cost: 90, desc: 'Schatten neben dem Laden' },
+    { id: 'katze', name: 'Ladenkatze', icon: '🐈', cost: 110, desc: 'Wohnt ab jetzt im Schaufenster' },
+    { id: 'rad', name: 'Lastenrad', icon: '🚲', cost: 140, desc: 'Für Lieferungen in der Nachbarschaft' },
+    { id: 'etage', name: 'Zweite Etage', icon: '🏠', cost: 250, desc: 'Der Laden wächst nach oben' }
+  ];
+  const FACADES = [['p8', 'Holz'], ['p3', 'Salbei'], ['p6', 'Pfirsich'], ['p4', 'Himmel'], ['p2', 'Butter'], ['p5', 'Flieder'], ['p1', 'Koralle']];
+
+  const UPS = [
+    { id: 'uhr', name: 'Stoppuhr', icon: '⏱️', max: 3, cost: [40, 90, 160], desc: '+8 Sekunden pro Stufe in Regal- und Kasse-Levels' },
+    { id: 'lupe', name: 'Lupe', icon: '🔍', max: 3, cost: [50, 100, 180], desc: 'Ein Tipp pro Stufe in jedem Level' },
+    { id: 'schwein', name: 'Sparschwein', icon: '🐷', max: 3, cost: [60, 130, 220], desc: '+20 % Münzen pro Stufe' },
+    { id: 'rechner', name: 'Taschenrechner', icon: '🧮', max: 1, cost: [80], desc: 'Zeigt an der Kasse die Summe im Korb' },
+    { id: 'karre', name: 'Extra-Fach', icon: '🗄️', max: 1, cost: [120], desc: 'Ein zusätzliches leeres Fach in Lager-Levels' }
+  ];
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) merge(JSON.parse(raw));
+    } catch (e) {}
+  }
+  function merge(obj) {
+    const d = DEFAULT();
+    S = Object.assign(d, obj || {});
+    S.up = Object.assign(DEFAULT().up, (obj && obj.up) || {});
+    S.stars = S.stars || {}; S.decor = S.decor || {};
+  }
+  function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) {} }
+
+  /* ---------- Hilfen ---------- */
+  const $ = (q) => document.querySelector(q);
+  function h(tag, props, ...kids) {
+    const el = document.createElement(tag);
+    if (props) for (const k in props) {
+      const v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'style') { for (const s in v) { if (s.startsWith('--')) el.style.setProperty(s, v[s]); else el.style[s] = v[s]; } }
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (k === 'html') el.innerHTML = v;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat()) {
+      if (kid == null || kid === false) continue;
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return el;
+  }
+  function rng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const ri = (r, a, b) => a + Math.floor(r() * (b - a + 1));
+  const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
+  function shuffle(r, arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+  const fmtEuro = (c) => (c / 100).toFixed(2).replace('.', ',') + ' €';
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function flash(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), 600); }
+  let toastT;
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 1800); }
+  function starRow(n, cls) { return h('span', { class: cls || 'stars', 'aria-label': `${n} von 3 Sternen` }, [0, 1, 2].map((k) => h('span', { class: k < n ? 's-on' : 's-off' }, '★'))); }
+
+  const info = (i) => ({ i, type: TYPES[i % 4], d: Math.floor(i / 4), chapter: Math.floor(i / 12) });
+  const unlocked = (i) => i === 0 || (S.stars[i - 1] || 0) > 0;
+  const totalStars = () => Object.values(S.stars).reduce((a, b) => a + b, 0);
+  function firstOpen() { for (let i = 0; i < NLEVELS; i++) if (!S.stars[i]) return i; return NLEVELS; }
+
+  function show(name) {
+    ['home', 'play', 'shop'].forEach((n) => { $('#' + n).hidden = n !== name; });
+    window.scrollTo(0, 0);
+  }
+  function renderHeader() { $('#coins').textContent = S.coins; $('#starsTotal').textContent = totalStars(); }
+
+  /* ---------- Ladenszene ---------- */
+  function scene() {
+    const D = S.decor, two = !!D.etage;
+    const top = two ? 34 : 92;
+    const f = (c) => `style="fill:var(${c})"`;
+    let s = `<svg viewBox="0 0 360 240" role="img" aria-label="Dein Laden mit ${DECOR.filter((x) => D[x.id]).length} Ausbauten">`;
+    s += `<rect width="360" height="240" ${f('--sky')}/>`;
+    s += `<g ${f('--cloud')}><ellipse cx="44" cy="40" rx="24" ry="8"/><ellipse cx="62" cy="34" rx="14" ry="8"/><ellipse cx="312" cy="22" rx="20" ry="7"/></g>`;
+    if (D.baum) {
+      s += `<rect x="318" y="148" width="8" height="54" ${f('--wood')}/>`;
+      s += `<g ${f('--p3')}><circle cx="322" cy="136" r="24"/><circle cx="306" cy="152" r="14"/><circle cx="338" cy="152" r="14"/></g>`;
+    }
+    // Gebäude
+    s += `<rect x="70" y="${top}" width="220" height="${200 - top}" style="fill:var(--${S.facade})"/>`;
+    s += `<rect x="64" y="${top - 8}" width="232" height="10" rx="2" ${f('--roof')}/>`;
+    if (two) {
+      s += `<rect x="70" y="90" width="220" height="3" ${f('--roof')} opacity=".35"/>`;
+      for (const x of [96, 214]) {
+        s += `<rect x="${x}" y="46" width="50" height="34" rx="3" style="fill:var(--glass);stroke:var(--wood);stroke-width:3"/>`;
+        s += `<line x1="${x + 25}" y1="47" x2="${x + 25}" y2="79" style="stroke:var(--wood);stroke-width:2"/>`;
+        s += `<rect x="${x - 2}" y="80" width="54" height="7" rx="2" ${f('--wood')}/>`;
+        s += `<g><circle cx="${x + 8}" cy="79" r="4" ${f('--p1')}/><circle cx="${x + 20}" cy="78" r="4" ${f('--p5')}/><circle cx="${x + 32}" cy="79" r="4" ${f('--p2')}/><circle cx="${x + 44}" cy="78" r="4" ${f('--p1')}/></g>`;
+      }
+    }
+    // Boden
+    s += `<rect y="200" width="360" height="24" ${f('--sidewalk')}/><rect y="224" width="360" height="16" ${f('--street')}/>`;
+    s += `<g style="fill:var(--sidewalk)" opacity=".6">${[20, 80, 140, 200, 260, 320].map((x) => `<rect x="${x}" y="230" width="26" height="3" rx="1.5"/>`).join('')}</g>`;
+    // Tür
+    s += `<rect x="160" y="140" width="40" height="60" rx="3" ${f('--wood')}/><rect x="166" y="147" width="28" height="24" rx="2" ${f('--glass')}/><circle cx="193" cy="176" r="2.2" ${f('--coin')}/>`;
+    // Schaufenster
+    for (const x of [84, 216]) {
+      s += `<rect x="${x}" y="139" width="60" height="50" rx="3" style="fill:var(--glass);stroke:var(--wood);stroke-width:3"/>`;
+      s += `<line x1="${x + 3}" y1="166" x2="${x + 57}" y2="166" style="stroke:var(--wood);stroke-width:2"/>`;
+    }
+    s += `<text x="114" y="162" text-anchor="middle" font-size="13">🍞 🥐 🧀</text><text x="114" y="184" text-anchor="middle" font-size="13">🧃 🍪 🥛</text>`;
+    s += D.katze ? `<text x="246" y="183" text-anchor="middle" font-size="24">🐈</text><text x="246" y="162" text-anchor="middle" font-size="12">🧸</text>`
+                 : `<text x="246" y="162" text-anchor="middle" font-size="13">🧸 🪁 🎲</text><text x="246" y="184" text-anchor="middle" font-size="13">🧴 🧼 🧽</text>`;
+    // Markise
+    if (D.markise) {
+      for (const x0 of [80, 212]) {
+        for (let k = 0; k < 7; k++) s += `<rect x="${x0 + k * 10}" y="124" width="10" height="11" style="fill:var(${k % 2 ? '--awning' : '--p1'})"/>`;
+        for (let k = 0; k < 7; k++) s += `<circle cx="${x0 + 5 + k * 10}" cy="135" r="5" style="fill:var(${k % 2 ? '--awning' : '--p1'})"/>`;
+      }
+    }
+    // Schild
+    if (D.schild) {
+      s += `<rect x="96" y="102" width="168" height="20" rx="5" ${f('--accent')}/>`;
+      s += `<text x="180" y="116.5" text-anchor="middle" style="fill:var(--accent-ink);font:800 12px var(--font-display)">${esc(S.name)}</text>`;
+    }
+    // Lichterkette
+    if (D.lichter) {
+      s += `<path d="M70 ${top + 4} Q180 ${top + 16} 290 ${top + 4}" style="fill:none;stroke:var(--roof);stroke-width:1"/>`;
+      const cols = ['--p2', '--p1', '--p7', '--p5'];
+      for (let k = 1; k < 14; k++) {
+        const t = k / 14, x = 70 + 220 * t, y = (1 - t) * (1 - t) * (top + 4) + 2 * (1 - t) * t * (top + 16) + t * t * (top + 4);
+        s += `<circle cx="${x.toFixed(1)}" cy="${(y + 2.5).toFixed(1)}" r="2.6" style="fill:var(${cols[k % 4]})"/>`;
+      }
+    }
+    // Obstkisten
+    if (D.kisten) {
+      for (const [x, e] of [[88, '🍎🍎'], [116, '🍊🍐']]) {
+        s += `<rect x="${x}" y="189" width="26" height="12" rx="2" ${f('--wood')}/><line x1="${x}" y1="195" x2="${x + 26}" y2="195" style="stroke:var(--roof);stroke-width:1" opacity=".4"/>`;
+        s += `<text x="${x + 13}" y="191" text-anchor="middle" font-size="10">${e}</text>`;
+      }
+    }
+    // Blumentöpfe
+    if (D.pflanzen) {
+      for (const x of [146, 206]) {
+        s += `<g ${f('--p3')}><circle cx="${x + 4}" cy="183" r="6"/><circle cx="${x + 9}" cy="179" r="6"/><circle cx="${x + 13}" cy="184" r="5"/></g>`;
+        s += `<circle cx="${x + 8}" cy="178" r="2.4" ${f('--p1')}/>`;
+        s += `<path d="M${x} 188 h18 l-2 13 h-14 z" ${f('--p6')}/>`;
+      }
+    }
+    // Bank
+    if (D.bank) {
+      s += `<rect x="226" y="186" width="54" height="5" rx="2" ${f('--wood')}/><rect x="226" y="178" width="54" height="4" rx="2" ${f('--wood')}/>`;
+      s += `<rect x="230" y="191" width="4" height="10" ${f('--roof')}/><rect x="272" y="191" width="4" height="10" ${f('--roof')}/>`;
+    }
+    // Lastenrad
+    if (D.rad) {
+      s += `<g style="fill:none;stroke:var(--roof);stroke-width:2.5"><circle cx="16" cy="192" r="8"/><circle cx="54" cy="192" r="8"/><path d="M16 192 L32 192 L44 176 L54 192 M32 192 L28 178 M44 176 L42 170 h6"/></g>`;
+      s += `<rect x="6" y="174" width="22" height="14" rx="2" ${f('--p2')}/><text x="17" y="185" text-anchor="middle" font-size="9">📦</text>`;
+    }
+    return s + '</svg>';
+  }
+
+  /* ---------- Übersicht ---------- */
+  function renderHome() {
+    const home = $('#home'); home.innerHTML = '';
+    const built = DECOR.filter((x) => S.decor[x.id]).length;
+    const next = firstOpen();
+    home.append(
+      h('div', { class: 'shopcard' },
+        h('div', { class: 'scene', html: scene() }),
+        h('div', { class: 'shopcard-row' },
+          h('div', null,
+            h('div', { class: 'eyebrow' }, 'Dein Laden'),
+            h('div', { class: 'shopname' }, S.name),
+            h('div', { class: 'muted small' }, `${built} von ${DECOR.length} Ausbauten · ${Object.values(S.up).reduce((a, b) => a + b, 0)} Werkzeug-Stufen`)),
+          h('button', { class: 'btn', type: 'button', onclick: openShop }, 'Laden ausbauen'))),
+      h('button', { class: 'btn btn-primary btn-wide', type: 'button', onclick: () => startLevel(next < NLEVELS ? next : 0) },
+        next < NLEVELS ? `Weiter mit Level ${next + 1}` : 'Alle 48 Level geschafft · von vorn spielen'),
+      h('div', { class: 'legend' }, TYPES.map((t) => h('span', { class: 'lg', style: { '--tc': `var(${t.col})` } }, `${t.icon} ${t.name}`)))
+    );
+    CHAPTERS.forEach((name, c) => {
+      const grid = h('div', { class: 'levels' });
+      let got = 0;
+      for (let j = 0; j < 12; j++) {
+        const i = c * 12 + j, inf = info(i), st = S.stars[i] || 0, open = unlocked(i);
+        got += st;
+        grid.append(h('button', {
+          class: 'tile' + (i === next ? ' current' : ''), type: 'button', disabled: !open,
+          style: { '--tc': `var(${inf.type.col})` },
+          'aria-label': `Level ${i + 1}, ${inf.type.name}${open ? '' : ', gesperrt'}`,
+          onclick: () => startLevel(i)
+        }, h('span', { class: 'tile-num' }, i + 1), h('span', { class: 'tile-icon' }, open ? inf.type.icon : '🔒'), starRow(st)));
+      }
+      home.append(h('section', { class: 'chapter' },
+        h('div', { class: 'chapter-head' }, h('h2', null, `Kapitel ${c + 1} · ${name}`), h('span', { class: 'muted small' }, `${got} / 36 ★`)),
+        grid));
+    });
+  }
+
+  /* ---------- Laden ausbauen ---------- */
+  function openShop() { renderShop(); show('shop'); }
+  function renderShop() {
+    const el = $('#shop'); el.innerHTML = '';
+    const sceneBox = h('div', { class: 'scene', html: scene() });
+    const refreshScene = () => { sceneBox.innerHTML = scene(); };
+    const nameInput = h('input', { id: 'shopName', type: 'text', maxlength: '22', value: S.name, autocomplete: 'off' });
+    nameInput.addEventListener('input', () => { S.name = nameInput.value.trim() || 'Mein Laden'; save(); refreshScene(); });
+    const card = h('div', { class: 'shopcard' }, sceneBox,
+      h('label', { class: 'namefield', for: 'shopName' }, h('span', { class: 'eyebrow' }, 'Name deines Ladens'), nameInput));
+    if (S.decor.farbe) {
+      const sw = h('div', { class: 'swatches', role: 'group', 'aria-label': 'Fassadenfarbe' });
+      const drawSw = () => {
+        sw.innerHTML = '';
+        FACADES.forEach(([id, label]) => sw.append(h('button', {
+          class: 'sw', type: 'button', title: label, 'aria-label': label, 'aria-pressed': S.facade === id ? 'true' : 'false',
+          style: { '--sw': `var(--${id})` }, onclick: () => { S.facade = id; save(); refreshScene(); drawSw(); }
+        })));
+      };
+      drawSw();
+      card.append(h('div', { class: 'eyebrow', style: { padding: '0 6px' } }, 'Fassadenfarbe'), sw);
+    }
+    el.append(
+      h('div', { class: 'playbar' }, h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => { renderHome(); show('home'); } }, '← Übersicht')),
+      card,
+      h('h2', { class: 'sec-title' }, 'Ausbauen'),
+      h('div', { class: 'list' }, DECOR.map((x) => h('div', { class: 'item' },
+        h('span', { class: 'item-icon', 'aria-hidden': 'true' }, x.icon),
+        h('div', { class: 'item-text' }, h('div', { class: 'item-name' }, x.name), h('div', { class: 'muted small' }, x.desc)),
+        S.decor[x.id] ? h('span', { class: 'owned' }, 'Gebaut ✓')
+          : h('button', { class: 'btn btn-buy', type: 'button', disabled: S.coins < x.cost, onclick: () => buy(x.cost, () => { S.decor[x.id] = true; }, `${x.name} gebaut`) },
+              h('span', { class: 'coin' }), x.cost)))),
+      h('h2', { class: 'sec-title' }, 'Werkzeuge'),
+      h('div', { class: 'list' }, UPS.map((u) => {
+        const lv = S.up[u.id];
+        return h('div', { class: 'item' },
+          h('span', { class: 'item-icon', 'aria-hidden': 'true' }, u.icon),
+          h('div', { class: 'item-text' },
+            h('div', { class: 'item-name' }, u.name, h('span', { class: 'pips', 'aria-label': `Stufe ${lv} von ${u.max}` }, Array.from({ length: u.max }, (_, k) => h('span', { class: 'pip' + (k < lv ? ' on' : '') })))),
+            h('div', { class: 'muted small' }, u.desc)),
+          lv >= u.max ? h('span', { class: 'owned' }, 'Voll ✓')
+            : h('button', { class: 'btn btn-buy', type: 'button', disabled: S.coins < u.cost[lv], onclick: () => buy(u.cost[lv], () => { S.up[u.id]++; }, `${u.name} Stufe ${lv + 1}`) },
+                h('span', { class: 'coin' }), u.cost[lv]));
+      }))
+    );
+  }
+  function buy(cost, apply, msg) {
+    if (S.coins < cost) return;
+    S.coins -= cost; apply(); save(); renderHeader();
+    const y = window.scrollY; renderShop(); window.scrollTo(0, y);
+    toast(msg);
+  }
+
+  /* ---------- Level-Ablauf ---------- */
+  let G = null;
+  const GAMES = {};
+
+  function startLevel(i) {
+    stopGame();
+    $('#overlay').hidden = true;
+    const inf = info(i);
+    show('play');
+    $('#playEyebrow').textContent = `Kapitel ${inf.chapter + 1} · Level ${i + 1} von ${NLEVELS}`;
+    $('#playTitle').textContent = inf.type.name;
+    $('#playHelp').textContent = inf.type.help;
+    const stage = $('#stage'); stage.innerHTML = '';
+    $('#playStats').innerHTML = '';
+    const ctx = { i, d: inf.d, r: rng(1000 + i * 7919), stage, hints: S.up.lupe, timers: [], ended: false, penalty: 0, undo: null, hint: null, cleanup: null };
+    G = ctx;
+    ctx.every = (ms, fn) => { ctx.timers.push(setInterval(fn, ms)); };
+    ctx.setStats = (items) => {
+      $('#playStats').replaceChildren(...items.map((it) => h('span', { class: 'stat' + (it.warn ? ' warn' : '') }, it.label, h('b', null, it.value))));
+    };
+    ctx.win = (stars) => finish(ctx, stars);
+    ctx.fail = (msg) => failLevel(ctx, msg);
+    GAMES[inf.type.id](ctx);
+    updateTools();
+  }
+  function stopGame() {
+    if (!G) return;
+    G.ended = true; G.timers.forEach(clearInterval); if (G.cleanup) G.cleanup(); G = null;
+  }
+  function countdown(ctx, seconds, onTick) {
+    ctx.timeTotal = seconds; ctx.timeLeft = seconds;
+    const t0 = performance.now();
+    ctx.every(200, () => {
+      if (ctx.ended) return;
+      ctx.timeLeft = Math.max(0, ctx.timeTotal - (performance.now() - t0) / 1000 - ctx.penalty);
+      onTick();
+      if (ctx.timeLeft <= 0) ctx.fail('Die Zeit ist abgelaufen.');
+    });
+  }
+  const fmtTime = (t) => `${Math.ceil(t)} s`;
+
+  function updateTools() {
+    const hb = $('#hintBtn'), ub = $('#undoBtn');
+    hb.hidden = !(G && G.hint && S.up.lupe > 0);
+    if (G) { $('#hintCount').textContent = `· ${G.hints}`; hb.disabled = G.hints <= 0 || G.ended; }
+    ub.hidden = !(G && G.undo);
+  }
+  $('#hintBtn').addEventListener('click', () => {
+    if (!G || G.ended || G.hints <= 0 || !G.hint) return;
+    if (G.hint() !== false) { G.hints--; updateTools(); }
+  });
+  $('#undoBtn').addEventListener('click', () => { if (G && G.undo && !G.ended) G.undo(); });
+  $('#backBtn').addEventListener('click', () => { stopGame(); renderHome(); show('home'); });
+
+  function finish(ctx, stars) {
+    if (ctx.ended) return;
+    ctx.ended = true; ctx.timers.forEach(clearInterval); updateTools();
+    const prev = S.stars[ctx.i] || 0;
+    let coins = 8 + ctx.i + stars * 4;
+    if (prev > 0) coins = Math.max(3, Math.round(coins * 0.3)) + Math.max(0, stars - prev) * 4;
+    coins = Math.round(coins * (1 + 0.2 * S.up.schwein));
+    S.coins += coins; S.stars[ctx.i] = Math.max(prev, stars); save(); renderHeader();
+    setTimeout(() => showResult({ win: true, i: ctx.i, stars, coins, better: prev > 0 && stars > prev }), 380);
+  }
+  function failLevel(ctx, msg) {
+    if (ctx.ended) return;
+    ctx.ended = true; ctx.timers.forEach(clearInterval); updateTools();
+    showResult({ win: false, i: ctx.i, msg });
+  }
+  function showResult(o) {
+    const ov = $('#overlay'); ov.innerHTML = '';
+    const close = () => { ov.hidden = true; };
+    const toHome = h('button', { class: 'btn', type: 'button', onclick: () => { close(); stopGame(); renderHome(); show('home'); } }, 'Übersicht');
+    const again = h('button', { class: o.win ? 'btn' : 'btn btn-primary', type: 'button', onclick: () => { close(); startLevel(o.i); } }, 'Nochmal');
+    let body;
+    if (o.win) {
+      const titles = ['Geschafft!', 'Gut gemacht!', 'Ordnungsprofi!'];
+      const hasNext = o.i + 1 < NLEVELS;
+      body = [
+        h('div', { class: 'eyebrow' }, `Level ${o.i + 1}`),
+        h('h2', null, titles[o.stars - 1]),
+        starRow(o.stars, 'big-stars'),
+        h('span', { class: 'reward' }, h('span', { class: 'coin' }), `+${o.coins} Münzen`),
+        o.better ? h('p', { class: 'muted small' }, 'Neuer Bestwert für dieses Level.') : null,
+        o.stars < 3 ? h('p', { class: 'muted small' }, 'Für 3 Sterne: weniger Fehler und schneller sein.') : null,
+        h('div', { class: 'modal-btns' },
+          hasNext ? h('button', { class: 'btn btn-primary btn-wide', type: 'button', onclick: () => { close(); startLevel(o.i + 1); } }, `Weiter zu Level ${o.i + 2}`)
+                  : h('button', { class: 'btn btn-primary btn-wide', type: 'button', onclick: () => { close(); stopGame(); openShop(); } }, 'Alle Level geschafft · zum Laden'),
+          h('div', { class: 'row' }, again, toHome))
+      ];
+    } else {
+      const t = info(o.i).type.id;
+      body = [
+        h('div', { class: 'eyebrow' }, `Level ${o.i + 1}`),
+        h('h2', null, 'Knapp daneben'),
+        h('p', null, o.msg),
+        (t === 'regal' || t === 'kasse') && S.up.uhr < 3 ? h('p', { class: 'muted small' }, 'Die Stoppuhr im Laden gibt dir mehr Zeit.') : null,
+        h('div', { class: 'modal-btns' }, again, toHome)
+      ];
+    }
+    ov.append(h('div', { class: 'modal', role: 'dialog', 'aria-modal': 'true' }, body));
+    ov.hidden = false;
+    const first = ov.querySelector('.btn-primary'); if (first) first.focus();
+  }
+
+  /* ---------- Spiel 1: Regal einräumen ---------- */
+  GAMES.regal = (ctx) => {
+    const { d, r } = ctx;
+    const k = Math.min(2 + Math.floor(d / 2), 6);
+    const n = 8 + d * 2;
+    const cats = shuffle(r, CATS.slice()).slice(0, k);
+    const items = [];
+    for (let j = 0; j < n; j++) { const c = cats[j % k]; items.push({ cat: c, e: pick(r, c.items) }); }
+    shuffle(r, items);
+    let idx = 0, mistakes = 0;
+    const total = Math.round(n * 2.6 + 6 + S.up.uhr * 8);
+
+    const cur = h('div', { class: 'crate-current', 'aria-live': 'polite' });
+    const queue = h('div', { class: 'crate-queue', 'aria-hidden': 'true' });
+    ctx.stage.append(h('div', { class: 'crate' }, cur, h('div', { class: 'crate-side' }, h('span', { class: 'eyebrow' }, 'Lieferkiste · als Nächstes'), queue)));
+    const shelves = h('div', { class: 'shelves', style: { gridTemplateColumns: `repeat(${k === 4 ? 2 : Math.min(k, 3)}, minmax(0, 1fr))` } });
+    const shelfEls = cats.map((c) => {
+      const itemsEl = h('div', { class: 'shelf-items' });
+      const b = h('button', { class: 'shelf', type: 'button', style: { '--tag': `var(${c.color})` }, 'aria-label': `Regal ${c.name}` }, h('span', { class: 'shelf-tag' }, c.name), itemsEl);
+      const s = { c, b, itemsEl };
+      b.addEventListener('click', () => choose(s));
+      return s;
+    });
+    shelfEls.forEach((s) => shelves.append(s.b));
+    ctx.stage.append(shelves);
+
+    function drawCrate() {
+      cur.textContent = items[idx] ? items[idx].e : '✓';
+      flash(cur, 'pop');
+      queue.replaceChildren(...items.slice(idx + 1, idx + 6).map((it) => h('span', null, it.e)));
+      if (idx + 1 >= n) queue.replaceChildren(h('span', { class: 'small muted' }, 'Letzte Ware'));
+    }
+    function stats() {
+      const t = ctx.timeLeft == null ? total : ctx.timeLeft;
+      ctx.setStats([{ label: 'Zeit', value: fmtTime(t), warn: t < 10 }, { label: 'Eingeräumt', value: `${idx}/${n}` }, { label: 'Fehler', value: mistakes }]);
+    }
+    function choose(s) {
+      if (ctx.ended || idx >= n) return;
+      shelfEls.forEach((x) => x.b.classList.remove('hinted'));
+      const it = items[idx];
+      if (it.cat === s.c) {
+        const sp = h('span', { class: 'pop' }, it.e);
+        s.itemsEl.append(sp);
+        idx++;
+        if (idx >= n) {
+          cur.textContent = '✓'; queue.replaceChildren(); stats();
+          const ratio = ctx.timeLeft / ctx.timeTotal;
+          ctx.win(mistakes === 0 && ratio >= 0.3 ? 3 : mistakes <= 2 ? 2 : 1);
+          return;
+        }
+        drawCrate();
+      } else {
+        mistakes++; ctx.penalty += 2; flash(s.b, 'wrong');
+      }
+      stats();
+    }
+    ctx.hint = () => {
+      const it = items[idx]; if (!it) return false;
+      const s = shelfEls.find((x) => x.c === it.cat); s.b.classList.remove('hinted'); void s.b.offsetWidth; s.b.classList.add('hinted');
+    };
+    drawCrate(); stats(); countdown(ctx, total, stats);
+  };
+
+  /* ---------- Spiel 2: Werkzeugkasten packen ---------- */
+  function norm(cells) {
+    const mx = Math.min(...cells.map((c) => c[0])), my = Math.min(...cells.map((c) => c[1]));
+    return cells.map(([x, y]) => [x - mx, y - my]).sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+  }
+  const rotate = (cells) => norm(cells.map(([x, y]) => [-y, x]));
+  function edges(el, same, line) { el.style.borderColor = same.map((s) => (s ? 'transparent' : line)).join(' '); }
+
+  GAMES.werkzeug = (ctx) => {
+    const { d, r } = ctx;
+    const SZ = [[3, 3], [4, 3], [4, 4], [5, 4], [5, 5], [6, 5], [6, 5], [6, 6], [6, 6], [7, 6], [7, 6], [7, 7]];
+    const [W, H] = SZ[d];
+    const maxP = d < 2 ? 3 : d < 6 ? 4 : 5;
+    const owner = Array.from({ length: H }, () => Array(W).fill(-1));
+    const regions = [];
+    const nb = (x, y) => [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]].filter(([a, b]) => a >= 0 && b >= 0 && a < W && b < H);
+    for (const kk of shuffle(r, Array.from({ length: W * H }, (_, k) => k))) {
+      const x = kk % W, y = Math.floor(kk / W);
+      if (owner[y][x] !== -1) continue;
+      const id = regions.length, reg = [[x, y]], target = ri(r, 2, maxP);
+      owner[y][x] = id;
+      while (reg.length < target) {
+        const fr = [];
+        for (const [a, b] of reg) for (const [p, q] of nb(a, b)) if (owner[q][p] === -1) fr.push([p, q]);
+        if (!fr.length) break;
+        const [p, q] = pick(r, fr); owner[q][p] = id; reg.push([p, q]);
+      }
+      regions.push(reg);
+    }
+    regions.forEach((reg, id) => {
+      if (reg.length !== 1) return;
+      const [x, y] = reg[0]; let best = -1;
+      for (const [p, q] of nb(x, y)) { const o = owner[q][p]; if (o !== id && (best === -1 || regions[o].length < regions[best].length)) best = o; }
+      if (best !== -1 && regions[best].length <= maxP) { regions[best].push([x, y]); owner[y][x] = best; regions[id] = []; }
+    });
+    const TOOLS = shuffle(r, ['🔨', '🔧', '🪛', '🪚', '🔩', '🪓', '⛏️', '📏', '✂️', '🖌️', '🧲', '🔦', '🪜', '📐', '🪝', '⚙️', '🧰', '🗜️']);
+    const COLS = shuffle(r, ['--p1', '--p2', '--p3', '--p4', '--p5', '--p6', '--p7']);
+    const pieces = regions.filter((g) => g.length).map((reg, j) => {
+      const mx = Math.min(...reg.map((c) => c[0])), my = Math.min(...reg.map((c) => c[1]));
+      const sol = norm(reg);
+      let cells = sol; const rot = ri(r, 0, 3);
+      for (let t = 0; t < rot; t++) cells = rotate(cells);
+      return { id: j, sol, solPos: { x: mx, y: my }, cells, placed: null, color: COLS[j % COLS.length], icon: TOOLS[j % TOOLS.length] };
+    });
+    shuffle(r, pieces);
+    let removals = 0;
+
+    const avail = Math.min(ctx.stage.clientWidth || 340, 560) - 24;
+    const C = Math.max(30, Math.min(54, Math.floor(avail / W)));
+    const T = Math.max(14, Math.round(C * 0.52));
+    const board = h('div', { class: 'board', style: { gridTemplateColumns: `repeat(${W}, ${C}px)`, gridTemplateRows: `repeat(${H}, ${C}px)` } });
+    const cellEls = [];
+    for (let k = 0; k < W * H; k++) {
+      const x = k % W, y = Math.floor(k / W);
+      const c = h('div', { class: 'bc' });
+      c.addEventListener('pointerdown', (e) => { const p = occ()[y][x]; if (p) down(e, p, true, [x, y]); });
+      cellEls.push(c); board.append(c);
+    }
+    const tray = h('div', { class: 'tray', 'aria-label': 'Werkzeuge, die noch fehlen' });
+    ctx.stage.append(h('div', { class: 'toolbox' }, board), tray);
+
+    function occ() {
+      const g = Array.from({ length: H }, () => Array(W).fill(null));
+      for (const p of pieces) if (p.placed) for (const [x, y] of p.cells) g[p.placed.y + y][p.placed.x + x] = p;
+      return g;
+    }
+    const fits = (p, tx, ty, g) => p.cells.every(([x, y]) => { const a = tx + x, b = ty + y; return a >= 0 && b >= 0 && a < W && b < H && (!g[b][a] || g[b][a] === p); });
+    function pieceGrid(p, size) {
+      const w = Math.max(...p.cells.map((c) => c[0])) + 1, hh = Math.max(...p.cells.map((c) => c[1])) + 1;
+      const g = h('div', { class: 'pgrid', style: { gridTemplateColumns: `repeat(${w}, ${size}px)`, gridTemplateRows: `repeat(${hh}, ${size}px)` } });
+      const set = new Set(p.cells.map((c) => c.join(',')));
+      const has = (x, y) => set.has(x + ',' + y);
+      for (let y = 0; y < hh; y++) for (let x = 0; x < w; x++) {
+        const c = h('div', { class: has(x, y) ? 'pc on' : 'pc' });
+        if (has(x, y)) {
+          c.style.setProperty('--pc', `var(${p.color})`);
+          edges(c, [has(x, y - 1), has(x + 1, y), has(x, y + 1), has(x - 1, y)], 'var(--board-line)');
+          if (x === p.cells[0][0] && y === p.cells[0][1]) { c.textContent = p.icon; c.style.fontSize = Math.round(size * 0.6) + 'px'; }
+        }
+        g.append(c);
+      }
+      return g;
+    }
+    function render() {
+      const g = occ();
+      cellEls.forEach((el, k) => {
+        const x = k % W, y = Math.floor(k / W), p = g[y][x];
+        el.className = 'bc'; el.textContent = ''; el.style.borderColor = ''; el.style.removeProperty('--pc'); el.style.fontSize = '';
+        if (p) {
+          el.classList.add('on'); el.style.setProperty('--pc', `var(${p.color})`);
+          const same = (a, b) => a >= 0 && b >= 0 && a < W && b < H && g[b][a] === p;
+          edges(el, [same(x, y - 1), same(x + 1, y), same(x, y + 1), same(x - 1, y)], 'var(--board-line)');
+          const [fx, fy] = p.cells[0];
+          if (x === p.placed.x + fx && y === p.placed.y + fy) { el.textContent = p.icon; el.style.fontSize = Math.round(C * 0.55) + 'px'; }
+        }
+      });
+      tray.innerHTML = '';
+      const rest = pieces.filter((p) => !p.placed);
+      rest.forEach((p) => {
+        const w = h('div', { class: 'tpiece', title: 'Ziehen zum Platzieren, tippen zum Drehen' }, pieceGrid(p, T));
+        w.addEventListener('pointerdown', (e) => down(e, p, false, null));
+        tray.append(w);
+      });
+      if (!rest.length) tray.append(h('span', { class: 'muted small' }, 'Alles verstaut.'));
+      stats();
+    }
+    function stats() {
+      ctx.setStats([{ label: 'Verstaut', value: `${pieces.filter((p) => p.placed).length}/${pieces.length}` }, { label: 'Umgepackt', value: removals }, { label: 'Kasten', value: `${W}×${H}` }]);
+    }
+    function clearGhost() { cellEls.forEach((c) => c.classList.remove('g-ok', 'g-bad')); }
+    function check() {
+      if (pieces.every((p) => p.placed)) ctx.win(removals <= 2 ? 3 : removals <= 6 ? 2 : 1);
+    }
+
+    let drag = null;
+    function down(e, p, fromBoard, cellXY) {
+      if (ctx.ended || drag) return;
+      e.preventDefault();
+      let gx, gy;
+      if (fromBoard) { gx = cellXY[0] - p.placed.x; gy = cellXY[1] - p.placed.y; }
+      else {
+        const grid = e.currentTarget.firstChild.getBoundingClientRect();
+        gx = Math.floor((e.clientX - grid.left) / T); gy = Math.floor((e.clientY - grid.top) / T);
+        let best = p.cells[0], bd = Infinity;
+        for (const [x, y] of p.cells) { const dd = (x - gx) ** 2 + (y - gy) ** 2; if (dd < bd) { bd = dd; best = [x, y]; } }
+        [gx, gy] = best;
+      }
+      drag = { p, fromBoard, gx, gy, sx: e.clientX, sy: e.clientY, moving: false, float: null, target: null, lift: e.pointerType === 'touch' ? C * 0.9 : 0 };
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
+    }
+    function move(e) {
+      if (!drag) return;
+      if (!drag.moving) {
+        if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 6) return;
+        drag.moving = true;
+        if (drag.fromBoard) { drag.p.placed = null; removals++; render(); }
+        drag.float = h('div', { class: 'float' }, pieceGrid(drag.p, C));
+        document.body.append(drag.float);
+      }
+      const left = e.clientX - (drag.gx + 0.5) * C, top = e.clientY - (drag.gy + 0.5) * C - drag.lift;
+      drag.float.style.transform = `translate(${left}px, ${top}px)`;
+      const o = cellEls[0].getBoundingClientRect();
+      const tx = Math.round((left - o.left) / C), ty = Math.round((top - o.top) / C);
+      clearGhost();
+      const g = occ();
+      const near = tx > -drag.p.cells.length && ty > -drag.p.cells.length && tx < W && ty < H;
+      if (!near) { drag.target = null; return; }
+      const ok = fits(drag.p, tx, ty, g);
+      drag.target = ok ? { x: tx, y: ty } : null;
+      for (const [x, y] of drag.p.cells) {
+        const a = tx + x, b = ty + y;
+        if (a >= 0 && b >= 0 && a < W && b < H) cellEls[b * W + a].classList.add(ok ? 'g-ok' : 'g-bad');
+      }
+    }
+    function up() {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      const dr = drag; drag = null;
+      if (!dr || ctx.ended) return;
+      clearGhost();
+      if (dr.float) dr.float.remove();
+      if (dr.moving) {
+        if (dr.target) dr.p.placed = dr.target;
+        render(); check();
+      } else if (dr.fromBoard) {
+        dr.p.placed = null; removals++; render();
+      } else {
+        dr.p.cells = rotate(dr.p.cells); render();
+      }
+    }
+    ctx.cleanup = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      if (drag && drag.float) drag.float.remove();
+      drag = null;
+    };
+    ctx.hint = () => {
+      const same = (p) => p.placed && p.placed.x === p.solPos.x && p.placed.y === p.solPos.y && JSON.stringify(p.cells) === JSON.stringify(p.sol);
+      const q = pieces.find((p) => !same(p));
+      if (!q) return false;
+      q.placed = null; q.cells = q.sol.map((c) => c.slice());
+      const want = new Set(q.cells.map(([x, y]) => (q.solPos.x + x) + ',' + (q.solPos.y + y)));
+      for (const p of pieces) if (p.placed && p.cells.some(([x, y]) => want.has((p.placed.x + x) + ',' + (p.placed.y + y)))) p.placed = null;
+      q.placed = { ...q.solPos };
+      render(); check();
+    };
+    render();
+  };
+
+  /* ---------- Spiel 3: Lager sortieren ---------- */
+  const CRATES = [
+    { e: '🍎', c: '--p1' }, { e: '🍋', c: '--p2' }, { e: '🥬', c: '--p3' }, { e: '🫐', c: '--p4' },
+    { e: '🍇', c: '--p5' }, { e: '🍊', c: '--p6' }, { e: '🐟', c: '--p7' }, { e: '🥔', c: '--p8' }
+  ];
+  const isSolved = (cols, cap) => cols.every((c) => c.length === 0 || (c.length === cap && c.every((v) => v === c[0])));
+  function topRun(c) { if (!c.length) return 0; const t = c[c.length - 1]; let n = 1; while (n < c.length && c[c.length - 1 - n] === t) n++; return n; }
+  function lagerMoves(cols, cap) {
+    const out = [];
+    for (let a = 0; a < cols.length; a++) {
+      const A = cols[a]; if (!A.length) continue;
+      const top = A[A.length - 1], run = topRun(A);
+      if (run === cap) continue;
+      for (let b = 0; b < cols.length; b++) {
+        if (a === b) continue;
+        const B = cols[b];
+        if (B.length >= cap) continue;
+        if (B.length && B[B.length - 1] !== top) continue;
+        if (!B.length && run === A.length) continue;
+        out.push([a, b, Math.min(run, cap - B.length), B.length ? 0 : 1]);
+      }
+    }
+    return out.sort((x, y) => x[3] - y[3]);
+  }
+  function solveLager(start, cap, limit) {
+    const cols = start.map((c) => c.slice()), seen = new Set(), path = [];
+    let nodes = 0;
+    const key = () => cols.map((c) => c.join('')).sort().join('|');
+    function dfs() {
+      if (isSolved(cols, cap)) return true;
+      if (++nodes > limit) return false;
+      const kk = key(); if (seen.has(kk)) return false; seen.add(kk);
+      for (const [a, b, n] of lagerMoves(cols, cap)) {
+        cols[b].push(...cols[a].splice(cols[a].length - n, n)); path.push([a, b]);
+        if (dfs()) return true;
+        path.pop(); cols[a].push(...cols[b].splice(cols[b].length - n, n));
+        if (nodes > limit) return false;
+      }
+      return false;
+    }
+    return dfs() ? path : null;
+  }
+
+  GAMES.lager = (ctx) => {
+    const { d, r } = ctx;
+    const k = [3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8][d];
+    const CAP = 4;
+    let cols;
+    for (let tries = 0; tries < 40; tries++) {
+      const boxes = [];
+      for (let t = 0; t < k; t++) for (let j = 0; j < CAP; j++) boxes.push(t);
+      shuffle(r, boxes);
+      cols = [];
+      for (let c = 0; c < k; c++) cols.push(boxes.slice(c * CAP, c * CAP + CAP));
+      cols.push([], []);
+      if (cols.some((c) => c.length === CAP && c.every((v) => v === c[0]))) continue;
+      if (solveLager(cols, CAP, 60000)) break;
+    }
+    if (S.up.karre) cols.push([]);
+    const types = shuffle(r, CRATES.slice());
+    let sel = -1, moves = 0;
+    const hist = [];
+    const wrap = h('div', { class: 'racks' });
+    ctx.stage.append(wrap);
+    const complete = (c) => c.length === CAP && c.every((v) => v === c[0]);
+
+    function render(hint) {
+      wrap.innerHTML = '';
+      cols.forEach((c, ci) => {
+        const run = ci === sel ? topRun(c) : 0;
+        const b = h('button', {
+          class: 'rack' + (ci === sel ? ' sel' : '') + (complete(c) ? ' done' : '') + (hint && hint[0] === ci ? ' hint-from' : '') + (hint && hint[1] === ci ? ' hint-to' : ''),
+          type: 'button', 'aria-label': `Fach ${ci + 1}, ${c.length} Kisten`, onclick: () => tap(ci)
+        });
+        for (let s = CAP - 1; s >= 0; s--) {
+          const slot = h('div', { class: 'slot' });
+          if (c[s] != null) slot.append(h('div', { class: 'box' + (s >= c.length - run ? ' lift' : ''), style: { '--bc': `var(${types[c[s]].c})` } }, types[c[s]].e));
+          b.append(slot);
+        }
+        wrap.append(b);
+      });
+      ctx.setStats([{ label: 'Züge', value: moves }, { label: 'Für 3 ★', value: `≤ ${k * 3 + 2}` }, { label: 'Sorten', value: `${cols.filter(complete).length}/${k}` }]);
+    }
+    function tap(ci) {
+      if (ctx.ended) return;
+      if (sel === -1) {
+        if (cols[ci].length && !complete(cols[ci])) sel = ci; else flash(wrap.children[ci], 'wrong');
+        render(); return;
+      }
+      if (ci === sel) { sel = -1; render(); return; }
+      const A = cols[sel], B = cols[ci], top = A[A.length - 1], run = topRun(A);
+      if (B.length < CAP && (!B.length || B[B.length - 1] === top)) {
+        const n = Math.min(run, CAP - B.length);
+        B.push(...A.splice(A.length - n, n)); hist.push([sel, ci, n]); moves++; sel = -1; render();
+        if (isSolved(cols, CAP)) ctx.win(moves <= k * 3 + 2 ? 3 : moves <= k * 5 ? 2 : 1);
+      } else if (B.length && !complete(B)) {
+        sel = ci; render();
+      } else {
+        flash(wrap.children[ci], 'wrong');
+      }
+    }
+    ctx.undo = () => {
+      const m = hist.pop(); if (!m) { toast('Noch nichts zum Zurücknehmen.'); return; }
+      const [a, b, n] = m; cols[a].push(...cols[b].splice(cols[b].length - n, n)); sel = -1; render();
+    };
+    ctx.hint = () => {
+      const p = solveLager(cols, CAP, 60000);
+      if (!p) { toast('Sackgasse. Nimm ein paar Züge zurück.'); return false; }
+      if (!p.length) return false;
+      sel = -1; render(p[0]); toast(`Von Fach ${p[0][0] + 1} nach Fach ${p[0][1] + 1}`);
+    };
+    render();
+  };
+
+  /* ---------- Spiel 4: Kundschaft bedienen ---------- */
+  GAMES.kasse = (ctx) => {
+    const { d, r } = ctx;
+    const nCust = Math.min(2 + Math.floor(d / 3), 5);
+    const nLines = Math.min(2 + Math.floor(d / 4), 4);
+    const maxQ = d < 3 ? 2 : 3;
+    const shelfN = Math.min(6 + d, 15);
+    const price = () => (d < 4 ? ri(r, 1, 4) * 100 : d < 8 ? ri(r, 1, 8) * 50 : ri(r, 3, 39) * 10);
+    const all = []; CATS.forEach((c) => c.items.forEach((e) => all.push(e)));
+    const prods = shuffle(r, all).slice(0, shelfN).map((e) => ({ e, p: price() }));
+    const priceOf = (e) => prods.find((p) => p.e === e).p;
+    const PEOPLE = [['Frau Berger', '👵'], ['Herr Öztürk', '👨'], ['Mia', '👧'], ['Opa Karl', '👴'], ['Lena', '👩'], ['Herr Novak', '🧔'], ['Frau Schmidt', '👩‍🦰'], ['Tim', '👦'], ['Frau Yilmaz', '🧕'], ['Ben', '🧑']];
+    const custs = shuffle(r, PEOPLE.slice()).slice(0, nCust).map(([name, av]) => ({
+      name, av, items: shuffle(r, prods.slice()).slice(0, nLines).map((pr) => ({ pr, q: ri(r, 1, maxQ) }))
+    }));
+    let ci = 0, mistakes = 0, phase = 'pack', opts = [], wrongOpts = new Set();
+    let basket = new Map();
+    const total = Math.round(nCust * (16 + nLines * 8) + S.up.uhr * 8);
+    const wrap = h('div', { class: 'ktop' });
+    const lower = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } });
+    ctx.stage.append(wrap, lower);
+
+    const basketSum = () => [...basket].reduce((s, [e, n]) => s + priceOf(e) * n, 0);
+    const lineState = (it) => { const n = basket.get(it.pr.e) || 0; return n === it.q ? 'ok' : n > it.q ? 'over' : 'open'; };
+    function inc(e) { if (ctx.ended || phase !== 'pack') return; basket.set(e, (basket.get(e) || 0) + 1); render(); }
+    function dec(e) { if (ctx.ended || phase !== 'pack') return; const n = (basket.get(e) || 0) - 1; if (n <= 0) basket.delete(e); else basket.set(e, n); render(); }
+    function makeOpts(sum) {
+      const step = d < 4 ? 100 : d < 8 ? 50 : 10;
+      const set = new Set([sum]);
+      for (const kk of shuffle(r, [1, 2, -1, -2, 3, -3, 4])) {
+        if (set.size >= 3) break;
+        const v = sum + kk * step * (d >= 8 ? ri(r, 1, 5) : 1);
+        if (v > 0) set.add(v);
+      }
+      return shuffle(r, [...set]);
+    }
+    function check() {
+      const c = custs[ci];
+      const ok = c.items.every((it) => (basket.get(it.pr.e) || 0) === it.q) && basket.size === c.items.length;
+      if (!ok) { mistakes++; toast('Noch nicht ganz. Vergleiche den Korb mit dem Zettel.'); flash(wrap.querySelector('.note'), 'wrong'); stats(); return; }
+      phase = 'pay'; opts = makeOpts(basketSum()); wrongOpts = new Set(); render();
+    }
+    function pay(v) {
+      if (ctx.ended) return;
+      if (v === basketSum()) {
+        ci++;
+        if (ci >= nCust) { stats(); const ratio = ctx.timeLeft / ctx.timeTotal; ctx.win(mistakes === 0 && ratio >= 0.3 ? 3 : mistakes <= 2 ? 2 : 1); return; }
+        toast('Danke und schönen Tag noch!');
+        basket = new Map(); phase = 'pack'; render();
+      } else {
+        mistakes++; wrongOpts.add(v); render(); stats();
+      }
+    }
+    function stats() {
+      const t = ctx.timeLeft == null ? total : ctx.timeLeft;
+      ctx.setStats([{ label: 'Zeit', value: fmtTime(t), warn: t < 10 }, { label: 'Kundschaft', value: `${Math.min(ci + 1, nCust)}/${nCust}` }, { label: 'Fehler', value: mistakes }]);
+    }
+    function render(hl) {
+      const c = custs[ci];
+      wrap.replaceChildren(
+        h('div', { class: 'note' },
+          h('div', { class: 'note-head' }, h('span', { class: 'avatar', 'aria-hidden': 'true' }, c.av),
+            h('div', null, h('div', { class: 'eyebrow' }, `Einkaufszettel ${ci + 1} von ${nCust}`), h('div', { class: 'note-name' }, c.name))),
+          h('ul', { class: 'note-list' }, c.items.map((it) => {
+            const st = lineState(it);
+            return h('li', { class: 'nl ' + st }, h('span', { class: 'nl-q' }, `${it.q} ×`), h('span', { class: 'nl-e' }, it.pr.e),
+              h('span', { class: 'nl-check' }, st === 'ok' ? '✓' : st === 'over' ? 'zu viel' : ''));
+          }))),
+        h('div', { class: 'basket' },
+          h('div', { class: 'basket-head' }, h('span', { class: 'eyebrow' }, 'Korb · antippen nimmt heraus'),
+            S.up.rechner ? h('span', { class: 'sum' }, '🧮 ', fmtEuro(basketSum())) : null),
+          h('div', { class: 'basket-items' }, basket.size
+            ? [...basket].map(([e, n]) => h('button', { class: 'bitem' + (hl && hl.basket === e ? ' hinted' : ''), type: 'button', disabled: phase !== 'pack', 'aria-label': `${e} herausnehmen`, onclick: () => dec(e) }, e, h('span', { class: 'bn' }, `×${n}`)))
+            : h('span', { class: 'muted small' }, 'Noch leer. Tippe Waren im Regal an.')))
+      );
+      if (phase === 'pack') {
+        lower.replaceChildren(
+          h('div', { class: 'pshelf' }, prods.map((pr) => h('button', { class: 'prod' + (hl && hl.prod === pr.e ? ' hinted' : ''), type: 'button', 'aria-label': `${pr.e} für ${fmtEuro(pr.p)}`, onclick: () => inc(pr.e) },
+            h('span', { class: 'prod-e' }, pr.e), h('span', { class: 'tag' }, fmtEuro(pr.p))))),
+          h('button', { class: 'btn btn-primary btn-wide', type: 'button', onclick: check }, 'Fertig gepackt'));
+      } else {
+        lower.replaceChildren(h('div', { class: 'pay' },
+          h('div', { class: 'pay-q' }, `Was macht das zusammen, ${c.name}?`),
+          h('div', { class: 'muted small' }, [...basket].map(([e, n]) => `${n} × ${e} à ${fmtEuro(priceOf(e))}`).join(' · ')),
+          h('div', { class: 'pay-opts' }, opts.map((v) => h('button', { class: 'btn pay-opt', type: 'button', disabled: wrongOpts.has(v), onclick: () => pay(v) }, fmtEuro(v))))));
+      }
+      stats();
+    }
+    ctx.hint = () => {
+      const c = custs[ci];
+      if (phase === 'pay') {
+        const w = opts.find((v) => v !== basketSum() && !wrongOpts.has(v));
+        if (w == null) return false;
+        wrongOpts.add(w); render(); return;
+      }
+      for (const [e, n] of basket) { const line = c.items.find((it) => it.pr.e === e); if (!line || n > line.q) { render({ basket: e }); return; } }
+      const miss = c.items.find((it) => (basket.get(it.pr.e) || 0) < it.q);
+      if (!miss) return false;
+      render({ prod: miss.pr.e });
+    };
+    render(); countdown(ctx, total, stats);
+  };
+
+  /* ---------- Start ---------- */
+  function boot(data) {
+    load();
+    if (data && data.save) merge(data.save);
+    renderHeader(); renderHome(); show('home');
+  }
+  if (window.claude && window.claude.hot && window.claude.hot.snapshot) window.claude.hot.snapshot(() => ({ save: S }));
+  window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
