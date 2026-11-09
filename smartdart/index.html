@@ -1,0 +1,1831 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Dart</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Smart Dart – die Steeldart-Scheibe mit austauschbaren Feldern. Gestalte Größe, Farben, Catchring und Logos selbst und tausche abgenutzte Felder einzeln.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Roboto+Slab:wght@700&display=swap">
+<style>
+/* Layout: "Am Oche" – dunkle Kneipen-/Bühnenatmosphäre, die Scheibe als beleuchteter Mittelpunkt; Sektionen wie Stationen auf dem Weg zum Board. */
+:root{
+  color-scheme: dark;
+  --ink:#0f0e0d;          /* Sisal-Schwarz, warm */
+  --panel:#181614;
+  --panel-2:#221f1b;
+  --line:#352f29;
+  --text:#efe8da;
+  --muted:#ada492;
+  --faint:#756d61;
+  --cream:#eadcb9;        /* helles Sisal */
+  --red:#cf302b;          /* Triple/Double rot */
+  --red-hi:#e2463d;
+  --green:#1f8a4c;        /* Triple/Double grün */
+  --amber:#ffc94d;        /* Auswahl / Fokus */
+  --series-smart:#26a07a;
+  --series-conv:#d6602b;
+  --f-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",sans-serif;
+  --f-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r-s:6px; --r-m:12px;
+  --gutter:max(16px, env(safe-area-inset-left, 0px));
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--text);font:400 1.0625rem/1.6 var(--f-body);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+img,canvas,svg{max-width:100%}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.wrap{max-width:1220px;margin:0 auto;padding-left:max(clamp(16px,4vw,40px), env(safe-area-inset-left,0px));padding-right:max(clamp(16px,4vw,40px), env(safe-area-inset-right,0px))}
+.eyebrow{font:500 .75rem/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:.95;letter-spacing:.005em}
+h1{font-weight:900;font-size:clamp(3.1rem,8vw,6.4rem);text-transform:uppercase}
+h2{font-weight:800;font-size:clamp(2.4rem,5.4vw,4.1rem);text-transform:uppercase}
+h3{font-weight:800;font-size:1.65rem;text-transform:uppercase;line-height:1}
+p{margin:0}
+.lead{font-size:1.18rem;color:var(--text);max-width:58ch}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.sec{padding-block:clamp(64px,9vw,120px);border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:16px;max-width:760px;margin-bottom:clamp(32px,5vw,56px)}
+.sec-head p{color:var(--muted);max-width:62ch}
+
+/* Buttons & chips */
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:12px 22px;font-weight:700;font-size:1rem;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s ease, background .15s ease, border-color .15s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--red);color:#fff7ec}
+.btn-primary:hover{background:var(--red-hi)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--text)}
+.btn-ghost:hover{border-color:var(--muted)}
+.btn-sm{padding:8px 14px;font-size:.9rem}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:.9rem;font-weight:600;color:var(--text);transition:border-color .15s, background .15s}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--amber);background:#2a2316}
+.chip .dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.25)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(15,14,13,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.brand svg{width:38px;height:38px;flex:none}
+.brand b{display:block;font:700 .95rem/1 var(--f-body);letter-spacing:.24em}
+.brand small{display:block;font:500 .62rem/1 var(--f-body);letter-spacing:.3em;color:var(--muted);margin-top:5px}
+.nav{display:flex;align-items:center;gap:22px}
+.nav a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem}
+.nav a:hover{color:var(--text)}
+@media (max-width:920px){.nav a:not(.btn){display:none}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding-block:clamp(40px,6vw,80px) clamp(56px,7vw,96px)}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto 30%;height:120%;background:radial-gradient(closest-side, rgba(255,236,200,.13), rgba(255,236,200,0) 70%);pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(24px,4vw,56px);align-items:center}
+.hero h1 em{font-style:normal;color:var(--cream)}
+.hero .lead{margin-top:22px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:40px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts div{padding:14px 14px 14px 0}
+.facts div+div{padding-left:14px;border-left:1px solid var(--line)}
+.facts b{display:block;font:800 1.7rem/1 var(--f-display);color:var(--text)}
+.facts span{display:block;font:500 .72rem/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.hero-stage{position:relative;width:100%;max-width:640px;justify-self:center}
+.hero-stage canvas{display:block;width:100%;aspect-ratio:10/11;height:auto}
+.callout{position:absolute;left:0;top:0;opacity:0;pointer-events:none;transform:translateX(-50%);background:rgba(15,14,13,.92);border:1px solid #6b5a33;border-radius:8px;padding:8px 12px;white-space:nowrap;transition:opacity .25s ease}
+.callout b{display:block;font:800 1.15rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.callout span{display:block;font:500 .72rem/1.4 var(--f-mono);color:var(--muted);margin-top:4px}
+@media (max-width:520px){.callout{padding:6px 10px}.callout b{font-size:1rem}.callout span{font-size:.66rem}}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.facts div:nth-child(3){padding-left:0;border-left:0}.facts div:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* Problem / Lösung */
+.pl-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
+.pl-col{display:grid;gap:28px}
+.pl-block{display:grid;gap:14px}
+.pl-block h3{color:var(--cream)}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.plist li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start}
+.plist li::before{content:"";width:12px;height:12px;margin-top:7px;border-radius:50%;border:2px solid var(--red)}
+.plist.good li::before{border-color:var(--series-smart);background:var(--series-smart)}
+.plist b{color:var(--text)}
+.plist span{color:var(--muted)}
+.heat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:clamp(16px,2.4vw,28px);display:grid;gap:16px}
+.heat-card canvas{width:100%;aspect-ratio:1/1;height:auto;display:block}
+.heat-legend{display:flex;align-items:center;gap:12px;font:500 .75rem/1.2 var(--f-mono);color:var(--muted);flex-wrap:wrap}
+.heat-legend i{display:block;width:140px;height:10px;border-radius:5px;background:linear-gradient(90deg, rgba(255,108,40,.15), rgba(255,108,40,.85))}
+.heat-card figcaption{font-size:.92rem;color:var(--muted)}
+.bignum{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.bignum b{font:900 4.4rem/0.9 var(--f-display);color:var(--cream)}
+.bignum span{color:var(--muted);max-width:30ch}
+@media (max-width:900px){.pl-grid{grid-template-columns:1fr}}
+
+/* 3D */
+.v3-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.v3-stage{position:relative;background:radial-gradient(120% 90% at 50% 30%, #23201c 0%, #121110 70%);border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;aspect-ratio:16/11}
+.v3-stage canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.v3-stage canvas.grabbing{cursor:grabbing}
+.v3-stage canvas.pointer{cursor:pointer}
+.v3-labels{position:absolute;inset:0;pointer-events:none}
+.v3-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.v3-label{position:absolute;left:14px;top:0;font:500 .74rem/1 var(--f-mono);letter-spacing:.04em;color:var(--text);white-space:nowrap;background:rgba(15,14,13,.88);border:1px solid #6b5a33;padding:6px 9px;border-radius:5px}
+@media (max-width:520px){.v3-label{font-size:.64rem;padding:4px 6px;left:8px}}
+.v3-toolbar{position:absolute;left:12px;top:12px;right:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;pointer-events:none}
+.v3-toolbar>*{pointer-events:auto}
+.seg{display:inline-flex;background:rgba(15,14,13,.85);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:999px;font-weight:700;font-size:.85rem;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--ink)}
+.v3-hint{position:absolute;left:12px;bottom:12px;right:12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-end;pointer-events:none;flex-wrap:wrap}
+.v3-hint>*{pointer-events:auto}
+.v3-col{display:grid;gap:12px;min-width:0}
+.v3-info{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;gap:12px 20px;align-items:center;justify-content:space-between;flex-wrap:wrap;min-height:68px}
+.v3-info b{font:800 1.3rem/1 var(--f-display);text-transform:uppercase}
+.v3-info p{font-size:.9rem;color:var(--muted);margin-top:4px}
+.v3-info .row{display:flex;gap:8px;flex-wrap:wrap}
+.v3-drag{font:500 .72rem/1.3 var(--f-mono);color:var(--muted);background:rgba(15,14,13,.7);padding:6px 10px;border-radius:6px}
+@media (max-width:520px){.v3-drag{display:none}.seg button{padding:6px 10px;font-size:.8rem}}
+.v3-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;gap:12px}
+.v3-fallback canvas{width:min(420px,80%);aspect-ratio:1/1;height:auto}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:st}
+.steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:18px 0;border-top:1px solid var(--line)}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps li::before{counter-increment:st;content:counter(st);font:900 2.2rem/1 var(--f-display);color:var(--cream)}
+.steps b{display:block;font-size:1.05rem;margin-bottom:4px}
+.steps span{color:var(--muted);font-size:.96rem}
+.layers{margin-top:22px;display:grid;gap:8px;font-size:.92rem}
+.layers div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.layers span:last-child{color:var(--muted);text-align:right}
+@media (max-width:980px){.v3-grid{grid-template-columns:1fr}.v3-stage{aspect-ratio:1/1}}
+
+/* Konfigurator */
+.cfg{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:start}
+.cfg-stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px);display:grid;gap:12px;background:var(--ink);z-index:5}
+.stage-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.dimlabel{font:500 .8rem/1.2 var(--f-mono);color:var(--muted);letter-spacing:.04em}
+.canvas-wrap{position:relative;background:radial-gradient(70% 70% at 50% 45%, #25211c 0%, #121110 75%);border:1px solid var(--line);border-radius:var(--r-m);padding:clamp(8px,2vw,18px)}
+.canvas-wrap canvas{display:block;width:100%;aspect-ratio:1/1;height:auto;touch-action:manipulation}
+.canvas-wrap.picking canvas{cursor:pointer}
+.hover-tip{position:absolute;left:0;top:0;transform:translate(14px,14px);background:rgba(15,14,13,.92);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font:500 .78rem/1.3 var(--f-mono);pointer-events:none;white-space:nowrap;z-index:3}
+.warns{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.warns li{display:inline-flex;gap:8px;align-items:flex-start;font-size:.85rem;padding:7px 11px;border-radius:8px;background:#2b1d14;border:1px solid #5a3a22;color:#f3d7bd}
+.warns li.ok{background:#14261d;border-color:#245a3f;color:#cdebd9}
+.warns svg{flex:none;margin-top:2px}
+.stage-actions{display:flex;gap:10px;flex-wrap:wrap}
+.toggle{display:inline-flex;align-items:center;gap:10px;font-size:.88rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.toggle input{appearance:none;-webkit-appearance:none;width:36px;height:20px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .15s}
+.toggle input::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text);transition:transform .15s}
+.toggle input:checked{background:#c2551e}
+.toggle input:checked::after{transform:translateX(16px)}
+.cfg-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;min-width:0}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line);background:var(--panel-2)}
+.tabs button{border:0;background:transparent;padding:14px 6px;font-weight:700;font-size:.9rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--text);border-bottom-color:var(--amber)}
+.tabs button .n{display:block;font:500 .66rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+.tabpanel{padding:clamp(16px,2.4vw,26px);display:grid;gap:26px}
+.group{display:grid;gap:12px;border:0;margin:0;padding:0;min-width:0}
+.group>legend,.glabel{font:500 .72rem/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0;margin-bottom:12px}
+.group>.glabel{margin-bottom:0}
+.opts{display:grid;gap:8px}
+.opts.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.opts.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.opt{position:relative;display:grid;gap:4px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--ink);cursor:pointer;transition:border-color .15s, background .15s;min-width:0}
+.opt:hover{border-color:var(--muted)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt:has(input:checked){border-color:var(--amber);background:#221c11}
+.opt:has(input:focus-visible){outline:2px solid var(--amber);outline-offset:2px}
+.opt b{font:800 1.25rem/1 var(--f-display);text-transform:uppercase}
+.opt small{color:var(--muted);font-size:.8rem;line-height:1.3}
+.opt .price{font:500 .78rem/1 var(--f-mono);color:var(--text);margin-top:4px}
+.opt .badge{justify-self:start;font:500 .6rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;background:var(--green);color:#eafff2;padding:3px 5px;border-radius:4px;margin-top:4px}
+@media (max-width:520px){.opts.c4{grid-template-columns:repeat(2,minmax(0,1fr))}.opts.c3{grid-template-columns:1fr}}
+.sizeviz{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:16px;align-items:center;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px}
+.sizeviz p{font-size:.86rem;color:var(--muted)}
+.sizeviz p b{color:var(--text)}
+.presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.preset{display:grid;justify-items:center;gap:6px;padding:10px 6px;border:1px solid var(--line);border-radius:10px;background:var(--ink);cursor:pointer;font-size:.8rem;font-weight:700;color:var(--text)}
+.preset canvas{width:100%;max-width:74px;aspect-ratio:1/1;height:auto}
+.preset[aria-pressed="true"]{border-color:var(--amber);background:#221c11}
+@media (max-width:520px){.presets{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.colors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.color{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--ink);cursor:pointer;min-width:0}
+.color input{width:32px;height:32px;border:0;padding:0;background:none;cursor:pointer;flex:none;border-radius:6px}
+.color input::-webkit-color-swatch-wrapper{padding:0}
+.color input::-webkit-color-swatch{border:1px solid rgba(255,255,255,.25);border-radius:6px}
+.color input::-moz-color-swatch{border:1px solid rgba(255,255,255,.25);border-radius:6px}
+.color span{font-size:.84rem;line-height:1.25;min-width:0}
+.color code{display:block;font:500 .7rem/1.2 var(--f-mono);color:var(--faint)}
+@media (max-width:420px){.colors{grid-template-columns:1fr}}
+.field{display:grid;gap:6px}
+.field label{font-size:.86rem;font-weight:600}
+.field input[type=text]{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:1rem;text-transform:uppercase;letter-spacing:.06em}
+.field input[type=text]:focus{border-color:var(--amber);outline:none}
+.field small{color:var(--faint);font-size:.78rem}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:520px){.two{grid-template-columns:1fr}}
+.notice{display:grid;gap:10px;padding:14px;border-radius:10px;background:#2b1d14;border:1px solid #5a3a22;color:#f3d7bd;font-size:.92rem}
+.notice .btn{justify-self:start}
+.slotmap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch}
+.slot{position:relative;display:grid;place-items:center;gap:4px;min-height:84px;border:1px dashed var(--faint);border-radius:10px;background:var(--ink);cursor:pointer;color:var(--muted);font-size:.78rem;font-weight:600;padding:8px;text-align:center}
+.slot:hover{border-color:var(--text);color:var(--text)}
+.slot.filled{border-style:solid;border-color:var(--line)}
+.slot img,.slot canvas{max-width:56px;max-height:46px;object-fit:contain}
+.slot .x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:var(--panel-2);display:grid;place-items:center;font-size:.8rem;line-height:1;cursor:pointer;color:var(--text)}
+.slot-mid{display:grid;place-items:center;border-radius:10px;background:repeating-linear-gradient(45deg, #1b1916 0 6px, #1f1c19 6px 12px);color:var(--faint);font:500 .66rem/1.3 var(--f-mono);text-align:center;padding:6px;letter-spacing:.05em;text-transform:uppercase}
+.range{display:flex;align-items:center;gap:12px}
+.range input{flex:1;accent-color:var(--amber)}
+.range output{font:500 .85rem/1 var(--f-mono);min-width:4ch;text-align:right}
+.sparelist{display:flex;flex-wrap:wrap;gap:6px;min-height:34px}
+.sparelist .chip{padding:5px 10px;font:500 .8rem/1 var(--f-mono)}
+.sparelist .empty{color:var(--faint);font-size:.88rem}
+.summary{border-top:1px solid var(--line);padding:clamp(16px,2.4vw,26px);display:grid;gap:12px;background:var(--panel-2)}
+.lines{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:.92rem}
+.lines li{display:flex;justify-content:space-between;gap:12px}
+.lines li span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lines li.sub span:first-child{color:var(--muted)}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.total b{font:900 2.4rem/1 var(--f-display)}
+.total small{color:var(--faint);font-size:.78rem}
+.summary .row{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:900px){
+  .cfg{grid-template-columns:1fr}
+  .cfg-stage{top:calc(env(safe-area-inset-top,0px) + 64px);padding-block:8px;border-bottom:1px solid var(--line)}
+  .canvas-wrap{width:min(100%, 34vh);justify-self:center;padding:6px}
+  .stage-top{display:none}
+  .stage-actions .btn{padding:6px 12px;font-size:.84rem}
+  .stage-top .toggle{display:none}
+  .warns li{font-size:.78rem;padding:5px 9px}
+}
+
+/* Ersparnis */
+.sv-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,4vw,56px);align-items:start}
+.sv-controls{display:grid;gap:20px}
+.sv-controls .range input{min-width:0}
+.sv-controls label{font-weight:600;font-size:.95rem;display:block;margin-bottom:8px}
+.sv-result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sv-result div{padding:14px 12px 14px 0}
+.sv-result div+div{padding-left:12px;border-left:1px solid var(--line)}
+.sv-result b{display:block;font:900 2.2rem/1 var(--f-display)}
+.sv-result span{display:block;font:500 .7rem/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:clamp(14px,2vw,22px);display:grid;gap:12px;min-width:0}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.86rem;color:var(--text)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .tip{position:absolute;top:0;left:0;background:rgba(15,14,13,.95);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:500 .78rem/1.5 var(--f-mono);pointer-events:none;white-space:nowrap}
+.chart .tip i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+details.tbl summary{cursor:pointer;color:var(--muted);font-size:.86rem}
+details.tbl table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.86rem}
+details.tbl th,details.tbl td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+details.tbl th:first-child,details.tbl td:first-child{text-align:left}
+@media (max-width:900px){.sv-grid{grid-template-columns:1fr}}
+
+/* Maße */
+.tech-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.tech-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:clamp(14px,2vw,24px);display:grid;gap:16px;min-width:0}
+.tech-card svg{display:block;width:100%;height:auto}
+.keys{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.92rem}
+.keys li{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center}
+.keys li i{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--amber);display:grid;place-items:center;font:600 .72rem/1 var(--f-mono);font-style:normal;color:var(--amber)}
+.keys li span:last-child{font-family:var(--f-mono);color:var(--muted);font-size:.84rem;text-align:right}
+.specs{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0;font-size:.95rem;margin:0}
+.specs dt,.specs dd{padding:10px 0;border-bottom:1px solid var(--line);margin:0}
+.specs dt{color:var(--muted);padding-right:20px;font-family:var(--f-mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;padding-top:13px}
+@media (max-width:900px){.tech-grid{grid-template-columns:1fr}}
+
+/* Zielgruppen */
+.aud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+.aud article{padding:24px 22px 8px 0;display:grid;gap:12px;align-content:start}
+.aud article+article{padding-left:22px;border-left:1px solid var(--line)}
+.aud svg{width:40px;height:40px;color:var(--cream)}
+.aud p{color:var(--muted);font-size:.96rem}
+@media (max-width:900px){.aud{grid-template-columns:repeat(2,minmax(0,1fr))}.aud article:nth-child(3){padding-left:0;border-left:0}.aud article:nth-child(n+3){border-top:1px solid var(--line)}}
+@media (max-width:520px){.aud{grid-template-columns:1fr}.aud article{padding-left:0!important;border-left:0!important}.aud article+article{border-top:1px solid var(--line)}}
+.origin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,32px);margin-top:clamp(40px,6vw,72px)}
+.origin div{display:grid;gap:8px}
+.origin b{font:900 2.6rem/1 var(--f-display);color:var(--cream)}
+.origin span{color:var(--muted);font-size:.95rem}
+@media (max-width:700px){.origin{grid-template-columns:1fr}}
+
+/* FAQ */
+.faq{display:grid;gap:0;max-width:860px}
+.faq details{border-top:1px solid var(--line);padding:18px 0}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:700;font-size:1.08rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.5rem/1 var(--f-mono);color:var(--muted)}
+.faq details[open] summary::after{content:"–"}
+.faq p{color:var(--muted);margin-top:10px;max-width:68ch}
+
+footer{border-top:1px solid var(--line);padding-block:48px calc(48px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end}
+footer p{color:var(--muted);font-size:.9rem;max-width:56ch}
+
+/* Modal & Toast */
+.modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(5,5,4,.78);padding:max(16px, env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) max(16px, env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px))}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-m);padding:20px;display:grid;gap:14px;width:min(560px,100%);max-height:100%;overflow:auto}
+.modal-card img{width:100%;height:auto;border-radius:8px;background:repeating-conic-gradient(#1d1b18 0% 25%, #262320 0% 50%) 50%/20px 20px}
+.modal-card .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;background:var(--text);color:var(--ink);padding:12px 18px;border-radius:999px;font-weight:700;font-size:.92rem;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:calc(100% - 32px);text-align:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 64 64">
+    <g fill="none" stroke="currentColor" stroke-width="3"><circle cx="38" cy="38" r="21"/><circle cx="38" cy="38" r="13.5"/></g>
+    <circle cx="38" cy="38" r="6" fill="currentColor"/>
+    <g transform="translate(38 38) rotate(-128) scale(.8)">
+      <path d="M6 0C14-8 30-11 46-7C50-5 52-2 52 0L47 3L49 5L42 6L44 9L35 9L36 12L26 10C18 9 10 5 6 0Z" fill="#0f0e0d" stroke="currentColor" stroke-width="3.6" stroke-linejoin="round"/>
+      <path d="M0 0L50 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#start" aria-label="Smart Dart – zum Anfang">
+      <svg><use href="#mark"/></svg>
+      <span><b>SMART DART</b><small>DO IT SMART</small></span>
+    </a>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="#idee">Idee</a>
+      <a href="#aufbau">Aufbau in 3D</a>
+      <a href="#konfigurator">Konfigurator</a>
+      <a href="#ersparnis">Ersparnis</a>
+      <a href="#masse">Maße</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary btn-sm" href="#konfigurator">Jetzt gestalten</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="start">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Steeldart · Sisal · Modular</p>
+      <h1>Tausch das Feld. <em>Nicht die Scheibe.</em></h1>
+      <p class="lead">Smart Dart ist die erste Steeldart-Scheibe mit austauschbaren Feldern. Ist die Triple&nbsp;20 durchgespielt, ersetzt du genau dieses eine Feld. Das Design bestimmst du selbst: Größe, Farben, Catchring, Logos und Name.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#konfigurator">Scheibe gestalten</a>
+        <a class="btn btn-ghost" href="#aufbau">Feldwechsel in 3D ansehen</a>
+      </div>
+      <div class="facts">
+        <div><b>Ø 451</b><span>mm Turniermaß</span></div>
+        <div><b>82</b><span>Felder einzeln tauschbar</span></div>
+        <div><b>74,95 €</b><span>Scheibe ab</span></div>
+        <div><b>9,99 €</b><span>pro Ersatzfeld</span></div>
+      </div>
+    </div>
+    <div class="hero-stage" id="heroStage">
+      <canvas id="heroCanvas" width="1000" height="1100" role="img" aria-label="Smart-Dart-Scheibe, aus der einzelne Felder herausgehoben werden"></canvas>
+      <div class="callout" id="heroCallout"><b>Triple 20</b><span>einzeln austauschbar · 9,99 €</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- IDEE -->
+<section class="sec" id="idee">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Die Idee</p>
+      <h2>Eine Scheibe nutzt sich nicht gleichmäßig ab</h2>
+      <p>Wer 501 spielt, wirft fast immer auf dieselben paar Felder. Dort ist das Sisal irgendwann durch, der Rest der Scheibe ist noch gut. Bisher heißt das: neue Scheibe kaufen.</p>
+    </div>
+    <div class="pl-grid">
+      <div class="pl-col">
+        <div class="pl-block">
+          <h3>Das Problem</h3>
+          <ul class="plist">
+            <li><div><b>Scheiben verschleißen schnell.</b> <span>Rund um die 20 und die 19 entstehen Löcher, Darts prallen ab oder fallen heraus.</span></div></li>
+            <li><div><b>Ersatz ist teuer.</b> <span>Weil sich einzelne Felder nicht tauschen lassen, wird jedes Mal die komplette Scheibe neu gekauft.</span></div></li>
+            <li><div><b>Kein eigenes Design.</b> <span>Es gibt keine vollständig personalisierbare Steeldart-Scheibe mit austauschbaren Feldern.</span></div></li>
+          </ul>
+        </div>
+        <div class="pl-block">
+          <h3>Die Lösung: Smart Dart</h3>
+          <ul class="plist good">
+            <li><div><b>Modular.</b> <span>Jedes der 82 Felder sitzt einzeln in der Grundplatte und lässt sich herausnehmen.</span></div></li>
+            <li><div><b>Personalisierbar.</b> <span>Farben, Catchring, Logos und Name gestaltest du online im Konfigurator.</span></div></li>
+            <li><div><b>Nachhaltig.</b> <span>Getauscht wird nur, was kaputt ist. Grundplatte und restliche Felder bleiben.</span></div></li>
+            <li><div><b>Kosteneffizient.</b> <span>Ein Ersatzfeld kostet 9,99 € statt einer neuen Scheibe.</span></div></li>
+          </ul>
+        </div>
+        <div class="bignum"><b>82 – 1</b><span>Felder bleiben in der Scheibe, wenn die Triple&nbsp;20 getauscht wird.</span></div>
+      </div>
+      <figure class="heat-card" style="margin:0">
+        <canvas id="heatCanvas" width="900" height="900" role="img" aria-label="Schematische Verschleißkarte: am stärksten belastet sind Triple 20, die Single-Felder der 20 und ihre Nachbarn 1 und 5"></canvas>
+        <div class="heat-legend"><span>Verschleiß</span><span>gering</span><i></i><span>stark</span></div>
+        <figcaption>Typische Verschleißzonen beim 501-Spiel (schematisch). Genau diese Felder gibt es bei Smart Dart einzeln nachzukaufen.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 3D -->
+<section class="sec" id="aufbau">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Aufbau in 3D</p>
+      <h2>So funktioniert der Feldwechsel</h2>
+      <p>Dreh die Scheibe, tippe auf ein Feld und nimm es heraus. Die Explosionsansicht zeigt, aus welchen Schichten Smart Dart besteht.</p>
+    </div>
+    <div class="v3-grid">
+      <div class="v3-col">
+      <div class="v3-stage" id="v3">
+        <canvas id="v3Canvas" aria-label="Interaktive 3D-Ansicht der Smart-Dart-Scheibe"></canvas>
+        <div class="v3-labels" id="v3Labels"></div>
+        <div class="v3-toolbar">
+          <div class="seg" role="group" aria-label="Ansicht">
+            <button type="button" id="v3Assembled" aria-pressed="true">Zusammengebaut</button>
+            <button type="button" id="v3Exploded" aria-pressed="false">Explosion</button>
+          </div>
+          <button type="button" class="chip" id="v3Reset">Felder einsetzen</button>
+        </div>
+        <div class="v3-hint">
+          <span class="v3-drag" id="v3Drag">Ziehen zum Drehen · Feld antippen zum Herausnehmen</span>
+        </div>
+        <div class="v3-fallback" id="v3Fallback" hidden>
+          <canvas id="v3FallbackCanvas" width="800" height="800" aria-hidden="true"></canvas>
+          <p class="muted">Die 3D-Ansicht braucht WebGL. Hier siehst du die Scheibe mit herausgenommener Triple&nbsp;20.</p>
+        </div>
+      </div>
+      <div class="v3-info" id="v3Info" aria-live="polite">
+        <div><b id="v3InfoTitle">Feld antippen</b><p id="v3InfoText">Tippe auf ein Feld, um es aus der Scheibe zu nehmen.</p></div>
+        <div class="row" id="v3InfoActions" hidden>
+          <button type="button" class="btn btn-primary btn-sm" id="v3AddSpare">Als Ersatzfeld vormerken</button>
+        </div>
+      </div>
+      </div>
+      <div>
+        <ol class="steps">
+          <li><div><b>Zahlenring und Drahtspinne abnehmen</b><span>Die Spinne liegt auf den Feldern und hält sie in Position.</span></div></li>
+          <li><div><b>Abgenutztes Feld herausziehen</b><span>Jedes Feld ist ein eigenes Sisal-Segment mit passgenauer Form.</span></div></li>
+          <li><div><b>Neues Feld einsetzen, Spinne auflegen</b><span>Das Ersatzfeld kommt in deinen Farben – passend zur restlichen Scheibe.</span></div></li>
+        </ol>
+        <div class="layers" aria-label="Schichten der Scheibe">
+          <div><span>Zahlenring</span><span>abnehmbar</span></div>
+          <div><span>Drahtspinne</span><span>Rund, Dreieck oder Klinge</span></div>
+          <div><span>82 Sisal-Felder</span><span>einzeln tauschbar</span></div>
+          <div><span>Grundplatte mit Rand</span><span>bleibt dauerhaft</span></div>
+          <div><span>Catchring</span><span>optional, bedruckbar</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KONFIGURATOR -->
+<section class="sec" id="konfigurator">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Konfigurator</p>
+      <h2>Gestalte deine Smart Dart</h2>
+      <p>Jede Änderung siehst du sofort in der Vorschau. Logos und Texte kommen auf den Catchring, damit Zahlen und Wertungsfelder frei bleiben. Dein Design kannst du als Bild speichern.</p>
+    </div>
+    <div class="cfg">
+      <div class="cfg-stage">
+        <div class="stage-top">
+          <span class="dimlabel" id="dimLabel">Ø 451 mm</span>
+          <label class="toggle"><input type="checkbox" id="heatToggle"> Verschleiß-Zonen</label>
+        </div>
+        <div class="canvas-wrap" id="cfgWrap">
+          <canvas id="cfgCanvas" width="1000" height="1000" role="img" aria-label="Vorschau deiner konfigurierten Dartscheibe"></canvas>
+          <div class="hover-tip" id="hoverTip" hidden></div>
+        </div>
+        <ul class="warns" id="warns" aria-live="polite"></ul>
+        <div class="stage-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="btnExport">Rendering speichern</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnReset">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div class="cfg-panel">
+        <div class="tabs" role="tablist" aria-label="Konfigurator-Bereiche">
+          <button type="button" role="tab" id="t-size" aria-controls="p-size" aria-selected="true"><span class="n">Schritt 1</span>Größe</button>
+          <button type="button" role="tab" id="t-colors" aria-controls="p-colors" aria-selected="false" tabindex="-1"><span class="n">Schritt 2</span>Farben</button>
+          <button type="button" role="tab" id="t-pers" aria-controls="p-pers" aria-selected="false" tabindex="-1"><span class="n">Schritt 3</span>Logos</button>
+          <button type="button" role="tab" id="t-spares" aria-controls="p-spares" aria-selected="false" tabindex="-1"><span class="n">Schritt 4</span>Ersatz</button>
+        </div>
+
+        <!-- Größe -->
+        <div class="tabpanel" role="tabpanel" id="p-size" aria-labelledby="t-size">
+          <fieldset class="group">
+            <legend>Scheibe</legend>
+            <div class="opts c3" id="optSize"></div>
+          </fieldset>
+          <fieldset class="group">
+            <legend>Catchring (Wandschutz &amp; Druckfläche)</legend>
+            <div class="opts c4" id="optRing"></div>
+          </fieldset>
+          <div class="sizeviz">
+            <svg id="sizeViz" viewBox="-420 -420 840 840" role="img" aria-label="Größenvergleich maßstabsgetreu"></svg>
+            <p id="sizeText"></p>
+          </div>
+        </div>
+
+        <!-- Farben -->
+        <div class="tabpanel" role="tabpanel" id="p-colors" aria-labelledby="t-colors" hidden>
+          <div class="group">
+            <p class="glabel">Farbschema</p>
+            <div class="presets" id="presets"></div>
+          </div>
+          <div class="group">
+            <p class="glabel">Einzelne Farben</p>
+            <div class="colors" id="colorInputs"></div>
+          </div>
+          <div class="group">
+            <p class="glabel">Drahtspinne – Farbe</p>
+            <div class="chips" id="chipWire"></div>
+          </div>
+          <div class="group">
+            <p class="glabel">Drahtspinne – Profil</p>
+            <div class="chips" id="chipProfile"></div>
+            <small class="muted" id="profileText"></small>
+          </div>
+          <div class="group">
+            <p class="glabel">Zahlen</p>
+            <div class="chips" id="chipNum"></div>
+            <div class="chips" id="chipFont"></div>
+          </div>
+        </div>
+
+        <!-- Personalisierung -->
+        <div class="tabpanel" role="tabpanel" id="p-pers" aria-labelledby="t-pers" hidden>
+          <div class="group">
+            <p class="glabel">Vorlage laden</p>
+            <div class="chips" id="chipEdition"></div>
+          </div>
+          <div class="notice" id="ringNotice" hidden>
+            <span>Logos und Texte werden auf den Catchring gedruckt. Auf der Scheibe selbst würden sie Zahlen und Wertungsfelder verdecken.</span>
+            <button type="button" class="btn btn-primary btn-sm" id="addRing">Catchring Ø 700 mm hinzufügen</button>
+          </div>
+          <div class="group" id="persRing">
+            <p class="glabel">Text auf dem Catchring</p>
+            <div class="two">
+              <div class="field"><label for="txtTop">Oben</label><input type="text" id="txtTop" maxlength="28" autocomplete="off"><small>bis 28 Zeichen</small></div>
+              <div class="field"><label for="txtBottom">Unten</label><input type="text" id="txtBottom" maxlength="28" autocomplete="off"><small>bis 28 Zeichen</small></div>
+            </div>
+            <div class="chips" id="chipTextFont"></div>
+            <label class="color" style="max-width:280px"><input type="color" id="txtColor"><span>Schriftfarbe<code id="txtColorCode"></code></span></label>
+          </div>
+          <div class="group" id="persLogos">
+            <p class="glabel">Logos (PNG, JPG oder SVG)</p>
+            <div class="slotmap" id="slotmap"></div>
+            <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
+            <div class="range"><span class="muted" style="font-size:.86rem">Logo-Größe</span><input type="range" id="logoScale" min="50" max="100" step="5"><output id="logoScaleOut">85 %</output></div>
+            <div class="chips" id="chipPlaque"></div>
+          </div>
+          <div class="group">
+            <div class="field"><label for="rimName">Name auf dem Scheibenrand</label><input type="text" id="rimName" maxlength="18" autocomplete="off" placeholder="z. B. JULIAN K."><small>Kleine Gravur unter der 3, außerhalb der Wertungsfelder</small></div>
+          </div>
+        </div>
+
+        <!-- Ersatzfelder -->
+        <div class="tabpanel" role="tabpanel" id="p-spares" aria-labelledby="t-spares" hidden>
+          <p class="muted">Tippe in der Vorschau auf die Felder, die du als Ersatz bestellen möchtest. Ersatzfelder kommen in den Farben deiner Konfiguration.</p>
+          <div class="group">
+            <p class="glabel">Schnellauswahl</p>
+            <div class="chips" id="chipSets"></div>
+          </div>
+          <div class="group">
+            <p class="glabel">Ausgewählte Felder <span id="spareCount"></span></p>
+            <div class="sparelist" id="spareList"></div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <ul class="lines" id="lines"></ul>
+          <div class="total"><div><small>Gesamt inkl. MwSt.</small></div><b class="mono" id="total">0,00 €</b></div>
+          <div class="row">
+            <button type="button" class="btn btn-primary" id="btnOrder">Konfiguration anfragen</button>
+          </div>
+          <small class="muted" style="font-size:.78rem">Konzeptpreise des Projekts. Der Online-Shop ist noch nicht live.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERSPARNIS -->
+<section class="sec" id="ersparnis">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Ersparnis-Rechner</p>
+      <h2>Was dich deine Scheibe wirklich kostet</h2>
+      <p>Stell ein, wie oft du bisher eine neue Scheibe kaufst und wie viele Felder du bei Smart Dart tauschen würdest. Die Werte sind Beispiele – passe sie an dein Spiel an.</p>
+    </div>
+    <div class="sv-grid">
+      <div class="sv-controls">
+        <div><label for="svPrice">Preis deiner bisherigen Scheibe</label><div class="range"><input type="range" id="svPrice" min="30" max="120" step="5" value="60"><output class="mono" id="svPriceOut">60 €</output></div></div>
+        <div><label for="svPer">Neue Scheiben pro Jahr</label><div class="range"><input type="range" id="svPer" min="1" max="6" step="1" value="2"><output class="mono" id="svPerOut">2</output></div></div>
+        <div><label for="svFields">Getauschte Felder pro Jahr mit Smart Dart</label><div class="range"><input type="range" id="svFields" min="0" max="24" step="1" value="4"><output class="mono" id="svFieldsOut">4</output></div></div>
+        <div><label for="svYears">Zeitraum</label><div class="range"><input type="range" id="svYears" min="1" max="5" step="1" value="3"><output class="mono" id="svYearsOut">3 J.</output></div></div>
+        <div class="sv-result">
+          <div><b class="mono" id="svSave">0 €</b><span>gespart</span></div>
+          <div><b class="mono" id="svBoards">0</b><span>Scheiben weniger im Müll</span></div>
+          <div><b class="mono" id="svBreak">–</b><span>günstiger ab</span></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="legend"><span><i style="border-color:var(--series-smart)"></i>Smart Dart (74,95 € + Ersatzfelder)</span><span><i style="border-color:var(--series-conv);border-top-style:dashed"></i>Herkömmliche Scheiben</span></div>
+        <div class="chart" id="svChart"></div>
+        <details class="tbl"><summary>Werte als Tabelle</summary><div style="overflow-x:auto"><table id="svTable"></table></div></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MASSE -->
+<section class="sec" id="masse">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Maße &amp; Technik</p>
+      <h2>Turniermaß bis auf den Millimeter</h2>
+      <p>Die Turnier-Version hat die Standardmaße einer Steeldart-Scheibe. Die kleineren Versionen sind maßstäblich verkleinert und für Freizeit und Kinder gedacht.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <svg id="techSvg" viewBox="-250 -250 500 520" role="img" aria-label="Technische Zeichnung der Scheibe mit Maßen"></svg>
+        <ul class="keys">
+          <li><i>A</i><span>Durchmesser der Scheibe</span><span>451 mm</span></li>
+          <li><i>B</i><span>Double-Ring, 8 mm breit</span><span>r 162–170 mm</span></li>
+          <li><i>C</i><span>Triple-Ring, 8 mm breit</span><span>r 99–107 mm</span></li>
+          <li><i>D</i><span>Single-Bull (25)</span><span>Ø 31,8 mm</span></li>
+          <li><i>E</i><span>Bullseye (50)</span><span>Ø 12,7 mm</span></li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <svg id="ocheSvg" viewBox="0 0 520 360" role="img" aria-label="Seitenansicht: Bullseye in 1,73 Meter Höhe, Abwurflinie 2,37 Meter vor der Scheibe"></svg>
+        <dl class="specs">
+          <dt>Material</dt><dd>Sisal aus Kenia, Grundplatte mit Rand</dd>
+          <dt>Felder</dt><dd>82 einzeln austauschbare Segmente</dd>
+          <dt>Größen</dt><dd>Ø 451 mm (Turnier), Ø 400 mm, Ø 330 mm</dd>
+          <dt>Spinne</dt><dd>Silber, Schwarz, Gold, Kupfer · Rund, Dreieck, Klinge</dd>
+          <dt>Catchring</dt><dd>Ø 600, 700 oder 800 mm, bedruckbar</dd>
+          <dt>Montage</dt><dd>Bullseye auf 1,73 m, Abwurflinie 2,37 m</dd>
+          <dt>Versand</dt><dd>Aus unserem Lager in Frankfurt am Main</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIELGRUPPEN -->
+<section class="sec" id="fuer-wen">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Für wen</p>
+      <h2>Vom Hobbykeller bis zur Dartkneipe</h2>
+    </div>
+    <div class="aud">
+      <article>
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="20" cy="20" r="16"/><circle cx="20" cy="20" r="9"/><circle cx="20" cy="20" r="2.5" fill="currentColor"/></svg>
+        <h3>Freizeitspieler</h3>
+        <p>Eine Scheibe im eigenen Design. Ist die 20 durch, kostet die Reparatur 9,99 € statt einer neuen Scheibe.</p>
+      </article>
+      <article>
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 4l13 5v11c0 8-6 13-13 16C13 33 7 28 7 20V9z"/><path d="M14 20l4 4 8-9"/></svg>
+        <h3>Vereine &amp; Turniere</h3>
+        <p>Vereinsfarben, Wappen auf dem Catchring und Turniermaß Ø 451 mm. Ersatzfelder in den eigenen Farben nachbestellen.</p>
+      </article>
+      <article>
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 8h16l-2 26H13z"/><path d="M27 13h4a3 3 0 013 3v5a3 3 0 01-3 3h-5"/><path d="M12 15h14"/></svg>
+        <h3>Bars &amp; Kneipen</h3>
+        <p>Scheiben im Dauereinsatz brauchen schnellen Ersatz. Felder liegen im Schrank, der Spielbetrieb läuft weiter.</p>
+      </article>
+      <article>
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 34l6-20 14 14z"/><path d="M22 6v5M30 10l-3 3M34 18h-5"/><circle cx="31" cy="30" r="2"/></svg>
+        <h3>Event-Locations</h3>
+        <p>Firmenfeiern, Turniere, Partys: Logos und Eventname auf dem Catchring, passend zum Anlass.</p>
+      </article>
+    </div>
+    <div class="origin">
+      <div><b>Kenia</b><span>Kenia gehört zu den wichtigsten Sisal-Produzenten der Welt. Dort werden unsere Felder gefertigt.</span></div>
+      <div><b>Frankfurt</b><span>Lager mit 350 Quadratmetern und direkter Anbindung an Autobahnen und Hauptbahnhof für schnellen Versand.</span></div>
+      <div><b>Online</b><span>Bestellung und Gestaltung im eigenen Webshop, dazu Vertrieb über Partner und Dart-Vereine.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Fragen &amp; Antworten</p>
+      <h2>Gut zu wissen</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Passen normale Steeldarts?</summary><p>Ja. Smart Dart ist eine Sisal-Scheibe für Steeldarts mit Metallspitze. Softdarts mit Kunststoffspitze sind dafür nicht gedacht.</p></details>
+      <details><summary>Ist die Scheibe turniertauglich?</summary><p>Die Turnier-Version hat die Standardmaße: Ø 451 mm, Triple- und Double-Ring je 8 mm breit, Bullseye Ø 12,7 mm, Single-Bull Ø 31,8 mm. Die Versionen mit 400 und 330 mm sind für Freizeit und Kinder gedacht.</p></details>
+      <details><summary>Wie tausche ich ein Feld?</summary><p>Zahlenring und Drahtspinne abnehmen, das abgenutzte Feld herausziehen, das neue einsetzen und die Spinne wieder auflegen. In der 3D-Ansicht oben kannst du das ausprobieren.</p></details>
+      <details><summary>Bekomme ich Ersatzfelder in meinen Farben?</summary><p>Ja. Ersatzfelder werden in den Farben deiner Konfiguration gefertigt, auch wenn du ein eigenes Farbschema gewählt hast.</p></details>
+      <details><summary>Warum kommen Logos auf den Catchring und nicht auf die Scheibe?</summary><p>Zahlen und Wertungsfelder müssen frei und gut lesbar bleiben. Der Catchring bietet rundherum Platz für Logos und Texte und schützt nebenbei die Wand vor Fehlwürfen.</p></details>
+      <details><summary>Wo wird produziert und von wo wird verschickt?</summary><p>Die Sisal-Felder werden in Kenia gefertigt. Verschickt wird aus unserem Lager in Frankfurt am Main.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#start">
+      <svg><use href="#mark"/></svg>
+      <span><b>SMART DART</b><small>DO IT SMART</small></span>
+    </a>
+    <p>Smart Dart ist ein Geschäftsidee-Projekt von Lukas H., Anselm H., Julian K. und Julian G. Alle Preise sind Konzeptpreise inkl. MwSt.</p>
+  </div>
+</footer>
+
+<div class="modal" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle" hidden>
+  <div class="modal-card">
+    <h3 id="exportTitle">Dein Rendering</h3>
+    <img id="exportImg" alt="Rendering deiner konfigurierten Smart-Dart-Scheibe">
+    <label class="toggle"><input type="checkbox" id="exportTransparent"> Transparenter Hintergrund</label>
+    <p class="muted" style="font-size:.86rem">2400 × 2400 Pixel, ideal für Präsentationen. Falls der Download nicht startet: Bild gedrückt halten oder Rechtsklick → „Bild speichern“.</p>
+    <div class="row">
+      <a class="btn btn-primary btn-sm" id="exportDl" download="smart-dart-rendering.png" href="#">PNG herunterladen</a>
+      <button type="button" class="btn btn-ghost btn-sm" id="exportClose">Schließen</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+(function(){
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const TAU = Math.PI * 2;
+const DEG = Math.PI / 180;
+const DPR = () => Math.min(window.devicePixelRatio || 1, 2);
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const eur = v => v.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
+const eur0 = v => Math.round(v).toLocaleString('de-DE') + ' €';
+
+/* ---------- Geometrie (mm, Standard-Steeldartscheibe) ---------- */
+const ORDER = [20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
+const GEO = {bull:6.35, ob:15.9, ti:99, to:107, di:162, do:170, num:196.5, board:225.5};
+const ZONES = {Si:['ob','ti'], T:['ti','to'], So:['to','di'], D:['di','do']};
+const FI = {};
+const ALL = ['B50','B25'];
+FI.B50 = {id:'B50', zone:'B50', label:'Bullseye (50)', short:'Bull'};
+FI.B25 = {id:'B25', zone:'B25', label:'Single-Bull (25)', short:'25'};
+ORDER.forEach((n, i) => {
+  for (const z of ['Si','T','So','D']) {
+    const id = z + n;
+    const label = z === 'T' ? 'Triple ' + n : z === 'D' ? 'Double ' + n : z === 'Si' ? 'Single ' + n + ' innen' : 'Single ' + n + ' außen';
+    const short = z === 'T' ? 'T' + n : z === 'D' ? 'D' + n : z === 'Si' ? 'S' + n + ' i' : 'S' + n + ' a';
+    FI[id] = {id, zone:z, num:n, idx:i, label, short};
+    ALL.push(id);
+  }
+});
+const segAngles = i => { const c = -Math.PI/2 + i * TAU/20; return [c - TAU/40, c + TAU/40]; };
+
+function fieldPath(ctx, id, s) {
+  ctx.beginPath();
+  if (id === 'B50') { ctx.arc(0, 0, GEO.bull*s, 0, TAU); return; }
+  if (id === 'B25') { ctx.moveTo(GEO.ob*s, 0); ctx.arc(0, 0, GEO.ob*s, 0, TAU); ctx.moveTo(GEO.bull*s, 0); ctx.arc(0, 0, GEO.bull*s, TAU, 0, true); return; }
+  const f = FI[id], [a1, a2] = segAngles(f.idx), [k1, k2] = ZONES[f.zone];
+  ctx.arc(0, 0, GEO[k2]*s, a1, a2); ctx.arc(0, 0, GEO[k1]*s, a2, a1, true); ctx.closePath();
+}
+function fieldCenter(id, s) {
+  if (id === 'B50' || id === 'B25') return [0, 0];
+  const f = FI[id], [k1, k2] = ZONES[f.zone], r = (GEO[k1] + GEO[k2]) / 2 * s, a = -Math.PI/2 + f.idx * TAU/20;
+  return [Math.cos(a) * r, Math.sin(a) * r];
+}
+function hitField(cfg, x, y) {
+  const s = cfg.size / 451, r = Math.hypot(x, y) / s;
+  if (r <= GEO.bull) return 'B50';
+  if (r <= GEO.ob) return 'B25';
+  if (r > GEO.do) return null;
+  let a = Math.atan2(y, x) / DEG + 90 + 9; a = ((a % 360) + 360) % 360;
+  const idx = Math.floor(a / 18), n = ORDER[idx];
+  const z = r <= GEO.ti ? 'Si' : r <= GEO.to ? 'T' : r <= GEO.di ? 'So' : 'D';
+  return z + n;
+}
+
+/* ---------- Farben ---------- */
+function hexRgb(h) { h = String(h).replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function rgbHex(r, g, b) { return '#' + [r,g,b].map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2,'0')).join(''); }
+function mix(h, t, f) { const a = hexRgb(h), b = hexRgb(t); return rgbHex(a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f); }
+function lin(v) { v /= 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }
+function lum(h) { const [r,g,b] = hexRgb(h).map(lin); return .2126*r + .7152*g + .0722*b; }
+function contrast(a, b) { const A = lum(a), B = lum(b); return (Math.max(A,B) + .05) / (Math.min(A,B) + .05); }
+function lab(h) {
+  const [r,g,b] = hexRgb(h).map(lin);
+  let x = (r*.4124 + g*.3576 + b*.1805) / .95047, y = r*.2126 + g*.7152 + b*.0722, z = (r*.0193 + g*.1192 + b*.9505) / 1.08883;
+  const f = t => t > .008856 ? Math.cbrt(t) : 7.787*t + 16/116;
+  x = f(x); y = f(y); z = f(z);
+  return [116*y - 16, 500*(x - y), 200*(y - z)];
+}
+function dE(a, b) { const A = lab(a), B = lab(b); return Math.hypot(A[0]-B[0], A[1]-B[1], A[2]-B[2]); }
+
+const WIRES = {
+  silber:{label:'Silber', base:'#c3c7cd', hi:'#f7f9fb', lo:'#5f646b'},
+  schwarz:{label:'Schwarz', base:'#2b2c2f', hi:'#73767c', lo:'#060607'},
+  gold:{label:'Gold', base:'#c9a24a', hi:'#f7e3a6', lo:'#6e5017'},
+  kupfer:{label:'Kupfer', base:'#b8734a', hi:'#f1c09c', lo:'#5e321b'}
+};
+const PROFILES = {
+  rund:{label:'Rund', w:1.5, hi:.4, text:'Klassischer Runddraht, robust und günstig.'},
+  dreieck:{label:'Dreieck', w:1.15, hi:.6, text:'Dreieckiger Draht lenkt Darts eher ins Feld als nach außen.'},
+  klinge:{label:'Klinge', w:.75, hi:.75, text:'Sehr dünne Klingen-Spinne für weniger Abpraller – wie bei Turnierscheiben.'}
+};
+const NUMCOLS = {silber:{label:'Silber', c:'#dfe3e8'}, weiss:{label:'Weiß', c:'#ffffff'}, gold:{label:'Gold', c:'#dcb860'}, schwarz:{label:'Schwarz', c:'#161616'}};
+const FONTS = {
+  sport:{label:'Sport', f:'"Big Shoulders Display","Arial Narrow",sans-serif', w:800, size:1.1, cap:.36},
+  modern:{label:'Modern', f:'"Hanken Grotesk",system-ui,sans-serif', w:700, size:.92, cap:.35},
+  klassik:{label:'Klassik', f:'"Roboto Slab",Georgia,serif', w:700, size:.88, cap:.36}
+};
+const PRESETS = {
+  klassik:{name:'Klassik', wire:'silber', numCol:'silber', c:{dark:'#1c1b19', light:'#eadcb9', ringA:'#cf302b', ringB:'#1f8a4c', bull:'#cf302b', obull:'#1f8a4c', rim:'#1c1b19', surround:'#1f1e1d', text:'#efe8da'}},
+  midnight:{name:'Midnight', wire:'schwarz', numCol:'silber', c:{dark:'#14161b', light:'#808a99', ringA:'#2f6fde', ringB:'#eef1f4', bull:'#2f6fde', obull:'#eef1f4', rim:'#101216', surround:'#151820', text:'#dfe6f0'}},
+  ocean:{name:'Ocean', wire:'silber', numCol:'weiss', c:{dark:'#0f2b3b', light:'#d6e9ec', ringA:'#17a7b8', ringB:'#0c4a6e', bull:'#17a7b8', obull:'#0c4a6e', rim:'#0b2230', surround:'#0d2533', text:'#d6f1f4'}},
+  inferno:{name:'Inferno', wire:'kupfer', numCol:'gold', c:{dark:'#170f0c', light:'#f2d49b', ringA:'#ff6b1a', ringB:'#b3141c', bull:'#ff6b1a', obull:'#b3141c', rim:'#140d0a', surround:'#1b120e', text:'#ffd9a8'}},
+  forest:{name:'Forest', wire:'gold', numCol:'gold', c:{dark:'#18271d', light:'#e4dabd', ringA:'#c9a227', ringB:'#2e6b3f', bull:'#c9a227', obull:'#2e6b3f', rim:'#142019', surround:'#17241b', text:'#e9dcb2'}},
+  royal:{name:'Royal Gold', wire:'gold', numCol:'gold', c:{dark:'#121212', light:'#ece5d3', ringA:'#c9a24a', ringB:'#2a2a2a', bull:'#c9a24a', obull:'#2a2a2a', rim:'#0e0e0e', surround:'#131313', text:'#e8cf8a'}},
+  arctic:{name:'Arctic', wire:'silber', numCol:'weiss', c:{dark:'#2b3440', light:'#f3f5f7', ringA:'#e63946', ringB:'#457b9d', bull:'#e63946', obull:'#457b9d', rim:'#232a33', surround:'#e6eaef', text:'#1f2933'}},
+  neon:{name:'Neon', wire:'schwarz', numCol:'weiss', c:{dark:'#141019', light:'#f4f0ff', ringA:'#ff2e88', ringB:'#7a3cff', bull:'#ff2e88', obull:'#7a3cff', rim:'#110d16', surround:'#16111d', text:'#ffd1e6'}}
+};
+const COLOR_FIELDS = [
+  ['dark','Dunkle Felder'], ['light','Helle Felder'], ['ringA','Double/Triple auf dunklen Feldern'], ['ringB','Double/Triple auf hellen Feldern'],
+  ['bull','Bullseye (50)'], ['obull','Single-Bull (25)'], ['rim','Rand der Scheibe'], ['surround','Catchring']
+];
+const SIZES = [
+  {v:451, name:'Turnier', mm:'Ø 451 mm', note:'Standardmaß für Verein und Turnier', price:74.95, badge:'Turniermaß'},
+  {v:400, name:'Kompakt', mm:'Ø 400 mm', note:'Für kleinere Räume und Freizeit', price:64.95},
+  {v:330, name:'Junior', mm:'Ø 330 mm', note:'Für Kinder und Einsteiger', price:49.95}
+];
+const RINGS = [
+  {v:0, name:'Ohne', mm:'nur Scheibe', price:0},
+  {v:600, name:'S', mm:'Ø 600 mm', price:19.95},
+  {v:700, name:'M', mm:'Ø 700 mm', price:24.95},
+  {v:800, name:'L', mm:'Ø 800 mm', price:29.95}
+];
+const PRICE = {colors:9.95, logo:7.95, rimName:3.95, field:9.99};
+const SLOTS = {ol:-150, or:-30, l:180, r:0, ul:150, ur:30};
+const SLOT_LABEL = {ol:'oben links', or:'oben rechts', l:'links', r:'rechts', ul:'unten links', ur:'unten rechts'};
+const HEAT = (() => {
+  const h = {}; ALL.forEach(id => h[id] = .05);
+  Object.assign(h, {T20:1, So20:.82, Si20:.7, T1:.55, T5:.6, So1:.45, So5:.5, Si1:.32, Si5:.36, D20:.42, T19:.62, So19:.4, Si19:.33, T7:.3, T3:.28, D16:.5, D8:.32, D10:.26, D18:.22, D12:.2, D4:.18, B25:.42, B50:.36, T18:.22, T12:.24, So12:.2, So18:.2, T17:.18, So3:.18, So7:.18, D19:.15, D2:.12, D6:.14, D1:.16, D5:.16});
+  return h;
+})();
+
+/* ---------- Texturen ---------- */
+function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h || w; return c; }
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const TEX = {};
+(function makeTextures() {
+  const r = rng(7);
+  const c = mkCanvas(512), g = c.getContext('2d');
+  for (let i = 0; i < 52000; i++) {
+    const x = r()*512, y = r()*512, w = .6 + r()*1.6, h = .5 + r()*1.1;
+    g.fillStyle = r() < .5 ? `rgba(255,255,255,${.06 + r()*.22})` : `rgba(0,0,0,${.08 + r()*.3})`;
+    g.fillRect(x, y, w, h);
+  }
+  g.lineCap = 'round';
+  for (let i = 0; i < 2600; i++) {
+    const x = r()*512, y = r()*512, a = r()*TAU, l = 2 + r()*6;
+    g.strokeStyle = r() < .5 ? `rgba(255,255,255,${.05 + r()*.12})` : `rgba(0,0,0,${.06 + r()*.15})`;
+    g.lineWidth = .5 + r()*.7; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a)*l, y + Math.sin(a)*l); g.stroke();
+  }
+  TEX.sisal = c;
+  const f = mkCanvas(256), fg = f.getContext('2d');
+  for (let i = 0; i < 22000; i++) {
+    fg.fillStyle = r() < .5 ? `rgba(255,255,255,${.03 + r()*.08})` : `rgba(0,0,0,${.04 + r()*.12})`;
+    fg.fillRect(r()*256, r()*256, 1 + r()*1.4, 1 + r()*1.4);
+  }
+  TEX.foam = f;
+})();
+function texOverlay(ctx, clip, which, alpha, scale) {
+  ctx.save(); clip(); ctx.clip();
+  ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = alpha;
+  const p = ctx.createPattern(TEX[which], 'repeat');
+  try { p.setTransform(new DOMMatrix([scale, 0, 0, scale, 0, 0])); } catch (e) {}
+  ctx.fillStyle = p; ctx.fillRect(-520, -520, 1040, 1040);
+  ctx.restore();
+}
+
+/* ---------- Logos (eingebaute Beispiele) ---------- */
+const VANE = 'M6 0C14-8 30-11 46-7C50-5 52-2 52 0L47 3L49 5L42 6L44 9L35 9L36 12L26 10C18 9 10 5 6 0Z';
+function drawMark(g, color, scale) {
+  g.save(); g.scale(scale, scale);
+  g.strokeStyle = color; g.fillStyle = color; g.lineWidth = 3;
+  g.beginPath(); g.arc(38, 38, 21, 0, TAU); g.stroke();
+  g.beginPath(); g.arc(38, 38, 13.5, 0, TAU); g.stroke();
+  g.beginPath(); g.arc(38, 38, 6, 0, TAU); g.fill();
+  g.save(); g.translate(38, 38); g.rotate(-128*DEG); g.scale(.8, .8);
+  const vane = new Path2D(VANE);
+  g.globalCompositeOperation = 'destination-out'; g.lineWidth = 7; g.fill(vane); g.stroke(vane);
+  g.globalCompositeOperation = 'source-over'; g.lineWidth = 3.6; g.lineJoin = 'round'; g.stroke(vane);
+  g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); g.moveTo(0, 0); g.lineTo(50, 0); g.stroke();
+  g.restore(); g.restore();
+}
+const BUILTIN = {};
+function makeBuiltins() {
+  let c = mkCanvas(512), g = c.getContext('2d');
+  drawMark(g, '#efe8da', 8); BUILTIN['@mark'] = c;
+  c = mkCanvas(512); g = c.getContext('2d');
+  const sh = new Path2D('M256 34L446 96V250C446 372 356 444 256 482C156 444 66 372 66 250V96Z');
+  g.fillStyle = '#1d4d8f'; g.fill(sh); g.lineWidth = 16; g.strokeStyle = '#eef1f4'; g.stroke(sh);
+  g.fillStyle = '#eef1f4'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  g.font = '800 54px "Big Shoulders Display", sans-serif'; g.fillText('1987', 256, 150);
+  g.font = '900 190px "Big Shoulders Display", sans-serif'; g.fillText('DC', 256, 330);
+  g.font = '800 52px "Big Shoulders Display", sans-serif'; g.fillText('PFEILWURF', 256, 398);
+  BUILTIN['@club'] = c;
+  c = mkCanvas(512); g = c.getContext('2d');
+  g.fillStyle = '#c8902e'; g.beginPath(); g.arc(256, 256, 238, 0, TAU); g.fill();
+  g.lineWidth = 12; g.strokeStyle = '#2a1a0a'; g.beginPath(); g.arc(256, 256, 206, 0, TAU); g.stroke();
+  g.fillStyle = '#2a1a0a'; g.textAlign = 'center';
+  g.font = '900 120px "Big Shoulders Display", sans-serif'; g.fillText('HOPFEN', 256, 250);
+  g.font = '800 82px "Big Shoulders Display", sans-serif'; g.fillText('& MALZ', 256, 330);
+  g.font = '600 34px "Hanken Grotesk", sans-serif'; g.fillText('SEIT 1902', 256, 392);
+  BUILTIN['@sponsor'] = c;
+}
+const IMG = {}, BURL = {};
+function builtinURL(ref) { return BURL[ref] || (BURL[ref] = BUILTIN[ref].toDataURL()); }
+function logoSource(ref) {
+  if (!ref) return null;
+  if (ref[0] === '@') return BUILTIN[ref] || null;
+  if (IMG[ref]) return IMG[ref].complete && IMG[ref].naturalWidth ? IMG[ref] : null;
+  const im = new Image(); im.onload = () => scheduleRender(); im.src = ref; IMG[ref] = im; return null;
+}
+
+/* ---------- Renderer ---------- */
+function fieldColor(cfg, id) {
+  if (id === 'B50') return cfg.c.bull;
+  if (id === 'B25') return cfg.c.obull;
+  const f = FI[id], dark = f.idx % 2 === 0;
+  if (f.zone === 'T' || f.zone === 'D') return dark ? cfg.c.ringA : cfg.c.ringB;
+  return dark ? cfg.c.dark : cfg.c.light;
+}
+function arcText(ctx, str, r, mid, dir, spacing) {
+  const chars = [...str];
+  const ws = chars.map(ch => ctx.measureText(ch).width);
+  const total = ws.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
+  let a = mid - dir * total / 2 / r;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  chars.forEach((ch, i) => {
+    const ac = a + dir * ws[i] / 2 / r;
+    ctx.save(); ctx.rotate(ac); ctx.translate(r, 0); ctx.rotate(dir * Math.PI / 2);
+    ctx.fillText(ch, 0, 0); ctx.restore();
+    a += dir * (ws[i] + spacing) / r;
+  });
+  return total / r;
+}
+function fitArcFont(ctx, str, r, maxAngle, size, fam, weight, spacingRatio) {
+  let fs = size;
+  for (let k = 0; k < 6; k++) {
+    ctx.font = `${weight} ${fs}px ${fam}`;
+    const w = [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + fs * spacingRatio * (str.length - 1);
+    if (w / r <= maxAngle) break;
+    fs *= Math.max(.5, (maxAngle * r) / w) * .99;
+  }
+  return fs;
+}
+function surroundLayout(cfg) {
+  const Rb = cfg.size / 2, Rs = cfg.ring / 2, band = Rs - Rb, mid = Rb + band * .5;
+  const L = band * .74 * cfg.logoScale;
+  return {Rb, Rs, band, mid, L, half: (L / 2) / mid};
+}
+function drawSurround(ctx, cfg, o) {
+  const {Rb, Rs, band, mid, L, half} = surroundLayout(cfg);
+  const ring = () => { ctx.beginPath(); ctx.arc(0, 0, Rs, 0, TAU); ctx.moveTo(Rb, 0); ctx.arc(0, 0, Rb, TAU, 0, true); };
+  ctx.save();
+  if (!o.noShadow) { ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 30 * o.k; ctx.shadowOffsetY = 10 * o.k; }
+  ctx.beginPath(); ctx.arc(0, 0, Rs, 0, TAU); ctx.fillStyle = cfg.c.surround; ctx.fill();
+  ctx.restore();
+  texOverlay(ctx, () => { ctx.beginPath(); ctx.arc(0, 0, Rs, 0, TAU); }, 'foam', .9, .5);
+  const g = ctx.createRadialGradient(0, 0, Rb, 0, 0, Rs);
+  g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(.1, 'rgba(0,0,0,.08)'); g.addColorStop(.85, 'rgba(255,255,255,0)'); g.addColorStop(.97, 'rgba(255,255,255,.07)'); g.addColorStop(1, 'rgba(0,0,0,.35)');
+  ring(); ctx.fillStyle = g; ctx.fill('evenodd');
+  // Texte
+  const tf = FONTS[cfg.textFont];
+  const maxHalf = 60 * DEG - half - 3 * DEG;
+  ctx.fillStyle = cfg.c.text;
+  const base = Math.min(Math.max(band * .3, 16), 42) * tf.size;
+  [['textTop', -Math.PI/2, 1], ['textBottom', Math.PI/2, -1]].forEach(([key, ang, dir]) => {
+    const t = (cfg[key] || '').trim().toUpperCase(); if (!t) return;
+    const fs = fitArcFont(ctx, t, mid, maxHalf * 2, base, tf.f, tf.w, .14);
+    ctx.font = `${tf.w} ${fs}px ${tf.f}`;
+    arcText(ctx, t, mid, ang, dir, fs * .14);
+  });
+  // Logos
+  for (const k in SLOTS) {
+    const src = logoSource(cfg.logos[k]); if (!src) continue;
+    const a = SLOTS[k] * DEG, x = Math.cos(a) * mid, y = Math.sin(a) * mid;
+    let inner = L;
+    if (cfg.plaque !== 'none') {
+      ctx.beginPath(); ctx.arc(x, y, L / 2, 0, TAU);
+      ctx.fillStyle = cfg.plaque === 'hell' ? '#f2eee6' : '#121110'; ctx.fill();
+      ctx.lineWidth = Math.max(.6, L * .02); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.stroke();
+      inner = L * .74;
+    }
+    const iw = src.naturalWidth || src.width, ih = src.naturalHeight || src.height;
+    const sc = Math.min(inner / iw, inner / ih);
+    ctx.drawImage(src, x - iw * sc / 2, y - ih * sc / 2, iw * sc, ih * sc);
+  }
+}
+function wirePath(s) {
+  const p = new Path2D();
+  for (const k of ['bull','ob','ti','to','di','do']) { p.moveTo(GEO[k]*s, 0); p.arc(0, 0, GEO[k]*s, 0, TAU); }
+  for (let i = 0; i < 20; i++) {
+    const b = segAngles(i)[0];
+    p.moveTo(Math.cos(b)*GEO.ob*s, Math.sin(b)*GEO.ob*s); p.lineTo(Math.cos(b)*GEO.do*s, Math.sin(b)*GEO.do*s);
+  }
+  return p;
+}
+function drawBoard(ctx, cfg, o) {
+  const P = Object.assign({surround:true, shadow:true, rim:true, fields:true, wires:true, numbers:true, rimText:true, light:true}, o.parts || {});
+  const s = cfg.size / 451, Rb = cfg.size / 2, removed = o.removed || null;
+  ctx.save(); ctx.translate(o.cx, o.cy); ctx.scale(o.k, o.k);
+  if (P.surround && cfg.ring) drawSurround(ctx, cfg, o);
+  if (P.shadow) {
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 22 * o.k; ctx.shadowOffsetY = 8 * o.k;
+    ctx.beginPath(); ctx.arc(0, 0, Rb, 0, TAU); ctx.fillStyle = cfg.c.rim; ctx.fill(); ctx.restore();
+  }
+  if (P.rim) {
+    ctx.beginPath(); ctx.arc(0, 0, Rb, 0, TAU); ctx.fillStyle = cfg.c.rim; ctx.fill();
+    texOverlay(ctx, () => { ctx.beginPath(); ctx.arc(0, 0, Rb, 0, TAU); }, 'sisal', .8, .55);
+  }
+  if (P.fields) {
+    for (const id of ALL) {
+      if (removed && removed.has(id)) continue;
+      fieldPath(ctx, id, s); ctx.fillStyle = fieldColor(cfg, id); ctx.fill('evenodd');
+    }
+    texOverlay(ctx, () => { ctx.beginPath(); ctx.arc(0, 0, GEO.do*s, 0, TAU); }, 'sisal', .85, .55);
+    if (removed) for (const id of removed) drawHole(ctx, id, s);
+  }
+  if (P.wires) {
+    const w = WIRES[cfg.wire], pr = PROFILES[cfg.profile], p = wirePath(s), lw = pr.w * s;
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.save(); ctx.translate(.5*s, .75*s); ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = lw * 1.25; ctx.stroke(p); ctx.restore();
+    ctx.strokeStyle = w.lo; ctx.lineWidth = lw; ctx.stroke(p);
+    ctx.strokeStyle = w.base; ctx.lineWidth = lw * .72; ctx.stroke(p);
+    ctx.save(); ctx.translate(-.18*s, -.22*s); ctx.strokeStyle = w.hi; ctx.globalAlpha = pr.hi; ctx.lineWidth = lw * .28; ctx.stroke(p); ctx.restore();
+    ctx.restore();
+  }
+  if (P.numbers) drawNumbers(ctx, cfg, s);
+  if (P.rimText) {
+    const nc = NUMCOLS[cfg.numCol].c, rr = GEO.num*s + (Rb - GEO.num*s) * .72;
+    ctx.save(); ctx.fillStyle = nc; ctx.globalAlpha = .7;
+    ctx.font = `700 ${6.2*s}px "Hanken Grotesk", sans-serif`;
+    arcText(ctx, 'SMART DART', rr, -Math.PI/2, 1, 2.2*s);
+    const nm = (cfg.rimName || '').trim().toUpperCase();
+    if (nm) { ctx.globalAlpha = .9; ctx.font = `700 ${6.8*s}px "Hanken Grotesk", sans-serif`; arcText(ctx, nm, rr, Math.PI/2, -1, 1.6*s); }
+    ctx.restore();
+  }
+  if (P.light) {
+    const g = ctx.createRadialGradient(-Rb*.35, -Rb*.45, Rb*.05, 0, 0, Rb*1.12);
+    g.addColorStop(0, 'rgba(255,250,240,.13)'); g.addColorStop(.5, 'rgba(255,250,240,0)'); g.addColorStop(1, 'rgba(0,0,0,.3)');
+    ctx.beginPath(); ctx.arc(0, 0, Rb, 0, TAU); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.arc(0, 0, Rb - .9, 0, TAU); ctx.lineWidth = 1.8; ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawHole(ctx, id, s) {
+  ctx.save(); fieldPath(ctx, id, s); ctx.fillStyle = '#4a3e33'; ctx.fill('evenodd'); ctx.clip('evenodd');
+  ctx.globalAlpha = .5; ctx.fillStyle = ctx.createPattern(TEX.sisal, 'repeat'); ctx.fill('evenodd'); ctx.globalAlpha = 1;
+  ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 4 * s; ctx.lineWidth = 2.6*s; ctx.strokeStyle = 'rgba(0,0,0,.8)'; fieldPath(ctx, id, s); ctx.stroke();
+  ctx.restore();
+}
+function drawNumbers(ctx, cfg, s) {
+  const F = FONTS[cfg.font], col = NUMCOLS[cfg.numCol].c, fs = 24 * s * F.size;
+  ctx.save(); ctx.font = `${F.w} ${fs}px ${F.f}`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  const dark = lum(col) > .3;
+  ORDER.forEach((n, i) => {
+    const a = -Math.PI/2 + i * TAU/20, x = Math.cos(a) * GEO.num * s, y = Math.sin(a) * GEO.num * s + fs * F.cap;
+    ctx.fillStyle = dark ? 'rgba(0,0,0,.6)' : 'rgba(255,255,255,.25)'; ctx.fillText(n, x + .5*s, y + .8*s);
+    ctx.fillStyle = col; ctx.fillText(n, x, y);
+  });
+  ctx.restore();
+}
+function drawLooseField(ctx, cfg, id, k, cx, cy, dx, dy, lift) {
+  const s = cfg.size / 451;
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(k, k); ctx.translate(dx, dy);
+  const thick = 7 * s;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.65)'; ctx.shadowBlur = (6 + lift * .5) * k; ctx.shadowOffsetX = lift * .15 * k; ctx.shadowOffsetY = (lift * .55 + 4) * k;
+  ctx.translate(0, thick); fieldPath(ctx, id, s); ctx.fillStyle = mix(fieldColor(cfg, id), '#000000', .45); ctx.fill('evenodd'); ctx.restore();
+  for (let t = thick; t > 0; t -= 1) { ctx.save(); ctx.translate(0, t); fieldPath(ctx, id, s); ctx.fillStyle = mix(fieldColor(cfg, id), '#000000', .3 + .15 * t / thick); ctx.fill('evenodd'); ctx.restore(); }
+  fieldPath(ctx, id, s); ctx.fillStyle = fieldColor(cfg, id); ctx.fill('evenodd');
+  texOverlay(ctx, () => fieldPath(ctx, id, s), 'sisal', .85, .55);
+  ctx.save(); fieldPath(ctx, id, s); ctx.clip('evenodd');
+  const [fx, fy] = fieldCenter(id, s);
+  const g = ctx.createLinearGradient(fx - 40*s, fy - 40*s, fx + 40*s, fy + 40*s);
+  g.addColorStop(0, 'rgba(255,255,255,.16)'); g.addColorStop(1, 'rgba(0,0,0,.12)');
+  ctx.fillStyle = g; ctx.fillRect(fx - 200, fy - 200, 400, 400); ctx.restore();
+  fieldPath(ctx, id, s); ctx.lineWidth = .7 * s; ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.stroke();
+  ctx.restore();
+}
+function drawOverlays(ctx, cfg, o) {
+  const s = cfg.size / 451;
+  ctx.save(); ctx.translate(o.cx, o.cy); ctx.scale(o.k, o.k);
+  if (o.heat) {
+    for (const id of ALL) { const v = HEAT[id]; fieldPath(ctx, id, s); ctx.fillStyle = `rgba(255,108,40,${(v * .88).toFixed(3)})`; ctx.fill('evenodd'); }
+  }
+  if (o.sel && o.sel.size) {
+    for (const id of o.sel) {
+      fieldPath(ctx, id, s); ctx.fillStyle = 'rgba(255,201,77,.42)'; ctx.fill('evenodd');
+      ctx.lineWidth = 1.8 * s; ctx.strokeStyle = '#ffc94d'; ctx.stroke();
+    }
+  }
+  if (o.hover) {
+    fieldPath(ctx, o.hover, s); ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fill('evenodd');
+    ctx.lineWidth = 1.2 * s; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ---------- Zustand ---------- */
+const STORE_KEY = 'smartdart-config-v1';
+function baseCfg() {
+  const p = PRESETS.klassik;
+  return {size:451, ring:700, preset:'klassik', c:Object.assign({}, p.c), wire:p.wire, numCol:p.numCol, profile:'dreieck', font:'sport',
+    textTop:'SMART DART', textBottom:'DO IT SMART', textFont:'sport', logos:{ol:null, or:null, l:'@mark', r:'@mark', ul:null, ur:null},
+    logoScale:.85, plaque:'none', rimName:'', spares:[]};
+}
+let cfg = baseCfg();
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+  if (saved && typeof saved === 'object') { const b = baseCfg(); cfg = Object.assign(b, saved, {c:Object.assign(b.c, saved.c || {}), logos:Object.assign(b.logos, saved.logos || {})}); }
+} catch (e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(cfg)); } catch (e) {} }
+const HERO_CFG = Object.assign(baseCfg(), {ring:0, profile:'klinge'});
+
+/* ---------- Hero ---------- */
+const hero = {targets:['T20','D16','T19'], i:0, t0:0, cacheFull:null, cacheHole:null, cacheId:null};
+function heroSize() { const c = $('#heroCanvas'); const w = Math.round(c.getBoundingClientRect().width * DPR()) || 1000, h = Math.round(w * 1.1); if (c.width !== w) { c.width = w; c.height = h; hero.cacheFull = null; hero.cacheId = null; } return w; }
+function heroGeom(W) { const H = Math.round(W * 1.1); return {cx: W / 2, cy: H - W / 2, k: (W / 2) * .9 / 225.5, H}; }
+function heroCaches(W, id) {
+  const G = heroGeom(W);
+  if (!hero.cacheFull) { hero.cacheFull = mkCanvas(W, G.H); drawBoard(hero.cacheFull.getContext('2d'), HERO_CFG, Object.assign({}, G)); }
+  if (hero.cacheId !== id) { hero.cacheHole = mkCanvas(W, G.H); drawBoard(hero.cacheHole.getContext('2d'), HERO_CFG, Object.assign({removed:new Set([id])}, G)); hero.cacheId = id; }
+}
+function heroFrame(now) {
+  const c = $('#heroCanvas'), ctx = c.getContext('2d'), W = heroSize(), G = heroGeom(W);
+  const period = 4200; if (!hero.t0) hero.t0 = now;
+  let el = now - hero.t0; if (el > period) { hero.t0 = now; el = 0; hero.i = (hero.i + 1) % hero.targets.length; }
+  let t = el / period; if (REDUCED) t = .5;
+  const id = hero.targets[hero.i];
+  const ease = x => x < .5 ? 2*x*x : 1 - Math.pow(-2*x + 2, 2) / 2;
+  const lift = t < .08 ? 0 : t < .3 ? ease((t - .08) / .22) : t < .72 ? 1 : t < .92 ? 1 - ease((t - .72) / .2) : 0;
+  heroCaches(W, id);
+  ctx.clearRect(0, 0, W, G.H);
+  const callout = $('#heroCallout');
+  if (lift < .002) { ctx.drawImage(hero.cacheFull, 0, 0); callout.style.opacity = 0; }
+  else {
+    ctx.drawImage(hero.cacheHole, 0, 0);
+    const [fx, fy] = fieldCenter(id, 1), len = Math.hypot(fx, fy) || 1;
+    const dx = fx / len * 14 * lift, dy = fy / len * 14 * lift - 30 * lift;
+    drawLooseField(ctx, HERO_CFG, id, G.k, G.cx, G.cy, dx, dy, lift * 40);
+    const f = FI[id]; callout.querySelector('b').textContent = f.label;
+    const css = c.getBoundingClientRect().width / W, cw = callout.offsetWidth, ch = callout.offsetHeight, sw = W * css;
+    const px = G.cx + (fx + dx) * G.k, py = G.cy + (fy + dy) * G.k;
+    const left = Math.max(cw / 2 + 2, Math.min(sw - cw / 2 - 2, px * css));
+    callout.style.left = left + 'px'; callout.style.top = '0px';
+    callout.style.opacity = Math.min(1, lift * 1.6);
+    ctx.save(); ctx.globalAlpha = Math.min(1, lift * 1.6); ctx.strokeStyle = '#ffc94d'; ctx.fillStyle = '#ffc94d'; ctx.lineWidth = 1.5 / css;
+    ctx.beginPath(); ctx.moveTo(left / css, ch / css); ctx.lineTo(px, py); ctx.stroke();
+    ctx.beginPath(); ctx.arc(px, py, 4 / css, 0, TAU); ctx.fill(); ctx.restore();
+  }
+  if (!REDUCED) requestAnimationFrame(heroFrame);
+}
+
+/* ---------- Verschleißkarte ---------- */
+function renderHeat() {
+  const c = $('#heatCanvas'), W = Math.round(c.getBoundingClientRect().width * DPR()) || 900;
+  c.width = W; c.height = W;
+  const ctx = c.getContext('2d'), G = {cx: W/2, cy: W/2, k: W/2 * .95 / 225.5};
+  const cf = Object.assign(baseCfg(), {ring:0});
+  drawBoard(ctx, cf, G);
+  drawOverlays(ctx, cf, Object.assign({heat:true}, G));
+  drawBoard(ctx, cf, Object.assign({parts:{surround:false, shadow:false, rim:false, fields:false, rimText:false, light:false}}, G));
+}
+
+/* ---------- Konfigurator ---------- */
+const view = {tab:'size', hover:null, heat:false, base:null, baseKey:'', W:0, G:null};
+function cfgGeom(W) { const ext = (cfg.ring ? cfg.ring / 2 : cfg.size / 2) * 1.04; return {cx: W/2, cy: W/2, k: (W/2) / ext}; }
+let rafPending = false;
+function scheduleRender() { if (rafPending) return; rafPending = true; requestAnimationFrame(() => { rafPending = false; renderCfg(); }); }
+function renderCfg() {
+  const c = $('#cfgCanvas'), W = Math.round(c.getBoundingClientRect().width * DPR()) || 900;
+  if (c.width !== W) { c.width = W; c.height = W; }
+  const G = cfgGeom(W); view.G = G; view.W = W;
+  const key = JSON.stringify([cfg.size, cfg.ring, cfg.c, cfg.wire, cfg.profile, cfg.numCol, cfg.font, cfg.textTop, cfg.textBottom, cfg.textFont, cfg.logos, cfg.logoScale, cfg.plaque, cfg.rimName, W, Object.keys(IMG).filter(k => IMG[k].complete).length]);
+  if (key !== view.baseKey || !view.base) {
+    view.base = mkCanvas(W); drawBoard(view.base.getContext('2d'), cfg, G); view.baseKey = key;
+  }
+  const ctx = c.getContext('2d'); ctx.clearRect(0, 0, W, W); ctx.drawImage(view.base, 0, 0);
+  drawOverlays(ctx, cfg, Object.assign({heat:view.heat, sel:new Set(cfg.spares), hover:view.hover}, G));
+}
+function canvasToMM(e) {
+  const c = $('#cfgCanvas'), r = c.getBoundingClientRect(), G = view.G; if (!G) return null;
+  const px = (e.clientX - r.left) / r.width * view.W, py = (e.clientY - r.top) / r.height * view.W;
+  return {x: (px - G.cx) / G.k, y: (py - G.cy) / G.k, cssX: e.clientX - r.left, cssY: e.clientY - r.top};
+}
+function initCfgCanvas() {
+  const c = $('#cfgCanvas'), tip = $('#hoverTip'), wrap = $('#cfgWrap');
+  let down = null;
+  c.addEventListener('pointermove', e => {
+    const m = canvasToMM(e); if (!m) return;
+    const id = hitField(cfg, m.x, m.y);
+    if (id !== view.hover) { view.hover = e.pointerType === 'mouse' ? id : null; scheduleRender(); }
+    if (id && e.pointerType === 'mouse') {
+      const picked = cfg.spares.includes(id);
+      tip.textContent = FI[id].label + (view.tab === 'spares' ? (picked ? ' · entfernen' : ' · als Ersatz wählen') : '');
+      tip.hidden = false;
+      const wr = wrap.getBoundingClientRect(), cr = c.getBoundingClientRect();
+      let x = m.cssX + (cr.left - wr.left), y = m.cssY + (cr.top - wr.top);
+      if (x > wr.width - 200) x -= 210;
+      tip.style.left = x + 'px'; tip.style.top = y + 'px';
+    } else tip.hidden = true;
+  });
+  c.addEventListener('pointerleave', () => { view.hover = null; tip.hidden = true; scheduleRender(); });
+  c.addEventListener('pointerdown', e => { down = {x: e.clientX, y: e.clientY}; });
+  c.addEventListener('pointerup', e => {
+    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) { down = null; return; }
+    down = null;
+    const m = canvasToMM(e); if (!m) return;
+    const id = hitField(cfg, m.x, m.y);
+    if (!id) return;
+    if (view.tab !== 'spares') {
+      const tip = $('#hoverTip'); tip.textContent = FI[id].label + ' · im Schritt „Ersatz“ auswählbar'; tip.hidden = false;
+      tip.style.left = m.cssX + 'px'; tip.style.top = m.cssY + 'px'; clearTimeout(tip._t); tip._t = setTimeout(() => tip.hidden = true, 1800);
+      return;
+    }
+    toggleSpare(id);
+  });
+}
+function toggleSpare(id, force) {
+  const has = cfg.spares.includes(id);
+  if (has && force !== true) cfg.spares = cfg.spares.filter(x => x !== id);
+  else if (!has && force !== false) cfg.spares = cfg.spares.concat(id);
+  changed({noBase:true});
+}
+
+function opt(name, value, checked, inner) {
+  return `<label class="opt"><input type="radio" name="${name}" value="${value}"${checked ? ' checked' : ''}>${inner}</label>`;
+}
+function buildControls() {
+  $('#optSize').innerHTML = SIZES.map(s => opt('size', s.v, cfg.size === s.v, `<b>${s.name}</b><small class="mono">${s.mm}</small><small>${s.note}</small><span class="price">${eur(s.price)}</span>${s.badge ? `<span class="badge">${s.badge}</span>` : ''}`)).join('');
+  $('#optRing').innerHTML = RINGS.map(r => opt('ring', r.v, cfg.ring === r.v, `<b>${r.name}</b><small class="mono">${r.mm}</small><span class="price">${r.price ? '+ ' + eur(r.price) : 'inklusive'}</span>`)).join('');
+  $$('input[name=size]').forEach(i => i.addEventListener('change', () => { cfg.size = +i.value; changed(); }));
+  $$('input[name=ring]').forEach(i => i.addEventListener('change', () => { cfg.ring = +i.value; changed(); }));
+
+  $('#presets').innerHTML = Object.entries(PRESETS).map(([k, p]) => `<button type="button" class="preset" data-preset="${k}" aria-pressed="false"><canvas width="160" height="160" aria-hidden="true"></canvas>${p.name}</button>`).join('');
+  $$('#presets .preset').forEach(b => {
+    const p = PRESETS[b.dataset.preset], pc = Object.assign(baseCfg(), {ring:0, c:Object.assign({}, p.c), wire:p.wire, numCol:p.numCol});
+    const cv = b.querySelector('canvas');
+    drawBoard(cv.getContext('2d'), pc, {cx:80, cy:80, k:78/225.5, parts:{numbers:false, rimText:false, shadow:false}});
+    b.addEventListener('click', () => { cfg.preset = b.dataset.preset; cfg.c = Object.assign({}, p.c); cfg.wire = p.wire; cfg.numCol = p.numCol; changed(); });
+  });
+  $('#colorInputs').innerHTML = COLOR_FIELDS.map(([k, l]) => `<label class="color"><input type="color" id="col-${k}" data-key="${k}"><span>${l}<code id="code-${k}"></code></span></label>`).join('');
+  $$('#colorInputs input').forEach(i => i.addEventListener('input', () => { cfg.c[i.dataset.key] = i.value; cfg.preset = 'eigene'; changed(); }));
+  chipGroup('#chipWire', WIRES, 'wire', w => `<span class="dot" style="background:linear-gradient(135deg, ${w.hi}, ${w.base} 50%, ${w.lo})"></span>${w.label}`);
+  chipGroup('#chipProfile', PROFILES, 'profile', p => p.label);
+  chipGroup('#chipNum', NUMCOLS, 'numCol', n => `<span class="dot" style="background:${n.c}"></span>${n.label}`);
+  chipGroup('#chipFont', FONTS, 'font', f => `<span style="font-family:${f.f.replace(/"/g, "'")};font-weight:${f.w};font-size:1.05rem">20</span> ${f.label}`);
+  chipGroup('#chipTextFont', FONTS, 'textFont', f => `<span style="font-family:${f.f.replace(/"/g, "'")};font-weight:${f.w}">Aa</span> ${f.label}`);
+  chipGroup('#chipPlaque', {none:{label:'Logo ohne Hintergrund'}, hell:{label:'Heller Kreis'}, dunkel:{label:'Dunkler Kreis'}}, 'plaque', p => p.label);
+
+  const EDITIONS = {
+    smart:{label:'Smart Dart Edition', apply(){ const b = baseCfg(); Object.assign(cfg, {preset:'klassik', c:b.c, wire:b.wire, numCol:b.numCol, ring:cfg.ring || 700, textTop:b.textTop, textBottom:b.textBottom, textFont:'sport', logos:b.logos, plaque:'none', rimName:''}); }},
+    verein:{label:'Beispiel: Verein', apply(){ const p = PRESETS.midnight; Object.assign(cfg, {preset:'midnight', c:Object.assign({}, p.c), wire:p.wire, numCol:p.numCol, ring:800, textTop:'DC Pfeilwurf 1987 e.V.', textBottom:'Vereinsmeisterschaft 2026', textFont:'sport', logos:{ol:'@club', or:'@club', l:null, r:null, ul:null, ur:null}, plaque:'none', rimName:'Vereinsheim'}); }},
+    kneipe:{label:'Beispiel: Kneipe', apply(){ const p = PRESETS.royal; Object.assign(cfg, {preset:'royal', c:Object.assign({}, p.c), wire:p.wire, numCol:p.numCol, ring:700, textTop:'Zum goldenen Pfeil', textBottom:'Darts · Bier · Freunde', textFont:'klassik', logos:{ol:null, or:null, l:'@sponsor', r:'@sponsor', ul:null, ur:null}, plaque:'none', rimName:''}); }}
+  };
+  $('#chipEdition').innerHTML = Object.entries(EDITIONS).map(([k, e]) => `<button type="button" class="chip" data-ed="${k}">${e.label}</button>`).join('');
+  $$('#chipEdition .chip').forEach(b => b.addEventListener('click', () => { EDITIONS[b.dataset.ed].apply(); changed(); toast(EDITIONS[b.dataset.ed].label + ' geladen'); }));
+
+  $('#txtTop').addEventListener('input', e => { cfg.textTop = e.target.value; changed(); });
+  $('#txtBottom').addEventListener('input', e => { cfg.textBottom = e.target.value; changed(); });
+  $('#txtColor').addEventListener('input', e => { cfg.c.text = e.target.value; changed(); });
+  $('#rimName').addEventListener('input', e => { cfg.rimName = e.target.value; changed(); });
+  $('#logoScale').addEventListener('input', e => { cfg.logoScale = +e.target.value / 100; changed(); });
+  $('#addRing').addEventListener('click', () => { cfg.ring = 700; changed(); });
+
+  const SETS = {
+    s20:{label:'Rund um die 20 · 5 Felder', ids:['T20','Si20','So20','T1','T5']},
+    s19:{label:'Rund um die 19 · 3 Felder', ids:['T19','Si19','So19']},
+    dbl:{label:'Checkout-Doppel · 4 Felder', ids:['D20','D16','D8','D10']},
+    bull:{label:'Bull-Set · 2 Felder', ids:['B50','B25']},
+    clr:{label:'Auswahl leeren', ids:[]}
+  };
+  $('#chipSets').innerHTML = Object.entries(SETS).map(([k, s]) => `<button type="button" class="chip" data-set="${k}">${s.label}</button>`).join('');
+  $$('#chipSets .chip').forEach(b => b.addEventListener('click', () => {
+    const st = SETS[b.dataset.set];
+    if (!st.ids.length) cfg.spares = [];
+    else { const all = st.ids.every(id => cfg.spares.includes(id)); st.ids.forEach(id => toggleSpare(id, !all)); }
+    changed({noBase:true});
+  }));
+
+  // Logo-Slots
+  const fileIn = $('#logoFile'); let slotTarget = null;
+  fileIn.addEventListener('change', () => {
+    const f = fileIn.files && fileIn.files[0]; if (!f || !slotTarget) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const im = new Image();
+      im.onload = () => {
+        const max = 512, sc = Math.min(1, max / Math.max(im.naturalWidth || max, im.naturalHeight || max));
+        const w = Math.max(1, Math.round((im.naturalWidth || max) * sc)), h = Math.max(1, Math.round((im.naturalHeight || max) * sc));
+        const cv = mkCanvas(w, h); cv.getContext('2d').drawImage(im, 0, 0, w, h);
+        let url; try { url = cv.toDataURL('image/png'); } catch (e) { url = rd.result; }
+        cfg.logos[slotTarget] = url; changed(); toast('Logo ' + SLOT_LABEL[slotTarget] + ' eingesetzt');
+      };
+      im.onerror = () => toast('Diese Datei konnte nicht als Bild gelesen werden.');
+      im.src = rd.result;
+    };
+    rd.readAsDataURL(f); fileIn.value = '';
+  });
+  $('#slotmap').addEventListener('keydown', e => { const sl = e.target.closest('.slot.filled'); if (sl && e.target === sl && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sl.click(); } });
+  $('#slotmap').addEventListener('click', e => {
+    const x = e.target.closest('.x'); if (x) { cfg.logos[x.dataset.slot] = null; changed(); e.stopPropagation(); return; }
+    const sl = e.target.closest('.slot'); if (!sl) return;
+    slotTarget = sl.dataset.slot; fileIn.click();
+  });
+
+  $('#heatToggle').addEventListener('change', e => { view.heat = e.target.checked; scheduleRender(); });
+  $('#btnReset').addEventListener('click', () => { const sp = cfg.spares; cfg = baseCfg(); cfg.spares = sp; changed(); toast('Konfiguration zurückgesetzt'); });
+  $('#btnOrder').addEventListener('click', () => toast('Prototyp: Der Shop ist noch nicht live. Deine Konfiguration ist in diesem Browser gespeichert.'));
+  $('#btnExport').addEventListener('click', openExport);
+
+  // Tabs
+  $$('.tabs [role=tab]').forEach(t => t.addEventListener('click', () => selectTab(t.id.slice(2))));
+  $('.tabs').addEventListener('keydown', e => {
+    const tabs = $$('.tabs [role=tab]'), i = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; selectTab(n.id.slice(2)); n.focus(); e.preventDefault(); }
+  });
+}
+function chipGroup(sel, obj, key, html) {
+  const el = $(sel);
+  el.innerHTML = Object.entries(obj).map(([k, v]) => `<button type="button" class="chip" data-v="${k}" aria-pressed="false">${html(v)}</button>`).join('');
+  el.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; cfg[key] = b.dataset.v; changed(); });
+  el.dataset.key = key;
+}
+function selectTab(name) {
+  view.tab = name;
+  $$('.tabs [role=tab]').forEach(t => { const on = t.id === 't-' + name; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+  $$('.tabpanel').forEach(p => p.hidden = p.id !== 'p-' + name);
+  $('#cfgWrap').classList.toggle('picking', name === 'spares');
+}
+function syncControls() {
+  $$('input[name=size]').forEach(i => i.checked = +i.value === cfg.size);
+  $$('input[name=ring]').forEach(i => i.checked = +i.value === cfg.ring);
+  $$('#presets .preset').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset === cfg.preset));
+  COLOR_FIELDS.forEach(([k]) => { const i = $('#col-' + k); if (i.value !== cfg.c[k]) i.value = cfg.c[k]; $('#code-' + k).textContent = cfg.c[k].toUpperCase(); });
+  $$('.chips[data-key]').forEach(g => $$('.chip', g).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === cfg[g.dataset.key])));
+  $('#profileText').textContent = PROFILES[cfg.profile].text;
+  if (document.activeElement !== $('#txtTop')) $('#txtTop').value = cfg.textTop;
+  if (document.activeElement !== $('#txtBottom')) $('#txtBottom').value = cfg.textBottom;
+  if (document.activeElement !== $('#rimName')) $('#rimName').value = cfg.rimName;
+  $('#txtColor').value = cfg.c.text; $('#txtColorCode').textContent = cfg.c.text.toUpperCase();
+  $('#logoScale').value = Math.round(cfg.logoScale * 100); $('#logoScaleOut').textContent = Math.round(cfg.logoScale * 100) + ' %';
+  $('#ringNotice').hidden = !!cfg.ring;
+  $('#persRing').style.opacity = cfg.ring ? 1 : .4; $('#persLogos').style.opacity = cfg.ring ? 1 : .4;
+  // Slots
+  const cell = k => {
+    const ref = cfg.logos[k];
+    if (!ref) return `<button type="button" class="slot" data-slot="${k}" aria-label="Logo ${SLOT_LABEL[k]} hochladen">+ Logo<br><small>${SLOT_LABEL[k]}</small></button>`;
+    const src = ref[0] === '@' ? builtinURL(ref) : ref;
+    return `<div class="slot filled" data-slot="${k}" role="button" tabindex="0" aria-label="Logo ${SLOT_LABEL[k]} ersetzen"><img src="${src}" alt=""><small>${SLOT_LABEL[k]}</small><button type="button" class="x" data-slot="${k}" aria-label="Logo ${SLOT_LABEL[k]} entfernen">✕</button></div>`;
+  };
+  $('#slotmap').innerHTML = cell('ol') + `<div class="slot-mid">Text oben</div>` + cell('or') + cell('l') + `<div class="slot-mid">Scheibe<br>bleibt frei</div>` + cell('r') + cell('ul') + `<div class="slot-mid">Text unten</div>` + cell('ur');
+  $$('#persRing input, #persLogos input, #persRing button, #persLogos button').forEach(i => i.disabled = !cfg.ring);
+  $$('#slotmap .slot.filled').forEach(d => { d.tabIndex = cfg.ring ? 0 : -1; d.style.pointerEvents = cfg.ring ? '' : 'none'; });
+  // Ersatzfelder
+  $('#spareCount').textContent = cfg.spares.length ? `(${cfg.spares.length})` : '';
+  $('#spareList').innerHTML = cfg.spares.length ? cfg.spares.map(id => `<button type="button" class="chip" data-id="${id}" aria-label="${FI[id].label} entfernen">${FI[id].short} ✕</button>`).join('') : '<span class="empty">Noch keine Felder ausgewählt.</span>';
+  // Maßlabel
+  const sz = SIZES.find(s => s.v === cfg.size);
+  $('#dimLabel').textContent = `${sz.mm} ${sz.name}` + (cfg.ring ? ` · Catchring Ø ${cfg.ring} mm` : ' · ohne Catchring');
+  renderSizeViz();
+}
+function renderSizeViz() {
+  const el = $('#sizeViz');
+  let h = '';
+  RINGS.filter(r => r.v).forEach(r => { const on = r.v === cfg.ring; h += `<circle r="${r.v/2}" fill="${on ? cfg.c.surround : 'none'}" stroke="${on ? '#ffc94d' : '#4a433b'}" stroke-width="${on ? 4 : 2}" stroke-dasharray="${on ? '' : '8 8'}"/>`; });
+  SIZES.slice().reverse().forEach(s => { const on = s.v === cfg.size; h += `<circle r="${s.v/2}" fill="${on ? cfg.c.rim : 'none'}" stroke="${on ? '#ffc94d' : '#6d655a'}" stroke-width="${on ? 4 : 2}"/>`; });
+  const k = cfg.size / 451;
+  h += `<circle r="${170*k}" fill="none" stroke="${cfg.c.ringA}" stroke-width="6"/><circle r="${103*k}" fill="none" stroke="${cfg.c.ringB}" stroke-width="6"/><circle r="${12*k}" fill="${cfg.c.bull}"/>`;
+  el.innerHTML = h;
+  const sz = SIZES.find(s => s.v === cfg.size);
+  const outer = cfg.ring || cfg.size;
+  $('#sizeText').innerHTML = `Maßstabsgetreu: <b>${sz.name}</b> (${sz.mm})${cfg.ring ? ` im Catchring <b>Ø ${cfg.ring} mm</b>` : ''}. An der Wand brauchst du eine Fläche von mindestens <b>${(outer/10).toFixed(0)} × ${(outer/10).toFixed(0)} cm</b>.` + (cfg.size === 451 ? ' Bullseye-Höhe 1,73 m.' : '');
+}
+function warnings() {
+  const w = [], c = cfg.c, nc = NUMCOLS[cfg.numCol].c;
+  if (dE(c.dark, c.light) < 25) w.push('Dunkle und helle Felder sind kaum zu unterscheiden. Wähle einen stärkeren Kontrast.');
+  if (dE(c.ringA, c.dark) < 18) w.push('Double- und Triple-Ringe auf den dunklen Feldern heben sich kaum ab.');
+  if (dE(c.ringB, c.light) < 18) w.push('Double- und Triple-Ringe auf den hellen Feldern heben sich kaum ab.');
+  if (dE(c.bull, c.obull) < 18) w.push('Bullseye und Single-Bull sind kaum zu unterscheiden.');
+  if (contrast(nc, c.rim) < 3) w.push('Die Zahlen sind auf dem Rand schlecht lesbar. Wähle andere Zahlen- oder Randfarbe.');
+  if (cfg.ring && (cfg.textTop.trim() || cfg.textBottom.trim()) && contrast(c.text, c.surround) < 3) w.push('Die Schrift auf dem Catchring ist schlecht lesbar.');
+  const icon = ok => ok ? '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2"/></svg>' : '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 11H1z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 5v3.5M7 10v.5" stroke="currentColor" stroke-width="1.6"/></svg>';
+  $('#warns').innerHTML = w.length ? w.map(t => `<li>${icon(false)}<span>${t}</span></li>`).join('') : `<li class="ok">${icon(true)}<span>Alle Felder und Zahlen gut unterscheidbar</span></li>`;
+}
+function prices() {
+  const L = [], sz = SIZES.find(s => s.v === cfg.size), rg = RINGS.find(r => r.v === cfg.ring);
+  L.push([`Smart Dart ${sz.name} (${sz.mm})`, sz.price]);
+  if (cfg.ring) L.push([`Catchring ${rg.mm}${(cfg.textTop.trim() || cfg.textBottom.trim()) ? ' inkl. Textdruck' : ''}`, rg.price]);
+  const pk = PRESETS.klassik;
+  const custom = cfg.preset !== 'klassik' || Object.keys(pk.c).some(k => k !== 'surround' && k !== 'text' && cfg.c[k].toLowerCase() !== pk.c[k]) || cfg.wire !== pk.wire || cfg.numCol !== pk.numCol;
+  if (custom) L.push([`Farbdesign „${PRESETS[cfg.preset] ? PRESETS[cfg.preset].name : 'Eigene Farben'}“`, PRICE.colors]);
+  if (cfg.ring) {
+    const n = Object.values(cfg.logos).filter(v => v && v !== '@mark').length;
+    if (n) L.push([`Logodruck × ${n}`, n * PRICE.logo]);
+  }
+  if (cfg.rimName.trim()) L.push(['Namensgravur am Rand', PRICE.rimName]);
+  if (cfg.spares.length) L.push([`Ersatzfelder × ${cfg.spares.length} à 9,99 €`, cfg.spares.length * PRICE.field]);
+  const total = L.reduce((a, l) => a + l[1], 0);
+  $('#lines').innerHTML = L.map(([t, v], i) => `<li class="${i ? 'sub' : ''}"><span>${t}</span><span>${eur(v)}</span></li>`).join('');
+  $('#total').textContent = eur(total);
+}
+let v3Timer = null;
+function changed(opt) {
+  opt = opt || {};
+  save(); syncControls(); warnings(); prices(); scheduleRender();
+  clearTimeout(v3Timer); if (!opt.noBase) v3Timer = setTimeout(() => V3.rebuild(), 220);
+}
+$('#spareList') && $('#spareList').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) toggleSpare(b.dataset.id, false); });
+
+/* ---------- Export ---------- */
+function exportPNG(c, px, transparent) {
+  const cv = mkCanvas(px), ctx = cv.getContext('2d');
+  if (!transparent) {
+    const g = ctx.createRadialGradient(px*.5, px*.42, px*.05, px*.5, px*.5, px*.75);
+    g.addColorStop(0, '#2a251f'); g.addColorStop(1, '#0d0c0b'); ctx.fillStyle = g; ctx.fillRect(0, 0, px, px);
+  }
+  const ext = (c.ring ? c.ring / 2 : c.size / 2) * 1.08;
+  drawBoard(ctx, c, {cx:px/2, cy:px/2, k:(px/2)/ext});
+  return cv.toDataURL('image/png');
+}
+function exportLift(c, id, px) {
+  const cv = mkCanvas(px), ctx = cv.getContext('2d');
+  const g = ctx.createRadialGradient(px*.5, px*.42, px*.05, px*.5, px*.5, px*.75);
+  g.addColorStop(0, '#2a251f'); g.addColorStop(1, '#0d0c0b'); ctx.fillStyle = g; ctx.fillRect(0, 0, px, px);
+  const R = c.ring ? c.ring / 2 : c.size / 2, ext = R * 1.32, k = (px / 2) / ext, cx = px / 2 - R * .1 * k, cy = px / 2 + R * .12 * k;
+  drawBoard(ctx, c, {cx, cy, k, removed:new Set([id])});
+  const [fx, fy] = fieldCenter(id, c.size / 451);
+  const tx = R * .86, ty = -R * 1.04, dx = tx - fx, dy = ty - fy;
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(k, k);
+  ctx.strokeStyle = '#ffc94d'; ctx.lineWidth = 2.2; ctx.setLineDash([7, 6]); ctx.lineCap = 'round';
+  const sx = fx + 8, sy = fy - 10, ex = tx - 34, ey = ty + 14;
+  ctx.beginPath(); ctx.moveTo(sx, sy); ctx.quadraticCurveTo(fx + 30, ty + 10, ex, ey); ctx.stroke();
+  ctx.setLineDash([]); const a = Math.atan2(ey - (ty + 10), ex - (fx + 30));
+  ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex - 12 * Math.cos(a - .45), ey - 12 * Math.sin(a - .45)); ctx.moveTo(ex, ey); ctx.lineTo(ex - 12 * Math.cos(a + .45), ey - 12 * Math.sin(a + .45)); ctx.stroke();
+  ctx.restore();
+  drawLooseField(ctx, c, id, k * 1.6, cx + (fx + dx) * k - fx * k * 1.6, cy + (fy + dy) * k - fy * k * 1.6, 0, 0, 30);
+  return cv.toDataURL('image/png');
+}
+function openExport() {
+  const m = $('#exportModal'), upd = () => { const url = exportPNG(cfg, 2400, $('#exportTransparent').checked); $('#exportImg').src = url; $('#exportDl').href = url; };
+  upd(); m.hidden = false; $('#exportClose').focus();
+  $('#exportTransparent').onchange = upd;
+}
+$('#exportClose').addEventListener('click', () => { $('#exportModal').hidden = true; $('#btnExport').focus(); });
+$('#exportModal').addEventListener('click', e => { if (e.target.id === 'exportModal') $('#exportModal').hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#exportModal').hidden) $('#exportModal').hidden = true; });
+let toastT = null;
+function toast(t) { const el = $('#toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 3200); }
+
+/* ---------- Ersparnis-Rechner ---------- */
+function renderSavings() {
+  const price = +$('#svPrice').value, per = +$('#svPer').value, fields = +$('#svFields').value, years = +$('#svYears').value;
+  $('#svPriceOut').textContent = price + ' €'; $('#svPerOut').textContent = per; $('#svFieldsOut').textContent = fields; $('#svYearsOut').textContent = years + ' J.';
+  const M = years * 12, cap = per * years, conv = [], smart = [];
+  for (let m = 0; m <= M; m++) {
+    conv.push(price * Math.min(cap, Math.floor(m * per / 12 + 1e-9) + 1));
+    smart.push(74.95 + PRICE.field * Math.min(fields * years, Math.floor(m * fields / 12 + 1e-9)));
+  }
+  const save = conv[M] - smart[M];
+  let be = -1; for (let m = 0; m <= M; m++) if (smart[m] < conv[m]) { be = m; break; }
+  $('#svSave').textContent = save > 0 ? eur0(save) : '0 €';
+  $('#svBoards').textContent = Math.max(0, cap - 1);
+  $('#svBreak').textContent = be < 0 ? '–' : be === 0 ? 'sofort' : 'Monat ' + be;
+  // Chart
+  const W = 640, H = 300, ml = 54, mr = 18, mt = 14, mb = 36, iw = W - ml - mr, ih = H - mt - mb;
+  const maxV = Math.max(conv[M], smart[M]);
+  const step = [50, 100, 200, 250, 500, 1000].find(s => maxV / s <= 5) || 1000;
+  const top = Math.ceil(maxV / step) * step || step;
+  const X = m => ml + m / M * iw, Y = v => mt + ih - v / top * ih;
+  const stepPath = arr => arr.map((v, m) => m === 0 ? `M${X(0)},${Y(v)}` : `H${X(m)}V${Y(v)}`).join('');
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Kumulierte Kosten über ${years} Jahre">`;
+  for (let v = 0; v <= top; v += step) svg += `<line x1="${ml}" x2="${W - mr}" y1="${Y(v)}" y2="${Y(v)}" stroke="#2c2722" stroke-width="1"/><text x="${ml - 8}" y="${Y(v) + 4}" text-anchor="end" fill="#ada492" font-size="11" font-family="IBM Plex Mono, monospace">${v} €</text>`;
+  for (let y = 0; y <= years; y++) svg += `<line x1="${X(y*12)}" x2="${X(y*12)}" y1="${mt + ih}" y2="${mt + ih + 5}" stroke="#6f685d"/><text x="${X(y*12)}" y="${H - 12}" text-anchor="middle" fill="#ada492" font-size="11" font-family="IBM Plex Mono, monospace">${y === 0 ? 'Start' : 'Jahr ' + y}</text>`;
+  svg += `<line x1="${ml}" x2="${W - mr}" y1="${mt + ih}" y2="${mt + ih}" stroke="#6f685d"/>`;
+  svg += `<path d="${stepPath(conv)}" fill="none" stroke="var(--series-conv)" stroke-width="2.5" stroke-dasharray="7 5" stroke-linejoin="round"/>`;
+  svg += `<path d="${stepPath(smart)}" fill="none" stroke="var(--series-smart)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  let yc = Y(conv[M]) - 8, ys = Y(smart[M]) - 8;
+  if (Math.abs(yc - ys) < 16) { if (yc < ys) ys = yc + 16; else yc = ys + 16; }
+  svg += `<text x="${W - mr}" y="${yc}" text-anchor="end" fill="#efe8da" font-size="12" font-weight="600" font-family="Hanken Grotesk, sans-serif">Herkömmlich ${eur0(conv[M])}</text>`;
+  svg += `<text x="${W - mr}" y="${ys}" text-anchor="end" fill="#efe8da" font-size="12" font-weight="600" font-family="Hanken Grotesk, sans-serif">Smart Dart ${eur0(smart[M])}</text>`;
+  svg += `<line id="svCross" x1="0" x2="0" y1="${mt}" y2="${mt + ih}" stroke="#efe8da" stroke-opacity=".5" visibility="hidden"/><circle id="svDotC" r="5" fill="var(--series-conv)" stroke="#181614" stroke-width="2" visibility="hidden"/><circle id="svDotS" r="5" fill="var(--series-smart)" stroke="#181614" stroke-width="2" visibility="hidden"/>`;
+  svg += `<rect x="${ml}" y="${mt}" width="${iw}" height="${ih}" fill="transparent" id="svHit"/></svg><div class="tip" id="svTip" hidden></div>`;
+  const host = $('#svChart'); host.innerHTML = svg;
+  const svgEl = host.querySelector('svg'), tip = $('#svTip');
+  const move = e => {
+    const r = svgEl.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W;
+    const m = Math.max(0, Math.min(M, Math.round((x - ml) / iw * M)));
+    const cr = $('#svCross'); cr.setAttribute('x1', X(m)); cr.setAttribute('x2', X(m)); cr.setAttribute('visibility', 'visible');
+    const dc = $('#svDotC'), ds = $('#svDotS');
+    dc.setAttribute('cx', X(m)); dc.setAttribute('cy', Y(conv[m])); dc.setAttribute('visibility', 'visible');
+    ds.setAttribute('cx', X(m)); ds.setAttribute('cy', Y(smart[m])); ds.setAttribute('visibility', 'visible');
+    tip.innerHTML = `<b>Monat ${m}</b><br><i style="background:var(--series-conv)"></i>Herkömmlich ${eur0(conv[m])}<br><i style="background:var(--series-smart)"></i>Smart Dart ${eur0(smart[m])}`;
+    tip.hidden = false;
+    const px = X(m) / W * r.width; tip.style.left = Math.min(px + 12, r.width - 190) + 'px'; tip.style.top = '8px';
+  };
+  const leave = () => { tip.hidden = true; ['svCross','svDotC','svDotS'].forEach(i => $('#' + i).setAttribute('visibility', 'hidden')); };
+  svgEl.addEventListener('pointermove', move); svgEl.addEventListener('pointerleave', leave);
+  let t = '<thead><tr><th>Zeitpunkt</th><th>Herkömmlich</th><th>Smart Dart</th><th>Differenz</th></tr></thead><tbody>';
+  for (let y = 0; y <= years; y++) { const m = y * 12; t += `<tr><td>${y === 0 ? 'Start' : 'Nach ' + y + ' Jahr' + (y > 1 ? 'en' : '')}</td><td>${eur0(conv[m])}</td><td>${eur0(smart[m])}</td><td>${eur0(conv[m] - smart[m])}</td></tr>`; }
+  $('#svTable').innerHTML = t + '</tbody>';
+}
+
+/* ---------- Technische Zeichnung ---------- */
+function renderTech() {
+  const R = GEO, line = '#8d8576', ink = '#efe8da', acc = '#ffc94d';
+  let h = `<g fill="none" stroke="${line}" stroke-width="1">`;
+  for (const k of ['bull','ob','ti','to','di','do','board']) h += `<circle r="${R[k]}"/>`;
+  for (let i = 0; i < 20; i++) { const b = segAngles(i)[0]; h += `<line x1="${Math.cos(b)*R.ob}" y1="${Math.sin(b)*R.ob}" x2="${Math.cos(b)*R.do}" y2="${Math.sin(b)*R.do}"/>`; }
+  h += `</g><g fill="${line}" font-family="IBM Plex Mono, monospace" font-size="15" text-anchor="middle">`;
+  ORDER.forEach((n, i) => { const a = -Math.PI/2 + i*TAU/20; h += `<text x="${Math.cos(a)*R.num}" y="${Math.sin(a)*R.num + 5}">${n}</text>`; });
+  h += `</g>`;
+  h += `<g fill="${acc}" fill-opacity=".22"><path d="${annulus(R.di, R.do)}" fill-rule="evenodd"/><path d="${annulus(R.ti, R.to)}" fill-rule="evenodd"/><circle r="${R.ob}"/></g><circle r="${R.bull}" fill="${acc}" fill-opacity=".6"/>`;
+  const y0 = 252;
+  h += `<g stroke="${ink}" stroke-width="1"><line x1="${-R.board}" y1="8" x2="${-R.board}" y2="${y0 + 6}"/><line x1="${R.board}" y1="8" x2="${R.board}" y2="${y0 + 6}"/><line x1="${-R.board + 2}" y1="${y0}" x2="${R.board - 2}" y2="${y0}"/></g>`;
+  h += `<path d="M${-R.board} ${y0}l10 -4v8zM${R.board} ${y0}l-10 -4v8z" fill="${ink}"/>`;
+  h += `<rect x="-62" y="${y0 - 11}" width="124" height="22" fill="#181614"/><text x="0" y="${y0 + 5}" text-anchor="middle" fill="${ink}" font-family="IBM Plex Mono, monospace" font-size="14">A · Ø 451 mm</text>`;
+  const key = (l, r, a, lx, ly) => { const x = Math.cos(a*DEG)*r, y = Math.sin(a*DEG)*r; return `<line x1="${x}" y1="${y}" x2="${lx}" y2="${ly}" stroke="${acc}" stroke-width="1.2"/><circle cx="${x}" cy="${y}" r="3" fill="${acc}"/><circle cx="${lx}" cy="${ly}" r="11" fill="#181614" stroke="${acc}" stroke-width="1.5"/><text x="${lx}" y="${ly + 4.5}" text-anchor="middle" fill="${acc}" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">${l}</text>`; };
+  h += key('B', 166, -40, 232, -150) + key('C', 103, -62, 176, -226) + key('D', 15.9, -128, -176, -226) + key('E', 4, -150, -232, -150);
+  $('#techSvg').innerHTML = h;
+  // Seitenansicht
+  const fx = 470, floor = 320, sc = 115; // px pro Meter
+  const by = floor - 1.73 * sc, ox = fx - 2.37 * sc;
+  let o = `<g stroke="#8d8576" stroke-width="2" fill="none"><line x1="20" y1="${floor}" x2="${fx + 30}" y2="${floor}"/><line x1="${fx + 8}" y1="20" x2="${fx + 8}" y2="${floor}"/></g>`;
+  o += `<rect x="${fx - 6}" y="${by - 26}" width="14" height="52" rx="3" fill="#2a2622" stroke="#efe8da"/><circle cx="${fx - 6}" cy="${by}" r="3" fill="#cf302b"/>`;
+  o += `<rect x="${ox - 3}" y="${floor - 6}" width="6" height="6" fill="#ffc94d"/>`;
+  o += `<g stroke="#ffc94d" stroke-width="1.2"><line x1="${ox}" y1="${floor + 16}" x2="${fx - 6}" y2="${floor + 16}"/><line x1="${ox}" y1="${floor + 10}" x2="${ox}" y2="${floor + 22}"/><line x1="${fx - 6}" y1="${floor + 10}" x2="${fx - 6}" y2="${floor + 22}"/>`;
+  o += `<line x1="${fx - 40}" y1="${by}" x2="${fx - 40}" y2="${floor}"/><line x1="${fx - 46}" y1="${by}" x2="${fx - 12}" y2="${by}"/><line stroke-dasharray="5 5" x1="${ox}" y1="${floor}" x2="${fx - 6}" y2="${by}"/></g>`;
+  o += `<g font-family="IBM Plex Mono, monospace" font-size="14" fill="#efe8da"><text x="${(ox + fx) / 2 - 3}" y="${floor + 36}" text-anchor="middle">Abwurflinie 2,37 m</text><text x="${fx - 48}" y="${(by + floor) / 2}" text-anchor="end">1,73 m</text><text x="${(ox + fx) / 2 - 40}" y="${(by + floor) / 2 - 18}" text-anchor="end" fill="#ada492">2,93 m diagonal</text></g>`;
+  o += `<text x="${ox}" y="${floor - 14}" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#ffc94d">Oche</text>`;
+  $('#ocheSvg').innerHTML = o;
+}
+function annulus(r1, r2) { return `M${r2} 0A${r2} ${r2} 0 1 0 ${-r2} 0A${r2} ${r2} 0 1 0 ${r2} 0ZM${r1} 0A${r1} ${r1} 0 1 1 ${-r1} 0A${r1} ${r1} 0 1 1 ${r1} 0Z`; }
+
+/* ---------- 3D-Ansicht ---------- */
+const V3 = {
+  ok:false, built:false, pulled:new Set(), explode:0, explodeT:0, rot:{x:-.3, y:-.5}, rotT:{x:-.3, y:-.5}, last:0, interacted:0, visible:false,
+  init() {
+    const host = $('#v3'), cv = $('#v3Canvas');
+    if (!window.THREE) return this.fallback();
+    try { this.r = new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:true, preserveDrawingBuffer:true}); }
+    catch (e) { return this.fallback(); }
+    const T = THREE; this.ok = true;
+    this.r.setPixelRatio(DPR()); this.r.outputEncoding = T.sRGBEncoding; this.r.shadowMap.enabled = true; this.r.shadowMap.type = T.PCFSoftShadowMap;
+    this.scene = new T.Scene();
+    this.cam = new T.PerspectiveCamera(30, 1, .1, 100);
+    this.scene.add(new T.HemisphereLight(0xfff3e2, 0x17120e, .62));
+    const key = new T.DirectionalLight(0xffffff, .95); key.position.set(-3.5, 4.5, 7); key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048); key.shadow.camera.left = -5; key.shadow.camera.right = 5; key.shadow.camera.top = 5; key.shadow.camera.bottom = -5; key.shadow.camera.near = 1; key.shadow.camera.far = 20; key.shadow.bias = -.0006; key.shadow.normalBias = .01;
+    this.scene.add(key);
+    const fill = new T.DirectionalLight(0xffe0c0, .3); fill.position.set(5, -2, 4); this.scene.add(fill);
+    this.root = new T.Group(); this.scene.add(this.root);
+    this.ray = new T.Raycaster(); this.mouse = new T.Vector2();
+    this.rebuild();
+    this.resize(); new ResizeObserver(() => this.resize()).observe(host);
+    this.bind(cv);
+    const io = new IntersectionObserver(es => { this.visible = es[0].isIntersecting; if (this.visible) { this.loop(); if (!this.demoDone) { this.demoDone = true; setTimeout(() => { if (!this.interacted) this.pull('T20', true); }, 700); } } }, {threshold:.15});
+    io.observe(host);
+    $('#v3Assembled').addEventListener('click', () => this.setExplode(false));
+    $('#v3Exploded').addEventListener('click', () => this.setExplode(true));
+    $('#v3Reset').addEventListener('click', () => { this.pulled.clear(); this.sel = null; this.info(); });
+    $('#v3AddSpare').addEventListener('click', () => { if (this.sel) { toggleSpare(this.sel, true); toast(FI[this.sel].label + ' als Ersatzfeld vorgemerkt'); } });
+  },
+  fallback() {
+    $('#v3Fallback').hidden = false; $('#v3Canvas').hidden = true; $$('.v3-toolbar, .v3-hint, #v3Info').forEach(e => e.hidden = true);
+    const c = $('#v3FallbackCanvas'), ctx = c.getContext('2d');
+    drawBoard(ctx, HERO_CFG, {cx:400, cy:400, k:380/225.5, removed:new Set(['T20'])});
+  },
+  setExplode(on) {
+    this.explodeT = on ? 1 : 0; this.interacted = performance.now();
+    this.rotT = on ? {x:-.3, y:-1.05} : {x:-.3, y:-.5};
+    $('#v3Assembled').setAttribute('aria-pressed', !on); $('#v3Exploded').setAttribute('aria-pressed', on);
+    this.fit();
+  },
+  tex(canvas, R) { const T = THREE, t = new T.CanvasTexture(canvas); t.encoding = T.sRGBEncoding; t.anisotropy = 8; t.repeat.set(1 / (2 * R), 1 / (2 * R)); t.offset.set(.5, .5); return t; },
+  paint(parts, Rmm, N, extra) {
+    const c = mkCanvas(N), k = N / 2 / Rmm;
+    drawBoard(c.getContext('2d'), cfg, Object.assign({cx:N/2, cy:N/2, k, noShadow:true, parts:Object.assign({surround:false, shadow:false, rim:false, fields:false, wires:false, numbers:false, rimText:false, light:false}, parts)}, extra || {}));
+    return c;
+  },
+  rebuild() {
+    if (!this.ok) return;
+    const T = THREE, U = .01, s = cfg.size / 451, Rb = cfg.size / 2 * U, Rs = cfg.ring / 2 * U;
+    const old = this.root.children.slice(); old.forEach(o => { this.root.remove(o); o.traverse(m => { if (m.geometry) m.geometry.dispose(); }); });
+    (this.mats || []).forEach(m => { if (m.map) m.map.dispose(); m.dispose(); }); this.mats = [];
+    const M = p => { const m = new T.MeshStandardMaterial(p); this.mats.push(m); return m; };
+    const col = h => new T.Color(h).convertSRGBToLinear();
+    const L = this.layers = {surround:new T.Group(), base:new T.Group(), fields:new T.Group(), spider:new T.Group(), numbers:new T.Group()};
+    Object.values(L).forEach(g => this.root.add(g));
+    const FD = .3;
+    const ext = (shape, depth, seg, bevel) => new T.ExtrudeGeometry(shape, {depth, bevelEnabled:true, bevelThickness:bevel, bevelSize:bevel * .8, bevelSegments:1, curveSegments:seg});
+    // Felder
+    const faceTex = this.tex(this.paint({fields:true}, GEO.do * s, 2048), GEO.do * s * U);
+    const cap = M({map:faceTex, roughness:.93, metalness:0});
+    this.capHover = M({map:faceTex, roughness:.93, metalness:0, emissive:new T.Color(0x3a2a10)});
+    this.cap = cap;
+    const sideCache = {};
+    this.fields = [];
+    for (const id of ALL) {
+      let shape;
+      if (id === 'B50') { shape = new T.Shape(); shape.absarc(0, 0, GEO.bull*s*U, 0, TAU, false); }
+      else if (id === 'B25') { shape = new T.Shape(); shape.absarc(0, 0, GEO.ob*s*U, 0, TAU, false); const h = new T.Path(); h.absarc(0, 0, GEO.bull*s*U + .002, 0, TAU, true); shape.holes.push(h); }
+      else {
+        const f = FI[id], [k1, k2] = ZONES[f.zone], r1 = GEO[k1]*s*U + .0015, r2 = GEO[k2]*s*U - .0015;
+        const m1 = Math.PI/2 - f.idx * TAU/20 - TAU/40 + .0012, m2 = m1 + TAU/20 - .0024;
+        shape = new T.Shape(); shape.moveTo(r2*Math.cos(m1), r2*Math.sin(m1)); shape.absarc(0, 0, r2, m1, m2, false); shape.lineTo(r1*Math.cos(m2), r1*Math.sin(m2)); shape.absarc(0, 0, r1, m2, m1, true);
+      }
+      const fc = fieldColor(cfg, id);
+      const side = sideCache[fc] || (sideCache[fc] = M({color:col(mix(fc, '#000000', .28)), roughness:.95}));
+      const mesh = new T.Mesh(ext(shape, FD, id[0] === 'B' ? 48 : 10, .004), [cap, side]);
+      mesh.position.z = -FD; mesh.castShadow = true; mesh.receiveShadow = true;
+      mesh.userData = {id, off:this.pulled.has(id) ? .6 : 0, side};
+      L.fields.add(mesh); this.fields.push(mesh);
+    }
+    // Grundplatte + Rand
+    const rimShape = new T.Shape(); rimShape.absarc(0, 0, Rb, 0, TAU, false); const hole = new T.Path(); hole.absarc(0, 0, GEO.do*s*U + .003, 0, TAU, true); rimShape.holes.push(hole);
+    const rimTex = this.tex(this.paint({rim:true, rimText:true}, cfg.size / 2, 2048), Rb);
+    const rimMesh = new T.Mesh(ext(rimShape, FD, 128, .008), [M({map:rimTex, roughness:.93}), M({color:col(mix(cfg.c.rim, '#000000', .2)), roughness:.95})]);
+    rimMesh.position.z = -FD; rimMesh.receiveShadow = true; rimMesh.castShadow = true; L.base.add(rimMesh);
+    const back = new T.Mesh(new T.CylinderGeometry(Rb, Rb, .08, 128), M({color:col('#4a3e33'), roughness:.95}));
+    back.rotation.x = Math.PI / 2; back.position.z = -FD - .04; back.receiveShadow = true; L.base.add(back);
+    // Spinne
+    const w = WIRES[cfg.wire], pr = PROFILES[cfg.profile], tube = .0042 * pr.w;
+    const wm = M({color:col(w.base), metalness:.55, roughness:.28, emissive:col(w.lo), emissiveIntensity:.15});
+    for (const k of ['bull','ob','ti','to','di','do']) { const t = new T.Mesh(new T.TorusGeometry(GEO[k]*s*U, tube, 8, 180), wm); t.position.z = tube + .002; t.castShadow = true; L.spider.add(t); }
+    for (let i = 0; i < 20; i++) {
+      const b = Math.PI/2 - i * TAU/20 + TAU/40, r1 = GEO.ob*s*U, r2 = GEO.do*s*U, len = r2 - r1;
+      const bx = new T.Mesh(new T.BoxGeometry(len, tube * 1.6, tube * 2), wm);
+      bx.position.set(Math.cos(b) * (r1 + len/2), Math.sin(b) * (r1 + len/2), tube + .002); bx.rotation.z = b; bx.castShadow = true; L.spider.add(bx);
+    }
+    // Zahlenring
+    const outerMM = cfg.size / 2 - .6, numTex = this.tex(this.paint({numbers:true}, outerMM, 1024), outerMM * U);
+    numTex.repeat.set(1, 1); numTex.offset.set(0, 0);
+    const ringGeo = new T.RingGeometry(GEO.do*s*U + .05, outerMM * U, 128, 1);
+    const nm = new T.Mesh(ringGeo, M({map:numTex, transparent:true, roughness:.4, metalness:.3, depthWrite:false}));
+    nm.position.z = .006; L.numbers.add(nm);
+    const nwire = new T.Mesh(new T.TorusGeometry(GEO.num*s*U + .14*s, tube * .8, 6, 200), wm); nwire.position.z = .004; L.numbers.add(nwire);
+    // Catchring
+    if (cfg.ring) {
+      const sh = new T.Shape(); sh.absarc(0, 0, Rs, 0, TAU, false); const h2 = new T.Path(); h2.absarc(0, 0, Rb + .012, 0, TAU, true); sh.holes.push(h2);
+      const sTex = this.tex(this.paint({surround:true}, cfg.ring / 2, 2048), Rs);
+      const sm = new T.Mesh(ext(sh, .34, 160, .015), [M({map:sTex, roughness:.97}), M({color:col(mix(cfg.c.surround, '#000000', .25)), roughness:.97})]);
+      sm.position.z = -.38; sm.receiveShadow = true; L.surround.add(sm);
+    }
+    this.ext = (cfg.ring ? Rs : Rb);
+    this.labels();
+    this.fit();
+  },
+  labels() {
+    const host = $('#v3Labels'); host.innerHTML = '';
+    const U = .01, s = cfg.size / 451, Rb = cfg.size / 2 * U;
+    this.lab = [
+      ['numbers', 'Zahlenring', Rb * .97, 150, 'L'],
+      ['spider', 'Drahtspinne', GEO.do*s*U, 172, 'L'],
+      ['fields', '82 Sisal-Felder', GEO.do*s*U * .8, 200, 'L'],
+      ['base', 'Grundplatte mit Rand', Rb, 18, 'R']
+    ];
+    if (cfg.ring) this.lab.push(['surround', 'Catchring', cfg.ring / 2 * U * .97, -8, 'R']);
+    const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'v3-lines'); host.appendChild(svg);
+    const cnt = {L:0, R:0};
+    this.lab.forEach(l => {
+      const side = l.pop(), i = cnt[side]++;
+      const d = document.createElement('div'); d.className = 'v3-label'; d.textContent = l[1]; d.style.opacity = 0; d.style.top = (64 + i * 34) + 'px';
+      if (side === 'R') { d.style.left = 'auto'; d.style.right = '14px'; d.dataset.side = 'R'; }
+      host.appendChild(d);
+      const pl = document.createElementNS(NS, 'polyline'); pl.setAttribute('fill', 'none'); pl.setAttribute('stroke', '#ffc94d'); pl.setAttribute('stroke-width', '1.2'); svg.appendChild(pl);
+      const dot = document.createElementNS(NS, 'circle'); dot.setAttribute('r', '3.5'); dot.setAttribute('fill', '#ffc94d'); svg.appendChild(dot);
+      l.push(d, pl, dot);
+    });
+  },
+  fit() {
+    if (!this.ok || !this.cam) return;
+    const host = $('#v3'), w = host.clientWidth || 600, h = host.clientHeight || 400, a = w / h;
+    const e = (this.ext || 2.4) * (this.explodeT ? 1.3 : 1.02);
+    const half = Math.tan(this.cam.fov * DEG / 2);
+    this.dist = Math.max(e / half, e / (half * a));
+  },
+  resize() {
+    if (!this.ok) return;
+    const host = $('#v3'), w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
+    this.r.setSize(w, h, false); this.cam.aspect = w / h; this.cam.updateProjectionMatrix(); this.fit();
+  },
+  bind(cv) {
+    let drag = null;
+    cv.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY, rx:this.rotT.x, ry:this.rotT.y, moved:false, type:e.pointerType}; this.interacted = performance.now(); });
+    cv.addEventListener('pointermove', e => {
+      if (drag) {
+        const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (!drag.moved && Math.hypot(dx, dy) > 5) { drag.moved = true; try { cv.setPointerCapture(e.pointerId); } catch (er) {} cv.classList.add('grabbing'); }
+        if (drag.moved) { this.rotT.y = drag.ry + dx * .008; if (drag.type === 'mouse') this.rotT.x = Math.max(-1.2, Math.min(.5, drag.rx + dy * .006)); this.interacted = performance.now(); }
+        return;
+      }
+      if (e.pointerType === 'mouse') { const id = this.pick(e); this.hover(id); cv.classList.toggle('pointer', !!id); }
+    });
+    const end = e => {
+      if (drag && !drag.moved && e.type === 'pointerup') { const id = this.pick(e); if (id) this.pull(id); }
+      drag = null; cv.classList.remove('grabbing');
+    };
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    cv.addEventListener('pointerleave', () => this.hover(null));
+  },
+  pick(e) {
+    const r = $('#v3Canvas').getBoundingClientRect();
+    this.mouse.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    this.ray.setFromCamera(this.mouse, this.cam);
+    const hit = this.ray.intersectObjects(this.fields, false)[0];
+    return hit ? hit.object.userData.id : null;
+  },
+  hover(id) {
+    if (this.hov === id) return;
+    this.fields.forEach(m => { m.material[0] = m.userData.id === id ? this.capHover : this.cap; });
+    this.hov = id;
+  },
+  pull(id, auto) {
+    if (!auto) this.interacted = performance.now();
+    if (this.pulled.has(id)) { this.pulled.delete(id); this.sel = this.pulled.size ? [...this.pulled].pop() : null; }
+    else { this.pulled.add(id); this.sel = id; }
+    this.info();
+  },
+  info() {
+    const id = this.sel;
+    $('#v3InfoTitle').textContent = id ? FI[id].label : 'Feld antippen';
+    $('#v3InfoText').textContent = id ? 'Herausgenommen. Ersatz in deinen Farben: 9,99 €. Tippe erneut, um es wieder einzusetzen.' : 'Tippe auf ein Feld, um es aus der Scheibe zu nehmen.';
+    $('#v3InfoActions').hidden = !id;
+  },
+  loop() {
+    if (!this.ok || this.looping) return; this.looping = true;
+    const tick = now => {
+      if (!this.visible) { this.looping = false; return; }
+      const idle = now - this.interacted > 5000;
+      const tx = this.rotT.x, ty = this.rotT.y + (idle && !REDUCED && !this.explodeT ? Math.sin(now / 2400) * .2 : 0);
+      this.rot.x += (tx - this.rot.x) * .08; this.rot.y += (ty - this.rot.y) * .08;
+      this.root.rotation.set(this.rot.x, this.rot.y, 0);
+      this.explode += (this.explodeT - this.explode) * .07;
+      const e = this.explode, L = this.layers;
+      L.surround.position.z = -1.9 * e; L.base.position.z = -.95 * e; L.spider.position.z = .85 * e; L.numbers.position.z = 1.55 * e;
+      for (const m of this.fields) { const t = this.pulled.has(m.userData.id) ? .6 : 0; m.userData.off += (t - m.userData.off) * .12; m.position.z = -.3 + m.userData.off; }
+      this.curDist = this.curDist ? this.curDist + (this.dist - this.curDist) * .08 : this.dist;
+      this.cam.position.set(0, 0, this.curDist); this.cam.lookAt(0, 0, 0);
+      this.r.render(this.scene, this.cam);
+      // Beschriftungen
+      const host = $('#v3'), w = host.clientWidth, h = host.clientHeight, v = new THREE.Vector3();
+      const op = Math.max(0, (e - .55) / .45);
+      (this.lab || []).forEach(([layer, , r, ang, el, pl, dot]) => {
+        v.set(Math.cos(ang * DEG) * r, Math.sin(ang * DEG) * r, .02); this.layers[layer].localToWorld(v); v.project(this.cam);
+        const ax = (v.x * .5 + .5) * w, ay = (-v.y * .5 + .5) * h, R = el.dataset.side === 'R';
+        const lx = R ? el.offsetLeft : el.offsetLeft + el.offsetWidth, ly = el.offsetTop + el.offsetHeight / 2;
+        pl.setAttribute('points', `${lx},${ly} ${lx + (R ? -10 : 10)},${ly} ${ax},${ay}`); dot.setAttribute('cx', ax); dot.setAttribute('cy', ay);
+        el.style.opacity = op; pl.style.opacity = op; dot.style.opacity = op;
+      });
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+};
+
+/* ---------- Start ---------- */
+function boot() {
+  makeBuiltins();
+  buildControls();
+  initCfgCanvas();
+  changed({noBase:true});
+  renderHeat();
+  renderSavings();
+  ['#svPrice','#svPer','#svFields','#svYears'].forEach(s => $(s).addEventListener('input', renderSavings));
+  renderTech();
+  requestAnimationFrame(heroFrame);
+  V3.init();
+  let rT = null;
+  window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { renderHeat(); view.base = null; scheduleRender(); if (REDUCED) requestAnimationFrame(heroFrame); }, 150); });
+}
+const fontsReady = document.fonts && document.fonts.load ? Promise.race([
+  Promise.all(['800 40px "Big Shoulders Display"', '900 40px "Big Shoulders Display"', '700 40px "Hanken Grotesk"', '700 40px "Roboto Slab"'].map(f => document.fonts.load(f))),
+  new Promise(r => setTimeout(r, 2500))
+]).catch(() => {}) : Promise.resolve();
+fontsReady.then(boot);
+window.SD = {get cfg(){ return cfg; }, set(c){ cfg = Object.assign(baseCfg(), c); changed(); }, exportPNG, exportLift, V3, drawBoard, baseCfg, PRESETS};
+})();
+</script>
+</body>
+</html>
