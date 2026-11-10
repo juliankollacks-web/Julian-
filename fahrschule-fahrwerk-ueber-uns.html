@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Über uns – Fahrschule Fahrwerk GmbH | Hirschaid, Forchheim, Bischberg</title>
+<meta name="description" content="Lerne das Team der Fahrschule Fahrwerk kennen: Fahrlehrer für Auto, Motorrad, LKW, Bus und Traktor in Hirschaid, Forchheim und Bischberg.">
+<link rel="canonical" href="https://fahrschule-fahrwerk.info/Ueber-uns/">
+<meta property="og:title" content="Über uns – Fahrschule Fahrwerk GmbH">
+<meta property="og:description" content="Unser Team bringt dich sicher und professionell zu deinem Führerschein.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta name="theme-color" content="#14171a">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DrivingSchool",
+  "name": "Fahrschule Fahrwerk GmbH",
+  "url": "https://fahrschule-fahrwerk.info/",
+  "telephone": "+49 9543 4407715",
+  "faxNumber": "+49 9543 4407716",
+  "email": "info@fahrschule-fahrwerk.net",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Luitpoldstraße 1a",
+    "postalCode": "96114",
+    "addressLocality": "Hirschaid",
+    "addressCountry": "DE"
+  },
+  "employee": [
+    { "@type": "Person", "name": "Christoph Ernst", "jobTitle": "Geschäftsführer / Fahrlehrer" },
+    { "@type": "Person", "name": "Marco Schmitt", "jobTitle": "Geschäftsführer / Fahrlehrer" },
+    { "@type": "Person", "name": "Stephan Gebhardt", "jobTitle": "Fahrlehrer" }
+  ]
+}
+</script>
+
+<style>
+  :root {
+    --ink: #14171a;
+    --ink-2: #1f2428;
+    --text: #23282c;
+    --muted: #5d666c;
+    --line: #e3e6e8;
+    --bg: #ffffff;
+    --bg-soft: #f4f5f6;
+    --blue: #2f3fa8;
+    --blue-dark: #232f82;
+    --orange: #ff662e;
+    --orange-dark: #c9420f;
+    --green: #2e8b3d;
+    --radius: 14px;
+    --wrap: 1120px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--blue); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1, h2, h3 { line-height: 1.15; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+
+  .skip {
+    position: absolute; left: -9999px; top: 0;
+    background: #fff; color: var(--ink); padding: 10px 16px; z-index: 100;
+  }
+  .skip:focus { left: 8px; top: 8px; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--ink);
+    color: #fff;
+  }
+  .site-header .wrap {
+    display: flex; align-items: center; gap: 24px;
+    min-height: 68px;
+  }
+  .logo { flex: none; display: block; }
+  .logo img { height: 46px; width: auto; }
+  .nav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .nav a {
+    color: #e9ecee; text-decoration: none;
+    font-size: 15px; font-weight: 500;
+    padding: 10px 12px; border-radius: 8px;
+  }
+  .nav a:hover { background: rgba(255,255,255,.1); }
+  .nav a[aria-current="page"] { color: #fff; box-shadow: inset 0 -2px 0 var(--orange); border-radius: 0; }
+  .nav a.btn { margin-left: 10px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--orange); color: #1a0d06 !important;
+    font-weight: 700; text-decoration: none;
+    padding: 12px 20px; border-radius: 999px;
+    border: 2px solid var(--orange);
+    transition: transform .15s ease, background .15s ease;
+  }
+  .btn:hover { background: #ff7d4d; transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: #fff !important; border-color: rgba(255,255,255,.45); }
+  .btn.ghost:hover { background: rgba(255,255,255,.1); }
+
+  .menu-toggle { display: none; }
+
+  @media (max-width: 900px) {
+    .menu-toggle {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-left: auto;
+      background: none; border: 2px solid rgba(255,255,255,.4); color: #fff;
+      font: inherit; font-size: 15px; font-weight: 600;
+      padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    }
+    .nav {
+      display: none;
+      position: absolute; left: 0; right: 0; top: 100%;
+      background: var(--ink-2);
+      flex-direction: column; align-items: stretch; gap: 0;
+      padding: 8px 20px 20px;
+      border-top: 1px solid rgba(255,255,255,.12);
+    }
+    .nav.open { display: flex; }
+    .nav a { padding: 14px 4px; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,.1); border-radius: 0; }
+    .nav a[aria-current="page"] { box-shadow: none; color: var(--orange); }
+    .nav a.btn { margin: 16px 0 0; border-bottom: 2px solid var(--orange); border-radius: 999px; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background:
+      linear-gradient(115deg, rgba(47,63,168,.55), rgba(20,23,26,0) 55%),
+      var(--ink);
+    color: #fff;
+    padding: 72px 0 0;
+    overflow: hidden;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--orange);
+  }
+  .chevrons { display: inline-flex; gap: 3px; }
+  .chevrons i {
+    width: 12px; height: 12px; display: block;
+    clip-path: polygon(0 0, 55% 0, 100% 50%, 55% 100%, 0 100%, 45% 50%);
+  }
+  .chevrons i:nth-child(1) { background: #e23b2e; }
+  .chevrons i:nth-child(2) { background: #f39a1f; }
+  .chevrons i:nth-child(3) { background: #3fae49; }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800; letter-spacing: -.02em;
+    margin: 18px 0 20px;
+    max-width: 16ch;
+  }
+  .hero p.lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: #d5dade; max-width: 58ch; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+  .facts {
+    list-style: none; margin: 56px 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(255,255,255,.16);
+  }
+  .facts li { padding: 22px 20px 26px 0; }
+  .facts li + li { padding-left: 20px; border-left: 1px solid rgba(255,255,255,.16); }
+  .facts strong { display: block; font-size: 1.6rem; font-weight: 800; line-height: 1.2; }
+  .facts span { color: #b9c0c5; font-size: 15px; }
+  @media (max-width: 760px) {
+    .hero { padding-top: 48px; }
+    .facts { grid-template-columns: 1fr 1fr; }
+    .facts li, .facts li + li { padding: 18px 12px 18px 0; border-left: 0; }
+    .facts li:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.16); }
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 80px 0; }
+  section.soft { background: var(--bg-soft); }
+  .section-head { max-width: 62ch; margin-bottom: 40px; }
+  .section-head h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 800; letter-spacing: -.015em; margin: 12px 0 14px; }
+  .section-head p { color: var(--muted); }
+  section .eyebrow { color: var(--orange-dark); }
+  @media (max-width: 760px) { section { padding: 56px 0; } }
+
+  /* ---------- Team ---------- */
+  .team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .member {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 1px 2px rgba(20,23,26,.04), 0 8px 24px rgba(20,23,26,.06);
+  }
+  .member .portrait { position: relative; aspect-ratio: 4 / 5; background: #dfe3e6; }
+  .member .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+  .member .body { padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .member h3 { font-size: 1.4rem; font-weight: 800; }
+  .member .role { color: var(--muted); font-size: 15px; margin-top: 4px; }
+
+  .classes { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+  .classes li {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    background: #eef0fb; color: var(--blue-dark);
+    border-radius: 8px; padding: 6px 10px;
+    font-size: 14px; line-height: 1.2;
+  }
+  .classes b { font-size: 16px; font-weight: 800; }
+
+  .fleet { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); }
+  .fleet h4 { margin: 0 0 10px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .fleet ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fleet figure { margin: 0; }
+  .fleet img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; background: #dfe3e6; }
+  .fleet figcaption { font-size: 13px; color: var(--muted); margin-top: 5px; line-height: 1.3; }
+
+  @media (max-width: 980px) { .team { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) {
+    .team { grid-template-columns: 1fr; }
+    .member .portrait { aspect-ratio: 1 / 1; }
+  }
+
+  /* ---------- Vorteile ---------- */
+  .benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; list-style: none; margin: 0; padding: 0; }
+  .benefits li { border-top: 3px solid var(--blue); padding-top: 18px; }
+  .benefits li:nth-child(2) { border-color: #e23b2e; }
+  .benefits li:nth-child(3) { border-color: #f39a1f; }
+  .benefits li:nth-child(4) { border-color: #3fae49; }
+  .benefits h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
+  .benefits p { color: var(--muted); font-size: 16px; }
+  .benefits a { font-weight: 600; }
+  @media (max-width: 900px) { .benefits { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .benefits { grid-template-columns: 1fr; } }
+
+  /* ---------- Standorte ---------- */
+  .locations { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .location {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 24px;
+  }
+  .location h3 { font-size: 1.3rem; font-weight: 800; }
+  .location address { font-style: normal; color: var(--muted); margin: 4px 0 16px; }
+  .location dl { margin: 0 0 18px; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 16px; }
+  .location dt { color: var(--muted); }
+  .location dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .location .days {
+    display: inline-block; background: var(--ink); color: #fff;
+    font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .location a { font-weight: 600; }
+  @media (max-width: 860px) { .locations { grid-template-columns: 1fr; } }
+
+  /* ---------- CTA ---------- */
+  .cta { background: var(--ink); color: #fff; }
+  .cta .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+  .cta h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 800; margin: 12px 0 14px; }
+  .cta p { color: #c9cfd3; max-width: 46ch; }
+  .cta .eyebrow { color: var(--orange); }
+  .cta .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+  .contact-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.16); }
+  .contact-list li {
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.16);
+  }
+  .contact-list span { color: #b9c0c5; }
+  .contact-list a { color: #fff; font-weight: 700; text-decoration: none; }
+  .contact-list a:hover { text-decoration: underline; }
+  @media (max-width: 860px) { .cta .wrap { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ---------- Footer ---------- */
+  footer { background: #0d0f11; color: #a9b0b5; font-size: 15px; padding: 28px 0; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; align-items: center; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+  footer a { color: #e9ecee; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="https://fahrschule-fahrwerk.info/Startseite/" aria-label="Fahrschule Fahrwerk – zur Startseite">
+      <img src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.400dpiLogo.png/picture-400?_=168cde9b0d8" width="401" height="242" alt="Fahrschule Fahrwerk">
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="hauptnavigation">Menü</button>
+    <nav class="nav" id="hauptnavigation" aria-label="Hauptnavigation">
+      <a href="https://fahrschule-fahrwerk.info/Startseite/">Startseite</a>
+      <a href="https://fahrschule-fahrwerk.info/Ueber-uns/" aria-current="page">Über uns</a>
+      <a href="https://fahrschule-fahrwerk.info/Klassen/">Klassen</a>
+      <a href="https://fahrschule-fahrwerk.info/Klassen/Preise/">Preise</a>
+      <a href="https://fahrschule-fahrwerk.info/Aus-und-Weiterbildung/">Weiterbildung</a>
+      <a href="https://fahrschule-fahrwerk.info/Filialen/">Filialen</a>
+      <a href="https://fahrschule-fahrwerk.info/Kontakt/">Kontakt</a>
+      <a class="btn" href="https://fahrschule-fahrwerk.info/Onlineanmeldung/">Online anmelden</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Über uns</p>
+      <h1>Die Menschen hinter deinem Führerschein</h1>
+      <p class="lead">Wir sind die Fahrschule Fahrwerk – deine Fahrschule für Auto, Motorrad, LKW, Bus und Traktor in Hirschaid, Forchheim und Bischberg. Unser Team bringt dich sicher und professionell ans Ziel.</p>
+      <div class="actions">
+        <a class="btn" href="https://fahrschule-fahrwerk.info/Onlineanmeldung/">Jetzt online anmelden</a>
+        <a class="btn ghost" href="#team">Team kennenlernen</a>
+      </div>
+
+      <ul class="facts">
+        <li><strong>3 Standorte</strong><span>Hirschaid, Forchheim, Bischberg</span></li>
+        <li><strong>5 Fahrzeugarten</strong><span>Auto, Motorrad, LKW, Bus, Traktor</span></li>
+        <li><strong>AZAV-zertifiziert</strong><span>Zugelassener Bildungsträger</span></li>
+        <li><strong>Seit 2011</strong><span>Erfahrung als Fahrlehrer im Team</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="team" aria-labelledby="team-titel">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Unser Team</p>
+        <h2 id="team-titel">Deine Fahrlehrer</h2>
+        <p>Drei Fahrlehrer, ein Ziel: dass du die Prüfung bestehst und danach sicher unterwegs bist. Hier siehst du, wer dich in welcher Klasse ausbildet – und in welchem Fahrzeug.</p>
+      </div>
+
+      <div class="team">
+
+        <article class="member">
+          <div class="portrait">
+            <img src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.image2.jpeg/picture-800?_=169f3bc654f" width="800" height="1004" alt="Porträt von Christoph Ernst">
+          </div>
+          <div class="body">
+            <div>
+              <h3>Christoph Ernst</h3>
+              <p class="role">Geschäftsführer · Fahrlehrer · Verantwortlicher Leiter</p>
+            </div>
+            <ul class="classes" aria-label="Fahrlehrerlaubnis">
+              <li><b>B</b> seit 2016</li>
+              <li><b>A</b> seit 2018</li>
+              <li><b>C</b> seit 2022</li>
+              <li><b>D</b> seit 2025</li>
+            </ul>
+            <div class="fleet">
+              <h4>Schulungsfahrzeuge</h4>
+              <ul>
+                <li><figure>
+                  <img loading="lazy" src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.A3%20Schwarz.jpg/picture-800?_=18ef5c066f8" width="800" height="447" alt="Schwarzer Audi A3 mit Fahrwerk-Beschriftung">
+                  <figcaption>Audi A3</figcaption>
+                </figure></li>
+                <li><figure>
+                  <img loading="lazy" src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.BMW%201250%20GS%20Triple%20Black.jpg/picture-800?_=18ef5bf1602" width="800" height="368" alt="BMW 1250 GS in Schwarz">
+                  <figcaption>BMW 1250 GS</figcaption>
+                </figure></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="member">
+          <div class="portrait">
+            <img src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.image1.jpeg/picture-800?_=169f3bcefc2" width="801" height="947" alt="Porträt von Marco Schmitt">
+          </div>
+          <div class="body">
+            <div>
+              <h3>Marco Schmitt</h3>
+              <p class="role">Geschäftsführer · Fahrlehrer</p>
+            </div>
+            <ul class="classes" aria-label="Fahrlehrerlaubnis">
+              <li><b>B</b> seit 2011</li>
+              <li><b>C</b> seit 2014</li>
+              <li><b>A</b> seit 2015</li>
+            </ul>
+            <div class="fleet">
+              <h4>Schulungsfahrzeuge</h4>
+              <ul>
+                <li><figure>
+                  <img loading="lazy" src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.A3%20Limo%20.jpg/picture-800?_=18ef5528de0" width="800" height="449" alt="Blaue Audi A3 Limousine mit Fahrwerk-Beschriftung">
+                  <figcaption>Audi A3 Limousine</figcaption>
+                </figure></li>
+                <li><figure>
+                  <img loading="lazy" src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.Ducati%20Multistrada%20V4.jpg/picture-800?_=18ef5c42981" width="800" height="601" alt="Rote Ducati Multistrada V4">
+                  <figcaption>Ducati Multistrada V4</figcaption>
+                </figure></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="member">
+          <div class="portrait">
+            <img src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.IMG_0789.jpg/picture-800?_=1933e7c7cbd" width="800" height="1067" alt="Porträt von Stephan Gebhardt">
+          </div>
+          <div class="body">
+            <div>
+              <h3>Stephan Gebhardt</h3>
+              <p class="role">Fahrlehrer</p>
+            </div>
+            <ul class="classes" aria-label="Fahrlehrerlaubnis">
+              <li><b>B</b> Auto</li>
+            </ul>
+            <div class="fleet">
+              <h4>Schulungsfahrzeug</h4>
+              <ul>
+                <li><figure>
+                  <img loading="lazy" src="https://fahrschule-fahrwerk.info/.cm4all/uproc.php/0/.A3%20Grau.jpg/picture-800?_=18ef55295b0" width="800" height="451" alt="Grauer Audi A3 mit Fahrwerk-Beschriftung">
+                  <figcaption>Audi A3</figcaption>
+                </figure></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="soft" aria-labelledby="vorteile-titel">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Was uns ausmacht</p>
+        <h2 id="vorteile-titel">Ein seriöser und kompetenter Partner auf dem Weg zum Führerschein</h2>
+      </div>
+      <ul class="benefits">
+        <li>
+          <h3>Alle Klassen unter einem Dach</h3>
+          <p>Vom Mofa über Auto und Motorrad bis zu LKW, Bus und Traktor. <a href="https://fahrschule-fahrwerk.info/Klassen/">Zu den Klassen</a></p>
+        </li>
+        <li>
+          <h3>Von Motorrad zu Motorrad</h3>
+          <p>In der Motorradausbildung begleitet dich dein Fahrlehrer selbst auf dem Motorrad – nicht aus dem Auto.</p>
+        </li>
+        <li>
+          <h3>Zertifiziert nach AZAV</h3>
+          <p>Wir sind zugelassener Bildungsträger nach AZAV.</p>
+        </li>
+        <li>
+          <h3>Aus- und Weiterbildung</h3>
+          <p>BKF-Module, beschleunigte Grundqualifikation und Schlüsselzahl B196. <a href="https://fahrschule-fahrwerk.info/Aus-und-Weiterbildung/">Mehr erfahren</a></p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="standorte" aria-labelledby="standorte-titel">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Standorte</p>
+        <h2 id="standorte-titel">Schau einfach bei uns vorbei</h2>
+        <p>An allen drei Standorten kannst du dich vor dem Theorieunterricht persönlich anmelden.</p>
+      </div>
+      <div class="locations">
+        <article class="location">
+          <h3>Hirschaid</h3>
+          <address>Luitpoldstraße 1a, 96114 Hirschaid</address>
+          <span class="days">Montag &amp; Mittwoch</span>
+          <dl>
+            <dt>Anmeldung</dt><dd>18:00 – 18:30 Uhr</dd>
+            <dt>Unterricht</dt><dd>18:30 – 20:00 Uhr</dd>
+          </dl>
+          <a href="https://fahrschule-fahrwerk.info/Filialen/Hirschaid/">Zur Filiale Hirschaid →</a>
+        </article>
+        <article class="location">
+          <h3>Forchheim</h3>
+          <address>Bayreuther Str. 104, Forchheim</address>
+          <span class="days">Dienstag &amp; Donnerstag</span>
+          <dl>
+            <dt>Anmeldung</dt><dd>18:00 – 18:30 Uhr</dd>
+            <dt>Unterricht</dt><dd>18:30 – 20:00 Uhr</dd>
+          </dl>
+          <a href="https://fahrschule-fahrwerk.info/Filialen/Forchheim/">Zur Filiale Forchheim →</a>
+        </article>
+        <article class="location">
+          <h3>Bischberg</h3>
+          <address>Hauptstraße 27, Bischberg</address>
+          <span class="days">Montag &amp; Donnerstag</span>
+          <dl>
+            <dt>Anmeldung</dt><dd>18:00 – 18:30 Uhr</dd>
+            <dt>Unterricht</dt><dd>18:30 – 20:00 Uhr</dd>
+          </dl>
+          <a href="https://fahrschule-fahrwerk.info/Filialen/Bischberg/">Zur Filiale Bischberg →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="kontakt-titel">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Kontakt</p>
+        <h2 id="kontakt-titel">Bereit für deinen Führerschein?</h2>
+        <p>Melde dich online an – wir nehmen danach Kontakt mit dir auf. Oder ruf uns an und schreib uns, wenn du vorher noch Fragen hast.</p>
+        <div class="actions">
+          <a class="btn" href="https://fahrschule-fahrwerk.info/Onlineanmeldung/">Online anmelden</a>
+          <a class="btn ghost" href="https://fahrschule-fahrwerk.info/Kontakt/">Kontaktformular</a>
+        </div>
+      </div>
+      <ul class="contact-list">
+        <li><span>Telefon</span><a href="tel:+4995434407715">09543 / 440 77 15</a></li>
+        <li><span>WhatsApp</span><a href="https://wa.me/4995434407715">09543 / 440 77 15</a></li>
+        <li><span>E-Mail</span><a href="mailto:info@fahrschule-fahrwerk.net">info@fahrschule-fahrwerk.net</a></li>
+        <li><span>Fax</span><span>09543 / 440 77 16</span></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© Fahrschule Fahrwerk GmbH · Luitpoldstraße 1a · 96114 Hirschaid</span>
+    <nav aria-label="Rechtliches">
+      <a href="https://fahrschule-fahrwerk.info/Kontakt/">Kontakt</a>
+      <a href="https://fahrschule-fahrwerk.info/Impressum/">Impressum</a>
+      <a href="https://fahrschule-fahrwerk.info/Impressum/AGB/">AGB</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var toggle = document.querySelector('.menu-toggle');
+    var nav = document.getElementById('hauptnavigation');
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.textContent = open ? 'Schließen' : 'Menü';
+    });
+  })();
+</script>
+</body>
+</html>
