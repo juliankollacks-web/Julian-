@@ -4,13 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Smart Dart</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Smart Dart – die Steeldart-Scheibe mit austauschbaren Feldern. Tausch das Feld, nicht die Scheibe.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Big+Shoulders+Display:wght@800;900&family=Hanken+Grotesk:wght@600;700&family=Roboto+Slab:wght@700&display=swap">
+<meta name="description" content="Smart Dart: die Steeldart-Scheibe mit 82 einzeln austauschbaren Feldern. Tausch das Feld, nicht die Scheibe.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
-/* Layout: Apple-Produktseite – schwarze Bühne mit scroll-gesteuerter 3D-Sequenz, danach Surround-Studio, helle Kauf- und Datenbereiche. Jede Sektion setzt ihre Farben selbst. */
+/* Schriften liegen lokal im Ordner vendor/fonts: keine Verbindung zu Google oder anderen Anbietern */
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:swap;src:url(vendor/fonts/inter-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:swap;src:url(vendor/fonts/inter-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:swap;src:url(vendor/fonts/inter-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:700;font-display:swap;src:url(vendor/fonts/inter-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:800;font-display:swap;src:url(vendor/fonts/inter-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Big Shoulders Display";font-style:normal;font-weight:800;font-display:swap;src:url(vendor/fonts/big-shoulders-display-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Big Shoulders Display";font-style:normal;font-weight:900;font-display:swap;src:url(vendor/fonts/big-shoulders-display-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:600;font-display:swap;src:url(vendor/fonts/hanken-grotesk-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:700;font-display:swap;src:url(vendor/fonts/hanken-grotesk-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto Slab";font-style:normal;font-weight:700;font-display:swap;src:url(vendor/fonts/roboto-slab-latin-700-normal.woff2) format("woff2")}
+/* Layout: schwarze Bühne mit 3D-Sequenz, danach Surround-Studio, helle Kauf- und Datenbereiche. Jede Sektion setzt ihre Farben selbst. */
 :root{
   color-scheme: light;
   --black:#000;
@@ -49,14 +59,14 @@ p{margin:0}
 .headline{font-size:clamp(40px,6.4vw,80px);line-height:1.05}
 .sub{font-size:clamp(19px,1.9vw,24px);line-height:1.38;font-weight:600;color:var(--gray);max-width:720px}
 .sub strong,.copy strong{color:var(--snow);font-weight:600}
-.light .sub strong{color:var(--ink)}
+.light .sub strong,.white .sub strong{color:var(--ink)}
 .copy{font-size:clamp(17px,1.5vw,21px);line-height:1.42;font-weight:600;color:var(--gray)}
 .center{text-align:center;margin-left:auto;margin-right:auto}
-.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:#fff;border:0;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;cursor:pointer;transition:background .2s var(--ease),transform .2s var(--ease)}
-.pill:hover{background:#0077ed}
-.pill:active{transform:scale(.98)}
-.pill.sm{padding:8px 16px;font-size:14px}
-.pill:disabled{background:#a1a1a6;cursor:default}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:#fff;border:0;border-radius:10px;padding:12px 23px;font-size:17px;font-weight:500;cursor:pointer;transition:background .2s var(--ease),transform .2s var(--ease)}
+.btn:hover{background:#0077ed}
+.btn:active{transform:scale(.98)}
+.btn.sm{padding:8px 16px;font-size:14px}
+.btn:disabled{background:#a1a1a6;cursor:default}
 .link{color:var(--blue-l);font-size:inherit;font-weight:500;background:none;border:0;cursor:pointer;padding:0}
 .light .link,.white .link{color:var(--blue)}
 .link:hover{text-decoration:underline}
@@ -74,16 +84,16 @@ section{position:relative}
 .nav-title{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
 .nav-title svg{width:26px;height:26px}
 .nav-links{display:flex;align-items:center;gap:26px;font-size:12px}
-.nav-links a:not(.pill){color:rgba(245,245,247,.8);transition:color .2s}
-.nav-links a:not(.pill):hover{color:#fff}
+.nav-links a:not(.btn){color:rgba(245,245,247,.8);transition:color .2s}
+.nav-links a:not(.btn):hover{color:#fff}
 .nav.is-light{background:rgba(251,251,253,.8);color:var(--ink);border-bottom-color:rgba(0,0,0,.08)}
-.nav.is-light .nav-links a:not(.pill){color:rgba(29,29,31,.8)}
+.nav.is-light .nav-links a:not(.btn){color:rgba(29,29,31,.8)}
 .nav.is-light .mark-cut{fill:#fbfbfd}
 .mark-cut{fill:#161617;transition:fill .4s}
-@media (max-width:860px){.nav-links a:not(.pill){display:none}}
+@media (max-width:860px){.nav-links a:not(.btn){display:none}}
 
 /* Story */
-.story{height:640vh;background:var(--black)}
+.story{height:520vh;background:var(--black)}
 .story-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 #storyCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;opacity:0;transition:opacity .8s var(--ease)}
 #storyCanvas.ready{opacity:1}
@@ -108,17 +118,12 @@ section{position:relative}
 .price{font-size:17px;color:var(--gray)}
 .story-labels{position:absolute;inset:0;pointer-events:none;z-index:1}
 .story-labels svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.slabel{position:absolute;font-size:14px;font-weight:600;color:var(--snow);white-space:nowrap;background:rgba(29,29,31,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);padding:7px 12px;border-radius:980px;will-change:opacity}
+.slabel{position:absolute;font-size:14px;font-weight:600;color:var(--snow);white-space:nowrap;background:rgba(29,29,31,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);padding:7px 12px;border-radius:10px;will-change:opacity}
 @media (max-aspect-ratio:21/20){
   .frame.side-l,.frame.side-r{top:calc(var(--nav) + 5vh)}
   .frame.side-l .txt,.frame.side-r .txt{max-width:620px;margin:0 auto;text-align:center}
   .slabel{font-size:11px;padding:5px 9px}
 }
-
-/* Zoom */
-.zoom{height:220vh;background:var(--black)}
-.zoom-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-#zoomCanvas{display:block;width:100%;height:100%}
 
 /* Bento */
 .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:clamp(48px,6vw,80px);grid-auto-flow:dense}
@@ -141,9 +146,9 @@ section{position:relative}
 /* Farben */
 .colors-sec{background:var(--black);overflow:hidden}
 .color-stage{position:relative;width:min(640px,88vw);aspect-ratio:1/1;margin:clamp(40px,6vw,70px) auto 0}
-.color-stage canvas{position:absolute;inset:0;width:100%;height:100%;transition:opacity .9s var(--ease),transform 1.1s cubic-bezier(.2,.8,.2,1)}
-.color-stage canvas.out{opacity:0;transform:rotate(-54deg) scale(.86)}
-.color-stage canvas.pre{opacity:0;transform:rotate(54deg) scale(.86);transition:none}
+.color-stage canvas{position:absolute;inset:0;width:100%;height:100%;transition:opacity .6s var(--ease)}
+.color-stage canvas.out{opacity:0}
+.color-stage canvas.pre{opacity:0;transition:none}
 .dots{display:flex;justify-content:center;gap:14px;margin-top:36px;flex-wrap:wrap}
 .dot{width:36px;height:36px;border-radius:50%;border:0;padding:0;cursor:pointer;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
 .dot::after{content:"";position:absolute;inset:-6px;border-radius:50%;box-shadow:0 0 0 2px transparent;transition:box-shadow .3s}
@@ -153,17 +158,16 @@ section{position:relative}
 /* Surround-Studio */
 .studio-sec{background:var(--black)}
 .studio{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start;margin-top:clamp(40px,5vw,64px)}
-.studio-stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--nav) + 20px);perspective:1400px}
-.tilt{position:relative;border-radius:32px;background:radial-gradient(80% 80% at 50% 40%, #232326 0%, #0b0b0c 70%);padding:clamp(12px,3vw,40px);transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+.studio-stage{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--nav) + 20px)}
+.tilt{position:relative;border-radius:32px;background:radial-gradient(80% 80% at 50% 40%, #232326 0%, #0b0b0c 70%);padding:clamp(12px,3vw,40px);overflow:hidden}
 .tilt canvas{display:block;width:100%;aspect-ratio:1/1;height:auto}
-.sheen{position:absolute;inset:0;pointer-events:none;background:radial-gradient(40% 40% at var(--mx,30%) var(--my,25%), rgba(255,255,255,.10), rgba(255,255,255,0) 70%);mix-blend-mode:screen;transition:opacity .4s}
 .drop-over{position:absolute;inset:12px;border-radius:24px;border:2px dashed var(--blue-l);background:rgba(41,151,255,.12);display:grid;place-items:center;font-size:21px;font-weight:600;color:#fff;opacity:0;transition:opacity .2s;pointer-events:none}
 .tilt.dragging .drop-over{opacity:1}
 .studio-panel{display:grid;gap:30px}
 .sgroup h3{font-size:19px;margin-bottom:12px}
 .sgroup h3 span{color:var(--gray);font-weight:600}
 .dchips{display:flex;flex-wrap:wrap;gap:8px}
-.dchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 16px;border-radius:980px;border:0;background:var(--panel-d);box-shadow:inset 0 0 0 1px var(--line-d);cursor:pointer;font-size:15px;font-weight:500;color:var(--snow);transition:box-shadow .2s}
+.dchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 16px;border-radius:10px;border:0;background:var(--panel-d);box-shadow:inset 0 0 0 1px var(--line-d);cursor:pointer;font-size:15px;font-weight:500;color:var(--snow);transition:box-shadow .2s}
 .dchip:hover{box-shadow:inset 0 0 0 1px var(--gray)}
 .dchip[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--blue-l)}
 .dchip .sw{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
@@ -255,7 +259,7 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
 .preview canvas{display:block;width:100%;aspect-ratio:1/1;height:auto;touch-action:manipulation}
 .preview .ghost{position:absolute;pointer-events:none;transition:opacity .45s var(--ease)}
 .preview.picking canvas{cursor:crosshair}
-.pick-hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:6px 12px;border-radius:980px;white-space:nowrap;transition:opacity .3s;pointer-events:none}
+.pick-hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:6px 12px;border-radius:10px;white-space:nowrap;transition:opacity .3s;pointer-events:none}
 .hover-tip{position:absolute;left:0;top:0;transform:translate(14px,14px);background:rgba(29,29,31,.92);color:#fff;border-radius:8px;padding:6px 10px;font-size:13px;font-weight:500;pointer-events:none;white-space:nowrap;z-index:3}
 .warns{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .warns li{display:inline-flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:500;padding:7px 12px;border-radius:12px;background:#fff4e5;color:#7a4100}
@@ -289,8 +293,8 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
 details.more{margin-top:14px}
 details.more summary{cursor:pointer;color:var(--blue);font-size:15px;font-weight:500;list-style:none}
 details.more summary::-webkit-details-marker{display:none}
-details.more summary::after{content:" +"}
-details.more[open] summary::after{content:" –"}
+details.more summary::after{content:"";display:inline-block;width:7px;height:7px;margin-left:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+details.more[open] summary::after{transform:translateY(1px) rotate(-135deg)}
 .colors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .color{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;min-width:0}
 .color input{width:30px;height:30px;border:0;padding:0;background:none;cursor:pointer;flex:none}
@@ -300,7 +304,7 @@ details.more[open] summary::after{content:" –"}
 .color span{font-size:13px;line-height:1.3;min-width:0}
 @media (max-width:420px){.colors{grid-template-columns:1fr}}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 16px;border-radius:980px;border:0;background:#fff;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;font-size:15px;font-weight:500;color:var(--ink);transition:box-shadow .2s}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 16px;border-radius:10px;border:0;background:#fff;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;font-size:15px;font-weight:500;color:var(--ink);transition:box-shadow .2s}
 .chip:hover{box-shadow:inset 0 0 0 1px var(--gray)}
 .chip[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--blue)}
 .chip .sw{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
@@ -373,6 +377,8 @@ details.more[open] summary::after{content:" –"}
 .faq p{color:var(--gray-d);margin-top:12px;max-width:68ch}
 footer{background:var(--snow);color:var(--gray-d);font-size:12px;line-height:1.5;padding-block:28px calc(90px + env(safe-area-inset-bottom,0px))}
 footer .wrap{display:grid;gap:12px}
+footer .legal{display:flex;gap:20px;flex-wrap:wrap}
+footer .legal a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
 footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 /* Modal & Toast */
@@ -384,7 +390,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
 .check{display:inline-flex;gap:8px;align-items:center;font-size:14px;cursor:pointer}
 @keyframes fadeIn{from{opacity:0}}
 @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(10px)}}
-.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:95;background:rgba(29,29,31,.92);color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:12px 20px;border-radius:980px;font-size:14px;font-weight:500;max-width:calc(100% - 32px);text-align:center;animation:popIn .35s cubic-bezier(.2,.8,.2,1)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:95;background:rgba(29,29,31,.92);color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;max-width:calc(100% - 32px);text-align:center;animation:popIn .35s cubic-bezier(.2,.8,.2,1)}
 </style>
 </head>
 <body>
@@ -409,7 +415,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
       <a href="#surround">Surround</a>
       <a href="#groessen">Größen</a>
       <a href="#technik">Technische Daten</a>
-      <a class="pill sm" href="#gestalten">Gestalten</a>
+      <a class="btn sm" href="#gestalten">Gestalten</a>
     </div>
   </div>
 </nav>
@@ -423,44 +429,41 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
     <div class="frame f0" data-a="0" data-b=".065"><div class="in">
       <h1>Smart Dart</h1>
       <p class="tag">Tausch das Feld. <span class="grad">Nicht die Scheibe.</span></p>
-      <div class="row-c"><a class="pill" href="#gestalten">Jetzt gestalten</a><a class="link" href="#highlights">Mehr erfahren</a><span class="price">Ab 74,95 €<sup>1</sup></span></div>
+      <p class="copy" style="margin-top:12px">Steeldart-Scheibe aus Sisal mit 82 einzeln austauschbaren Feldern.</p>
+      <div class="row-c"><a class="btn" href="#gestalten">Jetzt gestalten</a><a class="link" href="#highlights">Mehr erfahren</a><span class="price">Ab 74,95 €<sup>1</sup></span></div>
     </div></div>
     <div class="frame f1 side-l" data-a=".095" data-b=".215"><div class="in"><div class="txt">
       <p class="eyebrow">Turniermaß</p>
-      <h2>Präzise bis auf den Millimeter.</h2>
-      <p class="copy"><strong>Ø 451 mm,</strong> Ringe je 8 mm, Bullseye 12,7 mm.</p>
+      <h2>Ø 451 mm, wie im Turnier.</h2>
+      <p class="copy"><strong>Triple- und Double-Ring je 8 mm,</strong> Bullseye 12,7 mm.</p>
     </div></div></div>
     <div class="frame f2 side-r" data-a=".28" data-b=".425"><div class="in"><div class="txt">
       <p class="eyebrow">Austauschbare Felder</p>
       <h2>Ein Feld durch? <span class="grad">Tausch nur das eine.</span></h2>
-      <p class="copy">Jedes der <strong>82 Felder</strong> einzeln. Ab <strong>9,99 €</strong>.</p>
+      <p class="copy">Jedes der <strong>82 Felder</strong> lässt sich einzeln herausnehmen. Ersatz ab <strong>9,99 €</strong>.</p>
     </div></div></div>
     <div class="frame f3" data-a=".5" data-b=".645"><div class="in">
       <p class="eyebrow">Aufbau</p>
-      <h2>Vier Schichten. Ein System.</h2>
+      <h2>Aus vier Teilen gebaut.</h2>
     </div></div>
     <div class="frame f4 side-r" data-a=".69" data-b=".8"><div class="in"><div class="txt">
       <p class="eyebrow">Material</p>
       <h2>Sisal aus Kenia.</h2>
-      <p class="copy">Die Spitze schiebt die Fasern beiseite – <strong>das Loch schließt sich wieder.</strong></p>
+      <p class="copy">Die Spitze schiebt die Fasern beiseite, statt sie zu zerschneiden. <strong>Danach zieht sich das Loch wieder zusammen.</strong></p>
     </div></div></div>
     <div class="frame f5" data-a=".86" data-b="2"><div class="in">
       <p class="eyebrow">Surround mit LED-Lichtring</p>
-      <h2>Dein Design. <span class="grad">Bis ins Detail.</span></h2>
-      <div class="row-c"><a class="pill" href="#surround">Surround gestalten</a><a class="link" href="#farben">Farben ansehen</a></div>
+      <h2>Dein Logo auf dem Surround.</h2>
+      <div class="row-c"><a class="btn" href="#surround">Surround gestalten</a><a class="link" href="#farben">Farben ansehen</a></div>
     </div></div>
   </div>
-</section>
-
-<section class="zoom" id="zoom" data-nav="dark" aria-label="Do it smart.">
-  <div class="zoom-pin"><canvas id="zoomCanvas" role="img" aria-label="Do it smart."></canvas></div>
 </section>
 
 <section class="pad" id="highlights" data-nav="dark" style="background:var(--black)">
   <div class="wrap">
     <div class="center" style="max-width:980px" data-reveal>
       <p class="eyebrow">Highlights</p>
-      <h2 class="headline">Alles, was eine gute Scheibe braucht. <span style="color:var(--gray)">Und mehr.</span></h2>
+      <h2 class="headline">Eine Scheibe, die du reparierst, statt sie wegzuwerfen.</h2>
     </div>
     <div class="bento">
       <article class="tile w2 h2" data-reveal>
@@ -472,7 +475,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
       <article class="tile" data-reveal><p class="k">Ersatzfeld</p><p class="big">9,99 €</p><p class="cap">statt einer neuen Scheibe.</p></article>
       <article class="tile" data-reveal><p class="k">Turniermaß</p><p class="big">Ø 451<span style="font-size:.45em"> mm</span></p></article>
       <article class="tile w2 row" data-reveal>
-        <div><p class="k">Verschleiß</p><p class="mid">Kaputt geht, wo du triffst.</p><p class="cap">Genau diese Felder tauschst du.</p></div>
+        <div><p class="k">Verschleiß (schematisch)</p><p class="mid">Kaputt geht, wo du triffst.</p><p class="cap">Beim 501 trifft es vor allem die 20 und ihre Nachbarn. Genau diese Felder tauschst du.</p></div>
         <canvas class="hb" id="heatCanvas" width="600" height="600" role="img" aria-label="Schematische Verschleißkarte: am stärksten belastet sind Triple 20 und die Felder der 20, 1 und 5"></canvas>
       </article>
       <article class="tile w2" data-reveal><p class="k">Farben</p><p class="mid">8 Looks. Oder deiner.</p><div class="swatches" id="tileSwatches"></div></article>
@@ -484,7 +487,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
 
 <section class="colors-sec pad" id="farben" data-nav="dark">
   <div class="wrap center">
-    <div data-reveal><p class="eyebrow">Farben</p><h2 class="headline">Wähl deinen Look.</h2></div>
+    <div data-reveal><p class="eyebrow">Farben</p><h2 class="headline">Acht Farbschemata.</h2><p class="sub center" style="margin-top:16px">Im Konfigurator lässt sich jede Farbe auch einzeln wählen.</p></div>
     <div class="color-stage" id="colorStage" data-reveal>
       <canvas id="colA" width="1200" height="1200" role="img" aria-label="Smart-Dart-Scheibe im gewählten Farbschema"></canvas>
       <canvas id="colB" width="1200" height="1200" class="out" aria-hidden="true"></canvas>
@@ -500,13 +503,12 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
     <div class="center" style="max-width:980px" data-reveal>
       <p class="eyebrow">Surround-Studio</p>
       <h2 class="headline">Dein Surround.</h2>
-      <p class="sub center" style="margin-top:16px">Logo hochladen – <strong>die Vorschau zeigt es sofort.</strong></p>
+      <p class="sub center" style="margin-top:16px">Lade dein Logo hoch. <strong>Die Vorschau zeigt es sofort.</strong></p>
     </div>
     <div class="studio">
       <div class="studio-stage">
         <div class="tilt" id="tilt">
           <canvas id="studioCanvas" width="1200" height="1200" role="img" aria-label="Vorschau deines Surrounds"></canvas>
-          <div class="sheen" aria-hidden="true"></div>
           <div class="drop-over" aria-hidden="true">Logo hier ablegen</div>
         </div>
       </div>
@@ -541,14 +543,14 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
 
 <section class="light pad" id="groessen" data-nav="light">
   <div class="wrap">
-    <div class="center" style="max-width:980px" data-reveal><p class="eyebrow">Größen</p><h2 class="headline">Drei Größen. Ein Prinzip.</h2></div>
+    <div class="center" style="max-width:980px" data-reveal><p class="eyebrow">Größen</p><h2 class="headline">Drei Größen.</h2><p class="sub center" style="margin-top:16px">451, 400 und 330 mm, <strong>alle mit austauschbaren Feldern.</strong></p></div>
     <div class="sizes-row" id="sizesRow"></div>
   </div>
 </section>
 
 <section class="white pad" id="ersparnis" data-nav="light">
   <div class="wrap">
-    <div class="center" style="max-width:980px" data-reveal><p class="eyebrow">Ersparnis</p><h2 class="headline">Spart Geld. Und Sisal.</h2></div>
+    <div class="center" style="max-width:980px" data-reveal><p class="eyebrow">Ersparnis</p><h2 class="headline">Was du sparst.</h2><p class="sub center" style="margin-top:16px">Voreingestellt sind Beispielwerte. <strong>Stell deine eigenen ein.</strong></p></div>
     <div class="sv-grid">
       <div data-reveal>
         <p class="sv-big grad" id="svBig">0 €</p>
@@ -606,7 +608,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
           <div class="picker">
             <div class="nums" id="pickNums" role="group" aria-label="Zahl"></div>
             <div class="zones" id="pickZones" role="group" aria-label="Bereich"></div>
-            <div class="pick-row"><b id="pickLabel">Triple 20</b><button type="button" class="pill sm" id="pickAdd">Hinzufügen · 9,99 €</button></div>
+            <div class="pick-row"><b id="pickLabel">Triple 20</b><button type="button" class="btn sm" id="pickAdd">Hinzufügen · 9,99 €</button></div>
           </div>
           <div class="chips" id="chipSets" style="margin-top:14px"></div>
           <div class="sparelist" id="spareList"></div>
@@ -614,7 +616,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
         <div class="summary" id="summary">
           <ul class="lines" id="lines"></ul>
           <div class="total"><span>Gesamt</span><b id="total">0,00 €</b></div>
-          <button type="button" class="pill" id="btnOrder" style="justify-self:start">Konfiguration anfragen</button>
+          <button type="button" class="btn" id="btnOrder" style="justify-self:start">Konfiguration anfragen</button>
         </div>
       </div>
     </div>
@@ -628,8 +630,8 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
       <figure><svg id="techSvg" viewBox="-250 -250 500 520" role="img" aria-label="Technische Zeichnung der Scheibe mit Maßen"></svg>
         <ul class="keys">
           <li><i>A</i><span>Durchmesser</span><span>451 mm</span></li>
-          <li><i>B</i><span>Double-Ring</span><span>r 162–170 mm</span></li>
-          <li><i>C</i><span>Triple-Ring</span><span>r 99–107 mm</span></li>
+          <li><i>B</i><span>Double-Ring</span><span>r 162 bis 170 mm</span></li>
+          <li><i>C</i><span>Triple-Ring</span><span>r 99 bis 107 mm</span></li>
           <li><i>D</i><span>Single-Bull</span><span>Ø 31,8 mm</span></li>
           <li><i>E</i><span>Bullseye</span><span>Ø 12,7 mm</span></li>
         </ul>
@@ -646,7 +648,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
 
 <section class="white pad" id="faq" data-nav="light" style="padding-top:0">
   <div class="wrap">
-    <h2 class="headline" data-reveal style="text-align:center">Fragen?</h2>
+    <h2 class="headline" data-reveal style="text-align:center">Häufige Fragen</h2>
     <div class="faq">
       <details><summary>Passen normale Steeldarts?</summary><p>Ja, Smart Dart ist eine Sisal-Scheibe für Steeldarts.</p></details>
       <details><summary>Wie tausche ich ein Feld?</summary><p>Drahtspinne abnehmen, Feld herausziehen, neues einsetzen, Spinne auflegen.</p></details>
@@ -659,7 +661,8 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
 
 <footer>
   <div class="wrap">
-    <p><sup>1</sup> Konzeptpreise inkl. MwSt. Der Shop ist noch nicht live. Beispiel-Logos sind frei erfunden.</p>
+    <p><sup>1</sup> Konzeptpreise inkl. MwSt. Der Shop ist noch nicht live. Die Beispiel-Logos „DC Pfeilwurf“ und „Hopfen &amp; Malz“ sind frei erfunden.</p>
+    <nav class="legal" aria-label="Rechtliches"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a><a href="agb.html">AGB</a></nav>
     <div class="fl"><span>Smart Dart · Do it smart.</span><span>Lukas H., Anselm H., Julian K., Julian G.</span></div>
   </div>
 </footer>
@@ -667,7 +670,7 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
 <div class="buybar" id="buybar" aria-hidden="true">
   <div class="wrap">
     <div class="what"><b>Deine Smart Dart</b><span id="buyWhat"></span></div>
-    <div class="right"><span class="sum" id="buySum">0 €</span><button type="button" class="pill sm" id="buyBtn" tabindex="-1">Anfragen</button></div>
+    <div class="right"><span class="sum" id="buySum">0 €</span><button type="button" class="btn sm" id="buyBtn" tabindex="-1">Anfragen</button></div>
   </div>
 </div>
 
@@ -678,14 +681,14 @@ footer .fl{border-top:1px solid var(--line);padding-top:14px;display:flex;justif
     <label class="check"><input type="checkbox" id="exportTransparent"> Transparenter Hintergrund</label>
     <p style="font-size:14px;color:var(--gray-d)">4096 × 4096 Pixel. Falls der Download nicht startet: Bild gedrückt halten oder Rechtsklick → „Bild speichern“.</p>
     <div class="row">
-      <a class="pill sm" id="exportDl" download="smart-dart-rendering.png" href="#">PNG herunterladen</a>
+      <a class="btn sm" id="exportDl" download="smart-dart-rendering.png" href="#">PNG herunterladen</a>
       <button type="button" class="link" id="exportClose" style="color:var(--blue)">Schließen</button>
     </div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="vendor/three.min.js"></script>
 <script>
 'use strict';
 (function(){
@@ -711,6 +714,7 @@ const ORDER = [20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
 const GEO = {bull:6.35, ob:15.9, ti:99, to:107, di:162, do:170, num:196.5, board:225.5};
 const HALO_W = 30;
 const ZONES = {Si:['ob','ti'], T:['ti','to'], So:['to','di'], D:['di','do']};
+const XICON = '<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const ZONE_NAME = {Si:'Single innen', T:'Triple', So:'Single außen', D:'Double'};
 const FI = {}, ALL = ['B50','B25'];
 FI.B50 = {id:'B50', zone:'B50', label:'Bullseye (50)', short:'Bull'};
@@ -1140,7 +1144,7 @@ function initReveal() {
     for (const r of els) {
       const t = REDUCED ? 1 : smooth(clamp((y + vh - r.top) / (vh * .22), 0, 1));
       setStyle(r.el, 'opacity', t >= 1 ? '' : (.001 + t).toFixed(3));
-      setStyle(r.el, 'transform', t >= 1 ? '' : `translate3d(0,${((1 - t) * 44).toFixed(1)}px,0)`);
+      setStyle(r.el, 'transform', t >= 1 ? '' : `translate3d(0,${((1 - t) * 18).toFixed(1)}px,0)`);
     }
     return false;
   }, () => els.forEach(r => r.top = docTop(r.el)));
@@ -1387,37 +1391,6 @@ const Story = {
   }
 };
 
-/* ---------- „Do it smart.“ als Canvas: in jeder Zoomstufe gestochen scharf ---------- */
-function initZoom() {
-  const sec = $('#zoom'), cv = $('#zoomCanvas'), ctx = cv.getContext('2d');
-  const st = {top:0, h:1, p:0, last:-1, W:0, H:0, d:1};
-  const FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, sans-serif';
-  const draw = () => {
-    const {W, H, d} = st, p = st.p; if (!W) return;
-    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H);
-    const alpha = 1 - smooth(range(p, .55, .82)); if (alpha <= 0) return;
-    const fs = Math.min(W / d * .13, 180) * d;
-    ctx.font = `800 ${fs}px ${FONT}`; ctx.textBaseline = 'alphabetic';
-    const txt = 'Do it smart.', tw = ctx.measureText(txt).width, wD = ctx.measureText('D').width, wo = ctx.measureText('o').width;
-    const x0 = W / 2 - tw / 2, base = H / 2 + fs * .35, ox = x0 + wD + wo / 2, oy = base - fs * .27;
-    const sc = REDUCED ? 1 : 1 + Math.pow(p, 2.6) * 60, mv = REDUCED ? 0 : smooth(range(p, .04, .42));
-    const tx = (W / 2 - ox) * mv, ty = (H / 2 - oy) * mv;
-    ctx.setTransform(sc, 0, 0, sc, ox + tx - sc * ox, oy + ty - sc * oy);
-    const g = ctx.createLinearGradient(x0, 0, x0 + tw, 0); g.addColorStop(0, '#f6e3bf'); g.addColorStop(.48, '#f0a46b'); g.addColorStop(1, '#e0453a');
-    ctx.globalAlpha = alpha; ctx.fillStyle = g; ctx.fillText(txt, x0, base);
-  };
-  Engine.add((y, vh, dt) => {
-    const target = clamp((y - st.top) / Math.max(1, st.h - vh), 0, 1);
-    if (y + vh < st.top || y > st.top + st.h) { st.p = target; return false; }
-    st.p = REDUCED ? target : damp(st.p, target, dt, 70);
-    if (Math.abs(st.p - st.last) > 1e-5) { st.last = st.p; draw(); }
-    return st.p !== target;
-  }, () => {
-    st.top = docTop(sec); st.h = sec.offsetHeight; st.d = DPR();
-    st.W = Math.round(cv.clientWidth * st.d); st.H = Math.round(cv.clientHeight * st.d); cv.width = st.W; cv.height = st.H; st.last = -1; draw();
-  });
-}
-
 /* ---------- Highlights ---------- */
 function initTiles() {
   const c = $('#tileBoard'), cf = Object.assign(baseCfg(), {ring:0, halo:false});
@@ -1491,7 +1464,7 @@ function initSizes() {
     items.forEach((it, i) => {
       const t = REDUCED ? 1 : smooth(clamp(base - i * .18, 0, 1));
       setStyle(it, 'opacity', (.001 + t).toFixed(3));
-      setStyle(it, 'transform', t >= 1 ? '' : `translate3d(${((1 - t) * 120).toFixed(1)}px,${((1 - t) * 30).toFixed(1)}px,0) rotate(${((1 - t) * 40).toFixed(1)}deg)`);
+      setStyle(it, 'transform', t >= 1 ? '' : `translate3d(0,${((1 - t) * 24).toFixed(1)}px,0)`);
     });
     return false;
   }, () => { top = docTop(row); paint(); });
@@ -1534,18 +1507,10 @@ function renderSavings() {
   for (let y = 0; y <= years; y++) { const m = y * 12; t += `<tr><td>${y === 0 ? 'Start' : 'Nach ' + y + ' Jahr' + (y > 1 ? 'en' : '')}</td><td>${eur0(conv[m])}</td><td>${eur0(smart[m])}</td><td>${eur0(conv[m] - smart[m])}</td></tr>`; }
   $('#svTable').innerHTML = t + '</tbody>';
 }
-function animateSave() {
-  cancelAnimationFrame(sv.raf);
-  const el = $('#svBig');
-  if (REDUCED || !sv.seen) { sv.shown = sv.target; el.textContent = eur0(sv.shown); return; }
-  let last = performance.now();
-  const go = now => { sv.shown = damp(sv.shown, sv.target, now - last, 160); last = now; if (Math.abs(sv.target - sv.shown) < .5) sv.shown = sv.target; el.textContent = eur0(sv.shown); if (sv.shown !== sv.target) sv.raf = requestAnimationFrame(go); };
-  sv.raf = requestAnimationFrame(go);
-}
+function animateSave() { $('#svBig').textContent = eur0(sv.target); }
 function initSavings() {
   ['#svPrice','#svPer','#svFields','#svYears'].forEach(s => $(s).addEventListener('input', renderSavings));
   renderSavings();
-  Engine.add((y, vh) => { if (!sv.seen && y + vh * .85 > sv.top) { sv.seen = true; sv.shown = 0; animateSave(); } return false; }, () => sv.top = docTop($('#svBig')));
 }
 
 /* ---------- Konfigurator ---------- */
@@ -1684,8 +1649,8 @@ function syncControls() {
   COLOR_FIELDS.forEach(([k]) => { const i = $('#col-' + k); if (i.value !== cfg.c[k]) i.value = cfg.c[k]; });
   $$('[data-key]').forEach(g => $$('button[data-v]', g).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === String(cfg[g.dataset.key]))));
   const n = Object.values(cfg.logos).filter(Boolean).length;
-  $('#ringSum').textContent = cfg.ring ? `${cfg.finish === 'glanz' ? 'Glänzend' : 'Matt'} · ${n} ${n === 1 ? 'Logo' : 'Logos'}${(cfg.textTop.trim() || cfg.textBottom.trim()) ? ' · mit Text' : ''}` : 'Ohne Catchring – Logos und Text brauchen einen Catchring.';
-  $('#spareList').innerHTML = cfg.spares.length ? cfg.spares.map(id => `<button type="button" class="chip" data-id="${id}" aria-label="${FI[id].label} entfernen">${FI[id].short} ✕</button>`).join('') : '<span class="empty">Noch keine Ersatzfelder.</span>';
+  $('#ringSum').textContent = cfg.ring ? `${cfg.finish === 'glanz' ? 'Glänzend' : 'Matt'} · ${n} ${n === 1 ? 'Logo' : 'Logos'}${(cfg.textTop.trim() || cfg.textBottom.trim()) ? ' · mit Text' : ''}` : 'Ohne Catchring. Logos und Text brauchen einen Catchring.';
+  $('#spareList').innerHTML = cfg.spares.length ? cfg.spares.map(id => `<button type="button" class="chip" data-id="${id}" aria-label="${FI[id].label} entfernen">${FI[id].short} ${XICON}</button>`).join('') : '<span class="empty">Noch keine Ersatzfelder.</span>';
   const sz = SIZES.find(s => s.v === cfg.size);
   $('#buyWhat').textContent = `${sz.name} · ${PRESETS[cfg.preset] ? PRESETS[cfg.preset].name : 'Eigene Farben'}` + (cfg.ring ? ` · Surround ${RINGS.find(r => r.v === cfg.ring).name}` : '') + (cfg.halo ? ' · LED' : '') + (cfg.spares.length ? ` · ${cfg.spares.length} Ersatzfelder` : '');
   syncPicker(); Studio.sync();
@@ -1798,10 +1763,6 @@ const Studio = {
       const sl = e.target.closest('.slot'); if (!sl) return; this.target = sl.dataset.slot; this.sync(); fileIn.click();
     });
     $('#slotmap').addEventListener('keydown', e => { const sl = e.target.closest('.slot.filled'); if (sl && e.target === sl && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); sl.click(); } });
-    if (!REDUCED) {
-      tilt.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; const r = tilt.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height; tilt.style.transform = `rotateX(${((.5 - y) * 7).toFixed(2)}deg) rotateY(${((x - .5) * 9).toFixed(2)}deg)`; tilt.style.setProperty('--mx', (x * 100).toFixed(1) + '%'); tilt.style.setProperty('--my', (y * 100).toFixed(1) + '%'); });
-      tilt.addEventListener('pointerleave', () => { tilt.style.transform = ''; });
-    }
     Engine.add(() => false, () => this.render());
   },
   ensureRing() { if (!cfg.ring) cfg.ring = 700; },
@@ -1856,7 +1817,7 @@ const Studio = {
     const cell = k => {
       const ref = cfg.logos[k], tg = this.target === k ? ' target' : '';
       if (!ref) return `<button type="button" class="slot${tg}" data-slot="${k}" aria-label="Logo ${SLOT_LABEL[k]} hochladen">+<small>${SLOT_LABEL[k]}</small></button>`;
-      return `<div class="slot filled${tg}" data-slot="${k}" role="button" tabindex="0" aria-label="Logo ${SLOT_LABEL[k]} ersetzen"><img src="${ref[0] === '@' ? builtinURL(ref) : ref}" alt=""><small>${SLOT_LABEL[k]}</small><button type="button" class="x" data-slot="${k}" aria-label="Logo ${SLOT_LABEL[k]} entfernen">✕</button></div>`;
+      return `<div class="slot filled${tg}" data-slot="${k}" role="button" tabindex="0" aria-label="Logo ${SLOT_LABEL[k]} ersetzen"><img src="${ref[0] === '@' ? builtinURL(ref) : ref}" alt=""><small>${SLOT_LABEL[k]}</small><button type="button" class="x" data-slot="${k}" aria-label="Logo ${SLOT_LABEL[k]} entfernen">${XICON}</button></div>`;
     };
     const html = cell('ol') + `<div class="slot-mid">Text oben</div>` + cell('or') + cell('l') + `<div class="slot-mid">Scheibe</div>` + cell('r') + cell('ul') + `<div class="slot-mid">Text unten</div>` + cell('ur');
     const sm = $('#slotmap'); if (sm._html !== html) { sm.innerHTML = html; sm._html = html; }
@@ -1935,7 +1896,7 @@ function renderTech() {
 function boot() {
   makeBuiltins();
   initNav(); initReveal();
-  Story.init(); initZoom(); initTiles(); initColors(); initSizes(); initSavings();
+  Story.init(); initTiles(); initColors(); initSizes(); initSavings();
   buildControls(); Studio.init(); initCfgCanvas(); initBuybar(); changed(); renderTech();
   new ResizeObserver(debounce(() => Engine.measure(), 150)).observe(document.body);
   addEventListener('resize', debounce(() => { view.base = null; Studio.key = ''; renderAll(); if (!Story.ok) Story.poster(); }, 150));

@@ -2,7 +2,18 @@
 
 Produktseite im Apple-Stil für die Geschäftsidee **Smart Dart**: die Steeldart-Scheibe mit austauschbaren Feldern.
 
-Öffne `index.html` im Browser (die 3D-Animation lädt three.js aus dem Internet).
+Öffne `index.html` im Browser. Die Seite lädt nichts aus dem Internet: Schriften und three.js liegen im Ordner `vendor/`, die Lizenztexte in `vendor/licenses/`.
+
+## Vor dem Start
+
+| Punkt | Stand |
+|---|---|
+| Favicon | erledigt (`favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`) |
+| Impressum, Datenschutz, AGB | Entwürfe angelegt. Gelb markierte Angaben ergänzen und rechtlich prüfen lassen |
+| Widerrufsbelehrung | fehlt noch, gehört in die AGB oder auf eine eigene Seite |
+| Eigene Domain | offen. Domain kaufen, beim Hosting verbinden, HTTPS aktivieren |
+| Hosting-Anbieter | offen. Name und Logfile-Dauer in die Datenschutzerklärung eintragen |
+| Bestellfunktion | offen. „Konfiguration anfragen“ überträgt noch keine Daten |
 
 ## Inhalt der Website
 
