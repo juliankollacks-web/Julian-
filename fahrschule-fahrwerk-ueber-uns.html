@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Über uns – Fahrschule Fahrwerk GmbH | Hirschaid, Forchheim, Bischberg</title>
+<title>Über uns | Fahrschule Fahrwerk GmbH | Hirschaid, Forchheim, Bischberg</title>
 <meta name="description" content="Lerne das Team der Fahrschule Fahrwerk kennen: Fahrlehrer für Auto, Motorrad, LKW, Bus und Traktor in Hirschaid, Forchheim und Bischberg.">
 <link rel="canonical" href="https://fahrschule-fahrwerk.info/Ueber-uns/">
-<meta property="og:title" content="Über uns – Fahrschule Fahrwerk GmbH">
+<meta property="og:title" content="Über uns | Fahrschule Fahrwerk GmbH">
 <meta property="og:description" content="Unser Team bringt dich sicher und professionell zu deinem Führerschein.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
 <meta name="theme-color" content="#14171a">
+<link rel="icon" type="image/png" href="fahrschule-fahrwerk-bilder/favicon.png">
 
 <script type="application/ld+json">
 {
@@ -107,11 +108,11 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     background: var(--orange); color: #1a0d06 !important;
     font-weight: 700; text-decoration: none;
-    padding: 12px 20px; border-radius: 999px;
+    padding: 12px 20px; border-radius: 6px;
     border: 2px solid var(--orange);
-    transition: transform .15s ease, background .15s ease;
+    transition: background .15s ease;
   }
-  .btn:hover { background: #ff7d4d; transform: translateY(-1px); }
+  .btn:hover { background: #ff7d4d; }
   .btn.ghost { background: transparent; color: #fff !important; border-color: rgba(255,255,255,.45); }
   .btn.ghost:hover { background: rgba(255,255,255,.1); }
 
@@ -123,7 +124,7 @@
       margin-left: auto;
       background: none; border: 2px solid rgba(255,255,255,.4); color: #fff;
       font: inherit; font-size: 15px; font-weight: 600;
-      padding: 8px 14px; border-radius: 999px; cursor: pointer;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer;
     }
     .nav {
       display: none;
@@ -136,16 +137,15 @@
     .nav.open { display: flex; }
     .nav a { padding: 14px 4px; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,.1); border-radius: 0; }
     .nav a[aria-current="page"] { box-shadow: none; color: var(--orange); }
-    .nav a.btn { margin: 16px 0 0; border-bottom: 2px solid var(--orange); border-radius: 999px; }
+    .nav a.btn { margin: 16px 0 0; border-bottom: 2px solid var(--orange); border-radius: 6px; }
   }
 
   /* ---------- Hero ---------- */
   .hero {
-    background:
-      linear-gradient(115deg, rgba(47,63,168,.55), rgba(20,23,26,0) 55%),
-      var(--ink);
+    background: var(--ink-2);
+    border-top: 1px solid rgba(255,255,255,.12);
     color: #fff;
-    padding: 72px 0 0;
+    padding: 72px 0;
     overflow: hidden;
   }
   .eyebrow {
@@ -171,20 +171,8 @@
   .hero p.lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: #d5dade; max-width: 58ch; }
   .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 
-  .facts {
-    list-style: none; margin: 56px 0 0; padding: 0;
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    border-top: 1px solid rgba(255,255,255,.16);
-  }
-  .facts li { padding: 22px 20px 26px 0; }
-  .facts li + li { padding-left: 20px; border-left: 1px solid rgba(255,255,255,.16); }
-  .facts strong { display: block; font-size: 1.6rem; font-weight: 800; line-height: 1.2; }
-  .facts span { color: #b9c0c5; font-size: 15px; }
   @media (max-width: 760px) {
-    .hero { padding-top: 48px; }
-    .facts { grid-template-columns: 1fr 1fr; }
-    .facts li, .facts li + li { padding: 18px 12px 18px 0; border-left: 0; }
-    .facts li:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,.16); }
+    .hero { padding: 48px 0; }
   }
 
   /* ---------- Sections ---------- */
@@ -256,7 +244,7 @@
   .location dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
   .location .days {
     display: inline-block; background: var(--ink); color: #fff;
-    font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
+    font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;
   }
   .location a { font-weight: 600; }
   @media (max-width: 860px) { .locations { grid-template-columns: 1fr; } }
@@ -297,7 +285,7 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="logo" href="https://fahrschule-fahrwerk.info/Startseite/" aria-label="Fahrschule Fahrwerk – zur Startseite">
+    <a class="logo" href="https://fahrschule-fahrwerk.info/Startseite/" aria-label="Fahrschule Fahrwerk, zur Startseite">
       <img src="fahrschule-fahrwerk-bilder/logo.png" width="401" height="242" alt="Fahrschule Fahrwerk">
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="hauptnavigation">Menü</button>
@@ -319,19 +307,12 @@
   <div class="hero">
     <div class="wrap">
       <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Über uns</p>
-      <h1>Die Menschen hinter deinem Führerschein</h1>
-      <p class="lead">Wir sind die Fahrschule Fahrwerk – deine Fahrschule für Auto, Motorrad, LKW, Bus und Traktor in Hirschaid, Forchheim und Bischberg. Unser Team bringt dich sicher und professionell ans Ziel.</p>
+      <h1>Das Team der Fahrschule Fahrwerk</h1>
+      <p class="lead">Drei Fahrlehrer bilden dich in Hirschaid, Forchheim und Bischberg aus: für Auto, Motorrad, LKW, Bus und Traktor.</p>
       <div class="actions">
         <a class="btn" href="https://fahrschule-fahrwerk.info/Onlineanmeldung/">Jetzt online anmelden</a>
         <a class="btn ghost" href="#team">Team kennenlernen</a>
       </div>
-
-      <ul class="facts">
-        <li><strong>3 Standorte</strong><span>Hirschaid, Forchheim, Bischberg</span></li>
-        <li><strong>5 Fahrzeugarten</strong><span>Auto, Motorrad, LKW, Bus, Traktor</span></li>
-        <li><strong>AZAV-zertifiziert</strong><span>Zugelassener Bildungsträger</span></li>
-        <li><strong>Seit 2011</strong><span>Erfahrung als Fahrlehrer im Team</span></li>
-      </ul>
     </div>
   </div>
 
@@ -340,7 +321,7 @@
       <div class="section-head">
         <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Unser Team</p>
         <h2 id="team-titel">Deine Fahrlehrer</h2>
-        <p>Drei Fahrlehrer, ein Ziel: dass du die Prüfung bestehst und danach sicher unterwegs bist. Hier siehst du, wer dich in welcher Klasse ausbildet – und in welchem Fahrzeug.</p>
+        <p>Hier siehst du, wer in welcher Klasse ausbildet und mit welchen Fahrzeugen.</p>
       </div>
 
       <div class="team">
@@ -437,8 +418,8 @@
   <section class="soft" aria-labelledby="vorteile-titel">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Was uns ausmacht</p>
-        <h2 id="vorteile-titel">Ein seriöser und kompetenter Partner auf dem Weg zum Führerschein</h2>
+        <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Angebot</p>
+        <h2 id="vorteile-titel">Ausbildung bei Fahrwerk</h2>
       </div>
       <ul class="benefits">
         <li>
@@ -447,7 +428,7 @@
         </li>
         <li>
           <h3>Von Motorrad zu Motorrad</h3>
-          <p>In der Motorradausbildung begleitet dich dein Fahrlehrer selbst auf dem Motorrad – nicht aus dem Auto.</p>
+          <p>Bei uns wird von Motorrad zu Motorrad ausgebildet.</p>
         </li>
         <li>
           <h3>Zertifiziert nach AZAV</h3>
@@ -465,7 +446,7 @@
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Standorte</p>
-        <h2 id="standorte-titel">Schau einfach bei uns vorbei</h2>
+        <h2 id="standorte-titel">Filialen und Unterrichtszeiten</h2>
         <p>An allen drei Standorten kannst du dich vor dem Theorieunterricht persönlich anmelden.</p>
       </div>
       <div class="locations">
@@ -474,30 +455,30 @@
           <address>Luitpoldstraße 1a, 96114 Hirschaid</address>
           <span class="days">Montag &amp; Mittwoch</span>
           <dl>
-            <dt>Anmeldung</dt><dd>18:00 – 18:30 Uhr</dd>
-            <dt>Unterricht</dt><dd>18:30 – 20:00 Uhr</dd>
+            <dt>Anmeldung</dt><dd>18:00 bis 18:30 Uhr</dd>
+            <dt>Unterricht</dt><dd>18:30 bis 20:00 Uhr</dd>
           </dl>
-          <a href="https://fahrschule-fahrwerk.info/Filialen/Hirschaid/">Zur Filiale Hirschaid →</a>
+          <a href="https://fahrschule-fahrwerk.info/Filialen/Hirschaid/">Zur Filiale Hirschaid</a>
         </article>
         <article class="location">
           <h3>Forchheim</h3>
           <address>Bayreuther Str. 104, Forchheim</address>
           <span class="days">Dienstag &amp; Donnerstag</span>
           <dl>
-            <dt>Anmeldung</dt><dd>18:00 – 18:30 Uhr</dd>
-            <dt>Unterricht</dt><dd>18:30 – 20:00 Uhr</dd>
+            <dt>Anmeldung</dt><dd>18:00 bis 18:30 Uhr</dd>
+            <dt>Unterricht</dt><dd>18:30 bis 20:00 Uhr</dd>
           </dl>
-          <a href="https://fahrschule-fahrwerk.info/Filialen/Forchheim/">Zur Filiale Forchheim →</a>
+          <a href="https://fahrschule-fahrwerk.info/Filialen/Forchheim/">Zur Filiale Forchheim</a>
         </article>
         <article class="location">
           <h3>Bischberg</h3>
           <address>Hauptstraße 27, Bischberg</address>
           <span class="days">Montag &amp; Donnerstag</span>
           <dl>
-            <dt>Anmeldung</dt><dd>18:00 – 18:30 Uhr</dd>
-            <dt>Unterricht</dt><dd>18:30 – 20:00 Uhr</dd>
+            <dt>Anmeldung</dt><dd>18:00 bis 18:30 Uhr</dd>
+            <dt>Unterricht</dt><dd>18:30 bis 20:00 Uhr</dd>
           </dl>
-          <a href="https://fahrschule-fahrwerk.info/Filialen/Bischberg/">Zur Filiale Bischberg →</a>
+          <a href="https://fahrschule-fahrwerk.info/Filialen/Bischberg/">Zur Filiale Bischberg</a>
         </article>
       </div>
     </div>
@@ -507,8 +488,8 @@
     <div class="wrap">
       <div>
         <p class="eyebrow"><span class="chevrons" aria-hidden="true"><i></i><i></i><i></i></span> Kontakt</p>
-        <h2 id="kontakt-titel">Bereit für deinen Führerschein?</h2>
-        <p>Melde dich online an – wir nehmen danach Kontakt mit dir auf. Oder ruf uns an und schreib uns, wenn du vorher noch Fragen hast.</p>
+        <h2 id="kontakt-titel">Anmeldung und Kontakt</h2>
+        <p>Nach deiner Online-Anmeldung nehmen wir Kontakt mit dir auf. Fragen beantworten wir per Telefon, WhatsApp oder E-Mail.</p>
         <div class="actions">
           <a class="btn" href="https://fahrschule-fahrwerk.info/Onlineanmeldung/">Online anmelden</a>
           <a class="btn ghost" href="https://fahrschule-fahrwerk.info/Kontakt/">Kontaktformular</a>
