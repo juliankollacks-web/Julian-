@@ -1115,7 +1115,14 @@ $('#sum-json').addEventListener('click', async () => {
   downloadBlob(file, file.name);
 });
 
-function downloadBlob(blob, name) {
+// Im Claude-Artefakt läuft das Speichern über die Download-Funktion des Viewers, sonst über einen normalen Link
+const dlPromise = window.claude?.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+async function downloadBlob(blob, name) {
+  const dl = await dlPromise;
+  if (dl) {
+    try { await dl.save({ filename: name, data: blob }); } catch (e) { if (e?.code !== 'declined') alert('Speichern ist hier nicht möglich.'); }
+    return;
+  }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
